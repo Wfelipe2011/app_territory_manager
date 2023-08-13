@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { atom } from "recoil";
 
-import { env } from "@/constant";
 
 type AuthState = {
    token: string
@@ -19,15 +18,15 @@ type Roles = 'admin' | 'publisher' | 'overseer'
 export const authState = atom<AuthState>({
    key: 'authState',
    default: {
-      token: sessionStorage.getItem(env.storage.token) ?? '',
-      overseer: sessionStorage.getItem(env.storage.overseer) ?? '',
-      territoryId: Number(sessionStorage.getItem(env.storage.territoryId)) ?? 0,
-      blockId: Number(sessionStorage.getItem(env.storage.blockId)) ?? 0,
-      expirationTime: Number(sessionStorage.getItem(env.storage.expirationTime)) ?? 0,
-      signatureId: sessionStorage.getItem(env.storage.signatureId) ?? '',
-      mode: sessionStorage.getItem(env.storage.mode) ?? '',
+      token: '',
+      overseer: '',
+      territoryId: 0,
+      blockId: 0,
+      expirationTime: 0,
+      signatureId: '',
+      mode: '',
       roles: (() => {
-         const storage = sessionStorage.getItem(env.storage.roles) ?? ''
+         const storage =  ''
          if (!storage) return []
          const roles: Partial<Roles>[] = storage?.includes(',') ? storage.split(',') as any : [storage]
          return roles

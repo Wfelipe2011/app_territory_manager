@@ -6,8 +6,8 @@ export function getFromLocalStorage(key: string): string | null {
 }
 
 export function getFromSessionStorage(key: string): string | null {
-  if (typeof sessionStorage !== 'undefined') {
-    return sessionStorage.getItem(key);
-  }
+  // if (typeof sessionStorage !== 'undefined') {
+  //   return sessionStorage.getItem(key);
+  // }
   return null;
 }

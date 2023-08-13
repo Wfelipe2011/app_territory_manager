@@ -3,8 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import axios from 'axios'
 
-import { env } from '@/constant'
-
 import type HttpClient from './HttpClient'
 
 export const URL_API = 'https://0207-187-180-189-25.ngrok-free.app'
@@ -13,7 +11,7 @@ export const URL_API = 'https://0207-187-180-189-25.ngrok-free.app'
 export default class AxiosAdapter implements HttpClient {
   constructor() {
     axios.interceptors.request.use((config: any) => {
-      const token = sessionStorage.getItem(env.storage.token) ?? ''
+      const token = ''
       if (token) {
         config.headers['Authorization'] = `Bearer ${token}`
       }

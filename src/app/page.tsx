@@ -8,7 +8,6 @@ import * as React from 'react';
 import { useRecoilState } from 'recoil';
 
 import image from '@/assets/territory_green_1.jpg';
-import { env } from '@/constant';
 import { authGateway } from '@/infra/Gateway/AuthGateway';
 import { authState } from '@/states/auth';
 import { loadState } from '@/states/load';
@@ -68,12 +67,12 @@ export default function HomePage() {
       mode: 'default',
       roles,
     });
-    sessionStorage.setItem(env.storage.token, data.token);
-    sessionStorage.setItem(env.storage.territoryId, territoryId?.toString());
-    sessionStorage.setItem(env.storage.overseer, overseer || '');
-    sessionStorage.setItem(env.storage.blockId, blockId?.toString() || '');
-    sessionStorage.setItem(env.storage.expirationTime, exp?.toString());
-    sessionStorage.setItem(env.storage.roles, roles.join(','));
+    // sessionStorage.setItem(env.storage.token, data.token);
+    // sessionStorage.setItem(env.storage.territoryId, territoryId?.toString());
+    // sessionStorage.setItem(env.storage.overseer, overseer || '');
+    // sessionStorage.setItem(env.storage.blockId, blockId?.toString() || '');
+    // sessionStorage.setItem(env.storage.expirationTime, exp?.toString());
+    // sessionStorage.setItem(env.storage.roles, roles.join(','));
     await sleep(1000);
     // ('/territorios');
     _setLoadState({ loader: 'none', message: '' });
