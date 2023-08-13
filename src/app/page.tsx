@@ -103,7 +103,7 @@ export default function HomePage() {
       <div className={clsx('relative h-screen')}>
         <div className='flex h-2/4 items-center justify-center'>
           <div className='max-w-[66%] overflow-hidden rounded-full bg-[#7AAD58] p-4'>
-            <Image src={image} className='w-full' />
+            <Image src={image} alt='logo' className='w-full' />
           </div>
         </div>
         <Body className='h-[calc(100vh-50%)]'>
