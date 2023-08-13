@@ -3,9 +3,11 @@
 import clsx from 'clsx';
 import jwt_decode from 'jwt-decode';
 import Head from 'next/head';
+import Image from 'next/image';
 import * as React from 'react';
 import { useRecoilState } from 'recoil';
 
+import image from '@/assets/territory_green_1.jpg';
 import { env } from '@/constant';
 import { authGateway } from '@/infra/Gateway/AuthGateway';
 import { authState } from '@/states/auth';
@@ -101,7 +103,7 @@ export default function HomePage() {
       <div className={clsx('relative h-screen')}>
         <div className='flex h-2/4 items-center justify-center'>
           <div className='max-w-[66%] overflow-hidden rounded-full bg-[#7AAD58] p-4'>
-            <div className='bg-territory-green-1 w-full' />
+            <Image src={image} className='w-full' />
           </div>
         </div>
         <Body className='h-[calc(100vh-50%)]'>
