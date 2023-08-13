@@ -26,7 +26,7 @@ export const authState = atom<AuthState>({
       signatureId: '',
       mode: '',
       roles: (() => {
-         const storage =  ''
+         const storage =  '' as string
          if (!storage) return []
          const roles: Partial<Roles>[] = storage?.includes(',') ? storage.split(',') as any : [storage]
          return roles
