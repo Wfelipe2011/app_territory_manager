@@ -1,5 +1,8 @@
+'use client';
+
 import { Metadata } from 'next';
 import * as React from 'react';
+import { RecoilRoot } from 'recoil';
 
 import '@/styles/globals.css';
 // !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
@@ -19,9 +22,9 @@ export const metadata: Metadata = {
   // !STARTERCONF this is the default favicon, you can generate your own from https://realfavicongenerator.net/
   // ! copy to /favicon folder
   icons: {
-    icon: '/favicon/favicon.ico',
-    shortcut: '/favicon/favicon-16x16.png',
-    apple: '/favicon/apple-touch-icon.png',
+    icon: '/images/territory_green_1.jpg',
+    shortcut: '/images/territory_green_1.jpg',
+    apple: '/images/territory_green_1.jpg',
   },
   manifest: `/favicon/site.webmanifest`,
   openGraph: {
@@ -54,8 +57,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html>
-      <body>{children}</body>
-    </html>
+    <RecoilRoot>
+      <html>
+        <body>{children}</body>
+      </html>
+    </RecoilRoot>
   );
 }
