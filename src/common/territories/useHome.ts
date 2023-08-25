@@ -3,30 +3,25 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/require-await */
 import { useCallback, useEffect, useState } from "react"
-import { useRecoilState } from "recoil"
 
 import { TerritoryGateway } from "@/infra/Gateway/TerritoryGateway"
-import { loadState } from "@/states/load"
 import { navigatorShare } from "@/utils/share"
 
 import { ITerritoryCard,IUseHome } from "./type"
 
-export const useTerritory = (): IUseHome => {
-   const [_, _setLoadState] = useRecoilState(loadState)
+export const useTerritories = (): IUseHome => {
    const [search, setSearch] = useState<string>('')
    const [territoryCards, setTerritoryCards] = useState<ITerritoryCard[]>([])
 
    const getTerritoryCards = useCallback(async (): Promise<void> => {
-      _setLoadState({ loader: 'spiral', message: 'Carregando territórios' })
       const { status, data } = await TerritoryGateway.in().get()
       if (status > 299) {
          alert('Erro ao buscar os territórios')
          return
       }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      console.log(data)
       setTerritoryCards(data)
-      _setLoadState({ loader: 'none', message: '' })
-   }, [_setLoadState])
+   }, [])
    
    useEffect(() => {
       console.clear()
@@ -74,7 +69,7 @@ export const useTerritory = (): IUseHome => {
       }
       const input = {
          overseer: territory.overseer,
-         expirationTime: territory.expirationTime,
+         expirationTime: territory.signature.expirationDate,
       }
       const { data, status } = await TerritoryGateway.in().signInTerritory(input, territoryId)
       if (status > 299) {
@@ -85,9 +80,9 @@ export const useTerritory = (): IUseHome => {
       const origin = window.location.origin
 
       const toShare = {
-         title: `Território para trabalhar até ${new Date(territory.expirationTime + ' GMT-3').toLocaleDateString()}`,
-         url: `${origin}/territorio/${signature}`,
-         text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${new Date(territory.expirationTime + ' GMT-3').toLocaleDateString()} \n\n\r`
+         title: `Território para trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
+         url: `${origin}/territorio?s=${signature}`,
+         text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()} \n\n\r`
       }
       await navigatorShare(toShare)
    }
@@ -103,6 +98,22 @@ export const useTerritory = (): IUseHome => {
          if (territory.territoryId === territoryId) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             (territory as any)[name] = value
+         }
+         return territory
+      }))
+   }
+   
+   const updateDateTime = (event: React.ChangeEvent<HTMLInputElement>, territoryId: number): void => {
+      const { value } = event.target
+      const territory = territoryCards.find(territory => territory.territoryId === territoryId)
+      if (!territory) {
+         alert('Território não encontrado')
+         return
+      }
+      setTerritoryCards(old => old.map(territory => {
+         if (territory.territoryId === territoryId) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            territory.signature.expirationDate = value
          }
          return territory
       }))
@@ -125,7 +136,7 @@ export const useTerritory = (): IUseHome => {
 
       setTerritoryCards(old => old.map(territory => {
          if (territory.territoryId === territoryId) {
-            territory.expirationTime = ''
+            territory.signature.expirationDate = ''
             territory.overseer = ''
          }
          return territory
@@ -137,14 +148,12 @@ export const useTerritory = (): IUseHome => {
    }
 
    const submitSearch = async (): Promise<void> => {
-      _setLoadState({ loader: 'spiral', message: 'Buscando territórios' })
       const { status, data } = await TerritoryGateway.in().get(search)
       if (status > 299) {
          alert('Erro ao buscar os territórios')
          return
       }
       setTerritoryCards(data)
-      _setLoadState({ loader: 'none', message: '' })
    }
 
    return {
@@ -154,7 +163,8 @@ export const useTerritory = (): IUseHome => {
          changeRound,
          share,
          updateData,
-         revoke
+         revoke,
+         updateDateTime
       },
       handleChangeSearch,
       submitSearch: () => void submitSearch(),

@@ -85,10 +85,11 @@ export default function HomePage() {
     );
     setCookie(undefined, env.storage.blockId, String(blockId), configCookie);
     setCookie(undefined, env.storage.overseer, String(overseer), configCookie);
+    const rolesToSave = roles?.join(',');
     setCookie(
       undefined,
       env.storage.roles,
-      JSON.stringify(roles),
+      JSON.stringify(rolesToSave),
       configCookie
     );
     setCookie(undefined, env.storage.expirationTime, String(exp), configCookie);

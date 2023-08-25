@@ -1,25 +1,30 @@
-export type IUseHome = {
-   search: string
-   territoryCards: ITerritoryCard[]
+export type IUseTerritory = {
+   territory: ITerritory
    actions: IActions
-   handleChangeSearch: (event: React.ChangeEvent<HTMLInputElement>) => void
-   submitSearch: () => void
-}
-
-export type ITerritoryCard = {
-   territoryId: number
-   name: string
-   overseer: string
-   signature: boolean
-   hasRounds: boolean
-   expirationTime: string
-   positiveCompleted: number
-   negativeCompleted: number
 }
 
 export type IActions = {
-   changeRound: (id: number) => Promise<void>
-   share: (territoryId: number, e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => Promise<void>
-   updateData: (event: React.ChangeEvent<HTMLInputElement>, territoryId: number) => void
-   revoke: (territoryId: number) => Promise<void>
+   share: (blockId: number) => Promise<void>
+}
+
+
+export type ITerritory = {
+   territoryId: number
+   territoryName: string
+   overseer: string
+   hasRound: boolean
+   blocks: IBlock[]
+}
+
+export type IBlock = {
+   id: number
+   name: string
+   signature: ISignature | null
+   negativeCompleted: number
+   positiveCompleted: number
+}
+
+export type ISignature = {
+   key: string
+   expirationDate: string
 }

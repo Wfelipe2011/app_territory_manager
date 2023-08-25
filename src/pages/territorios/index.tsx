@@ -1,11 +1,15 @@
 import clsx from 'clsx';
 
-import { HeaderHome, TerritoryCard, useTerritory } from '@/common/territory/';
+import {
+  HeaderHome,
+  TerritoryCard,
+  useTerritories,
+} from '@/common/territories';
 import { Body } from '@/ui';
 
 export default function Territorios() {
   const { search, territoryCards, handleChangeSearch, actions, submitSearch } =
-    useTerritory();
+    useTerritories();
 
   return (
     <div className={clsx('relative')}>

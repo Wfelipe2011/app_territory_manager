@@ -6,7 +6,6 @@ import { Button } from '@/ui';
 export const SearchButton = () => {
   return (
     <Button.Root
-      // onClick={() => setSearch((prev) => ({ ...prev, show: !prev.show }))}
       className={clsx(
         'fixed bottom-6 left-1/2 !h-12 !w-12 -translate-x-1/2 animate-pulse !rounded-full !p-2'
       )}
