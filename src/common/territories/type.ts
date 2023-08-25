@@ -25,4 +25,5 @@ export type IActions = {
    updateData: (event: React.ChangeEvent<HTMLInputElement>, territoryId: number) => void
    updateDateTime: (event: React.ChangeEvent<HTMLInputElement>, territoryId: number) => void
    revoke: (territoryId: number) => Promise<void>
+   copy: (territoryId: number, signatureId: string) => Promise<void>
 }

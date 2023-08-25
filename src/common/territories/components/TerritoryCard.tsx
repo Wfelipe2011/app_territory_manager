@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
-import { Pause, Play, Share2 } from 'react-feather';
+import { Copy, Pause, Play, Share2 } from 'react-feather';
 
 import { Button, Input, InputSelect } from '@/ui';
 import { DoughnutChart } from '@/ui/doughnutChart';
@@ -37,13 +37,7 @@ export function TerritoryCard({
     >
       <div className='flex h-1/5 w-full items-center justify-between'>
         <h6 onClick={redirect}>{territoryCard.name}</h6>
-        <Button.Root
-          onClick={() => actions.changeRound(territoryCard.territoryId)}
-          variant='dark'
-          className='h-8 w-8 !rounded-full !p-0'
-        >
-          {territoryCard.hasRounds ? <Pause size={16} /> : <Play size={16} />}
-        </Button.Root>
+        <HeaderButtons actions={actions} territoryCard={territoryCard} />
       </div>
       <div className='flex h-4/5 w-full gap-[10%]'>
         <div className='flex w-[45%] flex-col items-center justify-start gap-2 text-lg'>
@@ -116,36 +110,82 @@ export function TerritoryCard({
               actions.updateDateTime(e, territoryCard.territoryId)
             }
           />
-          {territoryCard.signature?.key ? (
-            <Button.Root
-              onClick={() => actions.revoke(territoryCard.territoryId)}
-              className='!justify-start !px-2 text-xs'
-              variant='secondary'
-            >
-              Revogar acesso
-            </Button.Root>
-          ) : (
-            <div className='flex w-full justify-end'>
-              <Button.Root
-                variant='secondary'
-                className={clsx(
-                  {
-                    invisible:
-                      !territoryCard.overseer ||
-                      territoryCard.signature.key ||
-                      territoryCard.overseer === 'Dirigente' ||
-                      !territoryCard.hasRounds,
-                  },
-                  'w-full !px-2 text-xs'
-                )}
-                onClick={(e) => actions.share(territoryCard.territoryId, e)}
-              >
-                Enviar <Share2 size={16} />
-              </Button.Root>
-            </div>
-          )}
+          <Actions territoryCard={territoryCard} actions={actions} />
         </div>
       </div>
     </div>
   );
 }
+
+interface HeaderButtonsProps {
+  territoryCard: ITerritoryCard;
+  actions: IActions;
+}
+
+const HeaderButtons = ({ territoryCard, actions }: HeaderButtonsProps) => {
+  const hasSignature = !!territoryCard.signature.key;
+  return (
+    <div className='flex items-center justify-end gap-2'>
+      {hasSignature ? (
+        <Button.Root
+          onClick={() =>
+            actions.copy(
+              territoryCard.territoryId,
+              territoryCard.signature.key as string
+            )
+          }
+          variant='ghost'
+          className='h-8 w-8 !rounded-full !p-0'
+        >
+          <Share2 size={16} />
+        </Button.Root>
+      ) : null}
+      <Button.Root
+        onClick={() => actions.changeRound(territoryCard.territoryId)}
+        variant='ghost'
+        className='h-8 w-8 !rounded-full !p-0'
+      >
+        {territoryCard.hasRounds ? <Pause size={16} /> : <Play size={16} />}
+      </Button.Root>
+    </div>
+  );
+};
+
+interface ActionsProps {
+  territoryCard: ITerritoryCard;
+  actions: IActions;
+}
+
+const Actions = ({ territoryCard, actions }: ActionsProps) => {
+  if (territoryCard.signature.key) {
+    return (
+      <Button.Root
+        onClick={() => actions.revoke(territoryCard.territoryId)}
+        className='!justify-start !px-2 text-xs'
+        variant='secondary'
+      >
+        Revogar acesso
+      </Button.Root>
+    );
+  }
+  return (
+    <div className='flex w-full justify-end'>
+      <Button.Root
+        variant='secondary'
+        className={clsx(
+          {
+            invisible:
+              !territoryCard.overseer ||
+              territoryCard.signature.key ||
+              territoryCard.overseer === 'Dirigente' ||
+              !territoryCard.hasRounds,
+          },
+          'w-full !px-2 text-xs'
+        )}
+        onClick={(e) => actions.share(territoryCard.territoryId, e)}
+      >
+        Enviar <Share2 size={16} />
+      </Button.Root>
+    </div>
+  );
+};

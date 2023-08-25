@@ -17,8 +17,6 @@ export default function Territory() {
     Number(territoryIdQuery || territoryIdState)
   );
 
-  console.log('overseer', overseer, typeof overseer);
-
   return (
     <div className={clsx('relative')}>
       <ClientOnly>

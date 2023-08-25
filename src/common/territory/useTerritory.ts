@@ -12,9 +12,9 @@ export const useTerritory = (territoryId: number): IUseTerritory => {
    const [territory, setTerritory] = useState<ITerritory>({
       territoryId: 0,
       territoryName: '',
-      overseer: '',
       hasRound: false,
-      blocks: []
+      blocks: [],
+      history: []
    })
    const [_, _setLoadState] = useRecoilState(loadState)
    

@@ -75,7 +75,7 @@ export function BlockCard({
             <span>total de casas: {ALL_HOUSES}</span>
             <span>casas disponíveis: {AVAILABLE_HOUSES}</span>
           </div>
-          {block.signature ? (
+          {block?.signature?.key ? (
             <TimeToExpire signature={block.signature} />
           ) : (
             <div className={clsx('flex h-1/3 w-full items-center')}>

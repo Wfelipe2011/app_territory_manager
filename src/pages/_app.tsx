@@ -3,8 +3,7 @@ import { AppProps } from 'next/app';
 import { useRouter as useNavigate } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { setCookie } from 'nookies';
-import { StrictMode } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { RecoilRoot } from 'recoil';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
@@ -14,52 +13,48 @@ import '@/styles/colors.css';
 
 import { env } from '@/constant';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
+import NotFound from '@/pages/not-found';
 import { authState } from '@/states/auth';
-import { notify } from '@/utils/alert';
 
 export default function App({ Component, pageProps, ...rest }: AppProps) {
   return (
-    <StrictMode>
-      <RecoilRoot>
-        <Provider>
-          <Component {...pageProps} {...rest} />
-        </Provider>
-      </RecoilRoot>
-    </StrictMode>
+    <RecoilRoot>
+      <Provider>
+        <Component {...pageProps} {...rest} />
+      </Provider>
+    </RecoilRoot>
   );
 }
 
 const Provider = ({ children }) => {
   const { token } = useRecoilValue(authState);
   const _setAuthState = useSetRecoilState(authState);
+  const [screen, setScreen] = useState<'not_found' | 'children'>('not_found');
   const router = useNavigate();
   const { query } = useRouter();
   const signature = query.s;
 
   useEffect(() => {
     const path = location.pathname;
-    if (path === '/' || path === '' || path === '/login') return;
+    if (path === '/' || path === '' || path === '/login')
+      return setScreen('children');
     if (!token) {
       if (signature) {
         void saveSignature(signature as string);
         return;
       }
-      logout();
+    } else {
+      setScreen('children');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, router, signature]);
 
-  const saveSignature = async (signatureId: string | undefined) => {
-    if (!signatureId) {
-      logout();
-      return;
-    }
+  const saveSignature = async (signatureId: string) => {
     const { data, status } = await TerritoryGateway.in().getSignature(
       signatureId
     );
     if (status > 299) {
       alert('Erro ao buscar assinatura');
-      // logout();
       return;
     }
     const { token, mode } = data;
@@ -95,14 +90,7 @@ const Provider = ({ children }) => {
     setCookie(null, env.storage.signatureId, signatureId, configCookie);
     setCookie(null, env.storage.mode, mode, configCookie);
     setCookie(null, env.storage.roles, roles.join(','), configCookie);
-  };
-
-  const logout = () => {
-    notify({
-      title: 'Aceeso negado',
-      message: 'Você não tem permissão para acessar essa página, faça login',
-    });
-    router.push('/');
+    setScreen('children');
   };
 
   const openToken = (token: string) => {
@@ -122,5 +110,12 @@ const Provider = ({ children }) => {
     };
   };
 
-  return <>{children}</>;
+  function shouldCancel() {
+    const pathsToIgnore = ['/login', '/'];
+    const isPathToIgnore = pathsToIgnore.includes(location.pathname);
+    const shouldCancel = token || signature || isPathToIgnore;
+    return shouldCancel;
+  }
+
+  return <>{screen === 'not_found' ? <NotFound /> : children}</>;
 };

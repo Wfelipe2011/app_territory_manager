@@ -11,9 +11,16 @@ export type IActions = {
 export type ITerritory = {
    territoryId: number
    territoryName: string
-   overseer: string
    hasRound: boolean
+   history: IHistory[]
    blocks: IBlock[]
+}
+
+export type IHistory = {
+   overseer: string
+   initialDate: string
+   expiralDate: string
+   finished: boolean
 }
 
 export type IBlock = {

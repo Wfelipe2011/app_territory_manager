@@ -77,14 +77,7 @@ export const useTerritories = (): IUseHome => {
          return
       }
       const { signature } = data
-      const origin = window.location.origin
-
-      const toShare = {
-         title: `Território para trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
-         url: `${origin}/territorio?s=${signature}`,
-         text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()} \n\n\r`
-      }
-      await navigatorShare(toShare)
+      copy(territoryId, signature)
    }
 
    const updateData = (event: React.ChangeEvent<HTMLInputElement>, territoryId: number): void => {
@@ -156,6 +149,22 @@ export const useTerritories = (): IUseHome => {
       setTerritoryCards(data)
    }
 
+   const copy = async (territoryId:number, signature: string): Promise<void> => {
+      const territory = territoryCards.find(territory => territory.territoryId === territoryId)
+      if (!territory) {
+         alert('Território não encontrado')
+         return
+      }
+      const origin = window.location.origin
+
+      const toShare = {
+         title: `Território para trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
+         url: `${origin}/territorio?s=${signature}`,
+         text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()} \n\n\r`
+      }
+      await navigatorShare(toShare)
+   }
+
    return {
       search,
       territoryCards,
@@ -164,7 +173,8 @@ export const useTerritories = (): IUseHome => {
          share,
          updateData,
          revoke,
-         updateDateTime
+         updateDateTime,
+         copy,
       },
       handleChangeSearch,
       submitSearch: () => void submitSearch(),
