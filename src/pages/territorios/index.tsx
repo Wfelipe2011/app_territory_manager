@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 
-import { HeaderHome, TerritoryCard } from '@/common/territory/components';
-import { useTerritory } from '@/common/territory/useHome';
+import { HeaderHome, TerritoryCard, useTerritory } from '@/common/territory/';
 import { Body } from '@/ui';
 
 export default function Territorios() {

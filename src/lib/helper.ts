@@ -5,7 +5,7 @@ export function getFromLocalStorage(key: string): string | null {
   return null;
 }
 
-export function getFromSessionStorage(key: string): string | null {
+export function getFromSessionStorage(): string | null {
   // if (typeof sessionStorage !== 'undefined') {
   //   return sessionStorage.getItem(key);
   // }

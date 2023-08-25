@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/require-await */
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRecoilState } from "recoil"
 
 import { TerritoryGateway } from "@/infra/Gateway/TerritoryGateway"
@@ -16,12 +16,7 @@ export const useTerritory = (): IUseHome => {
    const [search, setSearch] = useState<string>('')
    const [territoryCards, setTerritoryCards] = useState<ITerritoryCard[]>([])
 
-   useEffect(() => {
-      console.clear()
-      void getTerritoryCards()
-   }, [])
-
-   async function getTerritoryCards(): Promise<void> {
+   const getTerritoryCards = useCallback(async (): Promise<void> => {
       _setLoadState({ loader: 'spiral', message: 'Carregando territórios' })
       const { status, data } = await TerritoryGateway.in().get()
       if (status > 299) {
@@ -31,7 +26,12 @@ export const useTerritory = (): IUseHome => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setTerritoryCards(data)
       _setLoadState({ loader: 'none', message: '' })
-   }
+   }, [_setLoadState])
+   
+   useEffect(() => {
+      console.clear()
+      void getTerritoryCards()
+   }, [getTerritoryCards])
 
    const changeRound = async (id: number): Promise<void> => {
       const territory = territoryCards.find(territory => territory.territoryId === id)

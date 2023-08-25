@@ -7,7 +7,6 @@ export const navigatorShare = async (input: IShareInput): Promise<void> => {
       }
       await navigator.share(input)
    } catch (error) {
-      console.log(error)
       alert('Erro ao compartilhar')
    }
 }

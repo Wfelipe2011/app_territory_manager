@@ -1,6 +1,5 @@
-import { ResponseHttp } from '../http/HttpClient'
-
 import AxiosAdapter from '../http/AxiosAdapter'
+import { ResponseHttp } from '../http/HttpClient'
 import HttpClient from '../http/HttpClient'
 import { HttpMemoryAdapter } from '../http/HttpMemoryAdapter'
 

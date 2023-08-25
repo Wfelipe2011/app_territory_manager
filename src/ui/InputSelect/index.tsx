@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import clsx from 'clsx';
@@ -66,7 +67,7 @@ export const InputSelect = ({
         {...rest}
       >
         {list?.length ? (
-          list?.map((item: any, index: number) => {
+          list?.map((item: any) => {
             return (
               <option
                 key={item.id}
