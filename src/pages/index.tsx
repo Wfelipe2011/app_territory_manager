@@ -4,10 +4,13 @@ import clsx from 'clsx';
 import jwt_decode from 'jwt-decode';
 import Head from 'next/head';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { setCookie } from 'nookies';
 import * as React from 'react';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import image from '@/assets/territory_green_1.jpg';
+import { env } from '@/constant';
 import { authGateway } from '@/infra/Gateway/AuthGateway';
 import { authState } from '@/states/auth';
 import { loadState } from '@/states/load';
@@ -22,11 +25,12 @@ type LoginData = {
 
 export default function HomePage() {
   const [loginData, setLoginData] = React.useState<LoginData>({
-    email: 'lucas@gmail.com',
+    email: 'john@gmail.com',
     password: '123456',
   });
-  const [old, _setAuthState] = useRecoilState(authState);
-  const [__, _setLoadState] = useRecoilState(loadState);
+  const _setAuthState = useSetRecoilState(authState);
+  const _setLoadState = useSetRecoilState(loadState);
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -67,14 +71,28 @@ export default function HomePage() {
       mode: 'default',
       roles,
     });
-    // sessionStorage.setItem(env.storage.token, data.token);
-    // sessionStorage.setItem(env.storage.territoryId, territoryId?.toString());
-    // sessionStorage.setItem(env.storage.overseer, overseer || '');
-    // sessionStorage.setItem(env.storage.blockId, blockId?.toString() || '');
-    // sessionStorage.setItem(env.storage.expirationTime, exp?.toString());
-    // sessionStorage.setItem(env.storage.roles, roles.join(','));
+    const configCookie = {
+      maxAge: 60 * 60 * 24 * 30,
+    };
+    setCookie(undefined, env.storage.token, data.token, configCookie);
+    setCookie(undefined, env.storage.mode, 'default', configCookie);
+    setCookie(
+      undefined,
+      env.storage.territoryId,
+      String(territoryId),
+      configCookie
+    );
+    setCookie(undefined, env.storage.blockId, String(blockId), configCookie);
+    setCookie(undefined, env.storage.overseer, String(overseer), configCookie);
+    setCookie(
+      undefined,
+      env.storage.roles,
+      JSON.stringify(roles),
+      configCookie
+    );
+    setCookie(undefined, env.storage.expirationTime, String(exp), configCookie);
     await sleep(1000);
-    // ('/territorios');
+    router.push('/territorios');
     _setLoadState({ loader: 'none', message: '' });
   };
 

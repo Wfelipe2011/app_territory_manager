@@ -2,18 +2,23 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import axios from 'axios'
+import { parseCookies } from 'nookies'
+
+import { env } from '@/constant'
 
 import type HttpClient from './HttpClient'
 
-export const URL_API = 'https://0207-187-180-189-25.ngrok-free.app'
+export const URL_API = 'https://territory-manager.com.br/v1'
 // const URL_API = 'http://localhost:8001/api'
 
 export default class AxiosAdapter implements HttpClient {
   constructor() {
     axios.interceptors.request.use((config: any) => {
-      const token = ''
-      if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`
+      const { token } = env.storage
+      const { [token]: tokenCookie } = parseCookies()
+      const tokenBearer = tokenCookie
+      if (tokenBearer) {
+        config.headers['Authorization'] = `Bearer ${tokenBearer}`
       }
       return config
     })
@@ -77,6 +82,7 @@ export default class AxiosAdapter implements HttpClient {
         },
       }
       const response = await axios(`${URL_API}/${url}`, config)
+      console.log(response)
       return {
         status: response.status,
         data: response.data,

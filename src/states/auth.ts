@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { parseCookies } from "nookies";
 import { atom } from "recoil";
+
+import { env } from "@/constant";
 
 
 type AuthState = {
@@ -15,18 +18,31 @@ type AuthState = {
  
 type Roles = 'admin' | 'publisher' | 'overseer'
 
+const { token, blockId, expirationTime, mode, overseer, roles, signatureId, territoryId } = env.storage
+
+const { 
+   [token]: tokenCookies,
+   [blockId]: blockIdCookies,
+   [expirationTime]: expirationTimeCookies,
+   [mode]: modeCookies,
+   [overseer]: overseerCookies,
+   [roles]: rolesCookies,
+   [signatureId]: signatureIdCookies,
+   [territoryId]: territoryIdCookies,
+} = parseCookies()
+
 export const authState = atom<AuthState>({
    key: 'authState',
    default: {
-      token: '',
-      overseer: '',
-      territoryId: 0,
-      blockId: 0,
-      expirationTime: 0,
-      signatureId: '',
-      mode: '',
+      token: tokenCookies || '',
+      overseer: overseerCookies || '',
+      territoryId: Number(territoryIdCookies) || 0,
+      blockId: Number(blockIdCookies) || 0,
+      expirationTime: Number(expirationTimeCookies) || 0,
+      signatureId: signatureIdCookies || '',
+      mode: modeCookies || '',
       roles: (() => {
-         const storage =  '' as string
+         const storage = rolesCookies || '' as string
          if (!storage) return []
          const roles: Partial<Roles>[] = storage?.includes(',') ? storage.split(',') as any : [storage]
          return roles
