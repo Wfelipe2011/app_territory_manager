@@ -84,13 +84,13 @@ export default class AxiosAdapter implements HttpClient {
       const response = await axios(`${URL_API}/${url}`, config)
       console.log(response)
       return {
-        status: response.status,
-        data: response.data,
+        status: response?.status,
+        data: response?.data,
       }
     } catch (error: any) {
       return {
-        status: error.response.status,
-        message: error.response.data.error,
+        status: error?.response?.status,
+        message: error?.response?.data?.error,
       }
     }
   }

@@ -56,7 +56,7 @@ export const useTerritory = (territoryId: number): IUseTerritory => {
       await navigatorShare({
          title: 'Prezado(a) publicador(a)',
          text: 'Segue o link para a quadra que você está designado(a) para pregar:',
-         url: `${window.location.origin}/quadra/${signature}`
+         url: `${window.location.origin}/quadra?s=${signature}`
       })
 
       void getTerritories(territoryId)

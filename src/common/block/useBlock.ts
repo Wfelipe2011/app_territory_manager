@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react"
 import { useRecoilState } from "recoil"
 
 import { blockGateway } from "@/infra/Gateway/BlockGateway"
-import { authState } from "@/states/auth"
 import { loadState } from "@/states/load"
 
 import { IBlock, IUseBlock } from "./type"
