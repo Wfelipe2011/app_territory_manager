@@ -51,10 +51,6 @@ export const useStreet = (
     void getStreet(Number(addressId), Number(blockId), Number(territoryId));
   }, [addressId, blockId, getStreet, territoryId]);
 
-  const markRowBySocket = ({ data }: Pick<IMessage, 'data'>) => {
-    void getStreet(Number(addressId), Number(blockId), Number(territoryId));
-  };
-
   const markRow = async (id: number) => {
     const newStreet = { ...street };
     const house = newStreet.houses.find((h) => h.id === id);
@@ -82,7 +78,6 @@ export const useStreet = (
     street,
     actions: {
       mark: markRow,
-      markBySocket: markRowBySocket,
     },
   };
 };

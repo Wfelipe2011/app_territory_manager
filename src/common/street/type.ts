@@ -5,7 +5,6 @@ export type IUseStreet = {
 
 export type IActions = {
   mark: (id: number) => Promise<void>;
-  markRowSocket: (id: number, status: boolean) => void;
 };
 
 export type Street = {
