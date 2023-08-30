@@ -9,11 +9,7 @@ import { loadState } from '@/states/load';
 
 import { IMessage, IUseStreet, Street } from './type';
 
-export const useStreet = (
-  addressId: number,
-  blockId: number,
-  territoryId: number
-): IUseStreet => {
+export const useStreet = (addressId: number, blockId: number, territoryId: number): IUseStreet => {
   const [street, setStreet] = useState<Street>({
     streetName: '',
     blockName: '',
@@ -38,9 +34,7 @@ export const useStreet = (
       }
       setStreet({
         ...data,
-        houses: data?.houses.sort(
-          (a, b) => Number(a.number) - Number(b.number)
-        ),
+        houses: data?.houses.sort((a, b) => Number(a.number) - Number(b.number)),
       });
       _setLoadState({ loader: 'none', message: '' });
     },
@@ -51,7 +45,7 @@ export const useStreet = (
     void getStreet(Number(addressId), Number(blockId), Number(territoryId));
   }, [addressId, blockId, getStreet, territoryId]);
 
-  const markRowBySocket = ({ data }: Pick<IMessage, 'data'>) => {
+  const markRowBySocket = () => {
     void getStreet(Number(addressId), Number(blockId), Number(territoryId));
   };
 
@@ -82,7 +76,7 @@ export const useStreet = (
     street,
     actions: {
       mark: markRow,
-      markBySocket: markRowBySocket,
+      markRowSocket: markRowBySocket,
     },
   };
 };
