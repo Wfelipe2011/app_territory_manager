@@ -45,10 +45,6 @@ export const useStreet = (addressId: number, blockId: number, territoryId: numbe
     void getStreet(Number(addressId), Number(blockId), Number(territoryId));
   }, [addressId, blockId, getStreet, territoryId]);
 
-  const markRowBySocket = () => {
-    void getStreet(Number(addressId), Number(blockId), Number(territoryId));
-  };
-
   const markRow = async (id: number) => {
     const newStreet = { ...street };
     const house = newStreet.houses.find((h) => h.id === id);
@@ -76,7 +72,6 @@ export const useStreet = (addressId: number, blockId: number, territoryId: numbe
     street,
     actions: {
       mark: markRow,
-      markRowSocket: markRowBySocket,
     },
   };
 };
