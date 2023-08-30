@@ -1,14 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { parseCookies } from 'nookies';
 import { useCallback, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { io,Socket } from 'socket.io-client';
 
-import { env } from '@/constant';
 import { streetGateway } from '@/infra/Gateway/StreetGateway';
-import { URL_API } from '@/infra/http/AxiosAdapter';
 import { loadState } from '@/states/load';
 
 import { IMessage, IUseStreet, Street } from './type';
@@ -16,7 +12,7 @@ import { IMessage, IUseStreet, Street } from './type';
 export const useStreet = (
   addressId: number,
   blockId: number,
-  territoryId: number,
+  territoryId: number
 ): IUseStreet => {
   const [street, setStreet] = useState<Street>({
     streetName: '',
@@ -55,17 +51,9 @@ export const useStreet = (
     void getStreet(Number(addressId), Number(blockId), Number(territoryId));
   }, [addressId, blockId, getStreet, territoryId]);
 
-  const markRowBySocket = useCallback(
-    ({ data }: Pick<IMessage, 'data'>) => {
-      const newStreet = { ...street };
-      const house = newStreet.houses.find((h) => h.id === data.houseId);
-      if (house) {
-        house.status = data.completed;
-      }
-      setStreet(newStreet);
-    },
-    [street]
-  );
+  const markRowBySocket = ({ data }: Pick<IMessage, 'data'>) => {
+    void getStreet(Number(addressId), Number(blockId), Number(territoryId));
+  };
 
   const markRow = async (id: number) => {
     const newStreet = { ...street };
@@ -84,10 +72,10 @@ export const useStreet = (
     };
     const { status, data } = await streetGateway.markHouse(input);
     if (status > 299) {
+      console.log(data);
       alert('Erro ao marcar casa');
       return;
     }
-    console.log(data);
   };
 
   return {

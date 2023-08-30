@@ -4,128 +4,35 @@ import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Users } from 'react-feather';
-import { io, Manager } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
+import { v4 as uuid } from 'uuid';
 
-import { HouseComponent, IMessage, Subtitle, useStreet } from '@/common/street';
+import { HouseComponent, Subtitle, useStreet } from '@/common/street';
 import { env } from '@/constant';
 import { URL_API } from '@/infra/http/AxiosAdapter';
 import { Body, Button, Header } from '@/ui';
-const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
 
+const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
 const { token, signatureId } = env.storage;
 const { [token]: tokenCookies, [signatureId]: signature } = parseCookies();
 
-const makeUUid = () => {
-  let dt = new Date().getTime();
-  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (dt + Math.random() * 16) % 16 | 0;
-    dt = Math.floor(dt / 16);
-    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-  });
-  return uuid;
-};
-
-const newUuid = makeUUid();
-const useSocket = (
-  room: string,
-  events?: { name: string; cb: (...p: any) => any }[]
-) => {
-  const ONE_MINUTE = 60 * 1000;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const manager = new Manager(urlSocket, {
-    transports: ['websocket'],
-    query: {
-      key: signature,
-    },
-    autoConnect: false,
-    reconnectionDelay: ONE_MINUTE,
-    reconnectionDelayMax: ONE_MINUTE,
-    reconnectionAttempts: 2,
-  });
-  const socket = manager.socket('/', {
-    auth: {
-      token: `Bearer ${tokenCookies}`,
-    },
-  });
+export default function StreetData() {
+  const navigate = useNavigate();
+  const { query } = useRouter();
   const [connections, setConnections] = useState<number>(0);
 
-  useEffect(() => {
-    manager.connect();
-    socket.on('connect', () => {
-      console.log('connect here');
-      socket.emit('join', {
-        roomName: room,
-        userName: newUuid,
-      });
-    });
-
-    socket.on('disconnect', () => {
-      console.log('disconnect');
-    });
-
-    // socket.on(`room-${room}`, (message: IMessage) => {
-    //   if (message.type === 'update_house')
-    //     actions.markBySocket({ data: message.data, type: message.type });
-    //   if (message.type === 'user_joined')
-    //     setConnections(message.data.userCount);
-    //   if (message.type === 'user_left') setConnections(message.data.userCount);
-    // });
-
-    if (events)
-      events.forEach(({ name, cb }) => {
-        socket.on(name, cb);
-      });
-  }, [room, socket, events, manager]);
-
-  const killManager = () => {
-    manager._destroy(socket);
-    manager.off();
-  };
-
-  return { socket, connections, setConnections, killManager };
-};
-
-export default function StreetData() {
-  const { query } = useRouter();
   const addressId = query.a;
   const blockId = query.b;
   const territoryId = query.t;
   const room = `${String(territoryId)}-${String(blockId)}-${String(addressId)}`;
-  const { socket, connections, setConnections, killManager } = useSocket(room, [
-    {
-      name: `room-${room}`,
-      cb: (message: IMessage) => {
-        if (message.type === 'update_house')
-          actions.markBySocket({ data: message.data, type: message.type });
-        if (message.type === 'user_joined')
-          setConnections(message.data.userCount);
-        if (message.type === 'user_left')
-          setConnections(message.data.userCount);
-      },
-    },
-  ]);
-  // const socket = io(urlSocket, {
-  //   transports: ['websocket'],
-  //   auth: {
-  //     token: `Bearer ${tokenCookies}`,
-  //   },
-  //   query: {
-  //     key: signature,
-  //   },
-  // });
-  // const [connections, setConnections] = useState<number>(0);
+
   const { street, actions } = useStreet(
     Number(addressId),
     Number(blockId),
     Number(territoryId)
   );
-  const navigate = useNavigate();
 
   const back = () => {
-    socket.disconnect();
-    socket.close();
-    socket.off();
-    killManager();
     navigate.back();
   };
 
@@ -139,6 +46,47 @@ export default function StreetData() {
     if (widthScreen > 300) return 3;
     return 2;
   };
+
+  useEffect(() => {
+    const socket = io(urlSocket, {
+      transports: ['websocket'],
+      auth: {
+        token: `Bearer ${tokenCookies}`,
+      },
+      query: {
+        key: signature,
+      },
+    }) as Socket;
+
+
+    socket.on("connect", () => {
+      console.log(`User connected with ID: ${socket.id} room: ${room}`);
+      socket.emit('join', {
+        roomName: room,
+        username: uuid(),
+      });
+    });
+
+    socket.on(String(room), (message) => {
+      console.log(`Received update for territory ${room}:`, message);
+      if (message.type === 'update_house') actions.markBySocket({ data: message.data, type: message.type });
+      if (message.type === 'user_joined') setConnections(message.data.userCount);
+      if (message.type === 'user_left') setConnections(message.data.userCount);
+    });
+
+    socket.on("connect_error", (error) => {
+      console.log(`Connection error for user:`, error.message);
+    });
+
+    socket.on("disconnect", () => {
+      console.log(`User disconnected with ID: ${socket.id}`);
+    })
+
+    return () => {
+      socket.disconnect(); // Disconnect when the component unmounts
+    };
+
+  }, []);
 
   return (
     <div className={clsx('relative')}>
