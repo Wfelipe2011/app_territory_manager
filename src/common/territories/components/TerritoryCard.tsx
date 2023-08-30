@@ -31,18 +31,18 @@ export function TerritoryCard({
     <div
       className={clsx(
         { 'rounded-tl-none border-t-0 bg-transparent': index === 0 },
-        '-ml-2 min-h-[220px] w-[calc(100%+12px)] rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-4 px-6 shadow-lg',
-        'flex flex-col gap-2'
+        '-ml-2 min-h-[220px] w-[calc(100%+12px)] rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-2 pb-6 px-8 shadow-lg',
+        'flex flex-col'
       )}
     >
-      <div className='flex h-1/5 w-full items-center justify-between'>
+      <div className='flex h-1/5 w-full items-center justify-between h-fit text-lg'>
         <h6 onClick={redirect}>{territoryCard.name}</h6>
         <HeaderButtons actions={actions} territoryCard={territoryCard} />
       </div>
       <div className='flex h-4/5 w-full gap-[10%]'>
-        <div className='flex w-[45%] flex-col items-center justify-start gap-2 text-lg'>
+        <div className='flex w-[45%] flex-col items-center justify-start gap-4 text-lg'>
           {territoryCard.positiveCompleted ||
-          territoryCard.negativeCompleted ? (
+            territoryCard.negativeCompleted ? (
             <>
               <div
                 className={clsx(

@@ -37,15 +37,15 @@ export function BlockCard({
     <div
       className={clsx(
         { 'rounded-tl-none border-t-0 bg-transparent': index === 0 },
-        '-ml-2 min-h-[200px] w-[calc(100%+12px)] rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-4 px-8 shadow-lg',
-        'flex flex-col gap-2'
+        '-ml-2 min-h-[200px] w-[calc(100%+12px)] rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-2 px-8 pb-6 shadow-lg',
+        'flex flex-col'
       )}
     >
       <h6 className='h-fit text-lg' onClick={redirect}>
         {block.name}
       </h6>
       <div className='flex h-4/5 w-full gap-[10%]'>
-        <div className='flex w-[45%] flex-col items-center justify-start gap-2 text-lg'>
+        <div className='flex w-[45%] flex-col items-center justify-start gap-4 text-lg'>
           <div
             className={clsx(
               {
@@ -78,11 +78,11 @@ export function BlockCard({
           {block?.signature?.key ? (
             <TimeToExpire signature={block.signature} />
           ) : (
-            <div className={clsx('flex h-1/3 w-full items-center')}>
+            <div className={clsx('flex h-1/3  items-center justify-end')}>
               <Button.Root
                 variant='secondary'
                 className={clsx(
-                  'w-full justify-center !fill-gray-700 !stroke-gray-700 text-gray-700 shadow-xl'
+                  'justify-center !fill-gray-700 !stroke-gray-700 text-gray-700 shadow-xl'
                 )}
                 onClick={() => actions.share(block.id)}
               >

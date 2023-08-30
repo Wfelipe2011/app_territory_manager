@@ -22,7 +22,7 @@ export function HeaderHome({
 
   return (
     <Header>
-      <div className='flex h-full flex-col justify-evenly'>
+      <div className='flex h-full flex-col justify-evenly p-4'>
         <h1 className='text-xl font-semibold'>Olá admin</h1>
         <p className='text-sm'>
           Gerencie aqui os Territórios digitais e compartilhe com os dirigentes

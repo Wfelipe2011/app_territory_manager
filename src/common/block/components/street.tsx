@@ -57,11 +57,11 @@ export function Street({ address, actions, block }: AddressProps) {
       )}
     >
       <div className={clsx('flex w-11/12 flex-col items-start')}>
-        <div className='flex items-center justify-start gap-4'>
-          <MapPin onClick={toMapsWithNavigator} />
-          <h6 className='text-xl font-bold'>{address.name}</h6>
+        <div className='flex items-center justify-start gap-2 w-full'>
+          <MapPin className='cursor-pointer' onClick={toMapsWithNavigator} />
+          <h6 onClick={() => void actions.goToStreet(address.id)} className='inline-block text-lg font-bold cursor-pointer w-full'>{address.name}</h6>
         </div>
-        <p>
+        <p className='px-2'>
           N° de {FIRST_HOUSE} à {LAST_HOUSE}
         </p>
       </div>

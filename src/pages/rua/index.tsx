@@ -175,12 +175,12 @@ export default function StreetData(props: InferGetServerSidePropsType<typeof get
         >
           <ArrowLeft />
         </Button.Root>
-        <h1 className='text-2xl font-bold'>{street.streetName}</h1>
+        <h1 className='text-xl font-bold'>{street.streetName}</h1>
       </Header>
       <Body className='px-6 py-2'>
         <div className='flex items-end justify-between'>
           <div className='flex h-full items-center'>
-            <h6 className='pt-4 text-xl font-semibold'>CASAS</h6>
+            <h6 className='pt-4 text-lg font-semibold'>CASAS</h6>
           </div>
           {connections ? (
             <div className='flex items-center justify-center gap-2'>
