@@ -1,32 +1,30 @@
-
 export type IUseStreet = {
-   street: Street
-   actions: IActions
-}
+  street: Street;
+  actions: IActions;
+};
 
 export type IActions = {
-   mark: (id: number) => Promise<void>
-   markBySocket: (data: IMessage) => void
-}
+  mark: (id: number) => Promise<void>;
+  markRowSocket: (id: number, status: boolean) => void;
+};
 
 export type Street = {
-   streetName: string
-   territoryName: string
-   blockName: string
-   houses: House[]
-}
+  streetName: string;
+  territoryName: string;
+  blockName: string;
+  houses: House[];
+};
 
 export type House = {
-   id: number
-   number: string
-   complement: string | null
-   order: number
-   legend: string
-   status: boolean
-}
+  id: number;
+  number: string;
+  complement: string | null;
+  order: number;
+  legend: string;
+  status: boolean;
+};
 
 export type IMessage = {
-   type: string;
-   data: any
- }
- 
+  type: string;
+  data: any;
+};

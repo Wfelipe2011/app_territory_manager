@@ -1,14 +1,15 @@
 import clsx from 'clsx';
+import { InferGetServerSidePropsType } from 'next';
 import { useRouter as useNavigate } from 'next/navigation';
-import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Users } from 'react-feather';
 import { io, Socket } from 'socket.io-client';
 import { v4 as uuid } from 'uuid';
 
-import { HouseComponent, Subtitle, useStreet } from '@/common/street';
+import { HouseComponent, IMessage, Street, Subtitle, useStreet } from '@/common/street';
 import { env } from '@/constant';
+import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { URL_API } from '@/infra/http/AxiosAdapter';
 import { Body, Button, Header } from '@/ui';
 
@@ -16,21 +17,43 @@ const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
 const { token, signatureId } = env.storage;
 const { [token]: tokenCookies, [signatureId]: signature } = parseCookies();
 
-export default function StreetData() {
+export async function getServerSideProps(context) {
+  console.log(`Executing getServerSideProps for ${context.req.url}`);
+  const { query, req } = context;
+  const addressId = query.a;
+  const blockId = query.b;
+  const territoryId = query.t;
+  const { ['@territoryManager/token']: tokenCookies } = req.cookies
+
+  const data = await fetch(`${URL_API}/territories/${territoryId}/blocks/${blockId}/address/${addressId}`, {
+    headers: {
+      Authorization: `Bearer ${tokenCookies}`,
+    },
+  });
+  const body = await data.json();
+  return {
+    props: {
+      street: body,
+      query
+    }
+  }
+}
+
+export default function StreetData(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const navigate = useNavigate();
-  const { query } = useRouter();
+  const { query } = props
   const [connections, setConnections] = useState<number>(0);
+  const [street, setStreet] = useState<Street>(props.street || {
+    streetName: '',
+    blockName: '',
+    territoryName: '',
+    houses: [],
+  } as Street);
 
   const addressId = query.a;
   const blockId = query.b;
   const territoryId = query.t;
   const room = `${String(territoryId)}-${String(blockId)}-${String(addressId)}`;
-
-  const { street, actions } = useStreet(
-    Number(addressId),
-    Number(blockId),
-    Number(territoryId)
-  );
 
   const back = () => {
     navigate.back();
@@ -47,6 +70,51 @@ export default function StreetData() {
     return 2;
   };
 
+  const markRow = async (id: number) => {
+    let statusHouse = false;
+    street.houses.forEach((h) => {
+      if (h.id === id) {
+        h.status = !h.status;
+        statusHouse = h.status;
+      }
+    });
+    setStreet({ ...street });
+
+    const input = {
+      addressId,
+      blockId,
+      territoryId,
+      houseId: id,
+      status: statusHouse,
+    } as any;
+
+    const { status } = await streetGateway.markHouse(input);
+    if (status === 403) {
+      alert('Você não tem permissão para alterar o status dessa casa');
+      street.houses.map((h) => {
+        if (h.id === id) {
+          h.status = !h.status;
+        }
+      });
+      setStreet({ ...street });
+    }
+  };
+
+  const markRowSocket = (id: number, status: boolean) => {
+    street.houses.forEach((h) => {
+      if (h.id === id) {
+        h.status = status;
+      }
+    });
+
+    setStreet({ ...street });
+  };
+
+  const actions = {
+    mark: markRow,
+    markRowSocket,
+  }
+
   useEffect(() => {
     const socket = io(urlSocket, {
       transports: ['websocket'],
@@ -59,17 +127,26 @@ export default function StreetData() {
     }) as Socket;
 
 
-    socket.on("connect", () => {
+    socket.on("connect", async () => {
       console.log(`User connected with ID: ${socket.id} room: ${room}`);
+      setConnections(1)
       socket.emit('join', {
         roomName: room,
         username: uuid(),
       });
+      const response = await streetGateway.signInStreet({ addressId, blockId, territoryId });
+      if (response.status === 200) {
+        setStreet(response.data);
+      }
     });
+
+    socket.on("join", (message: IMessage) => {
+      console.log(`User joined with ID: ${socket.id} room: ${room}`, message);
+    })
 
     socket.on(String(room), (message) => {
       console.log(`Received update for territory ${room}:`, message);
-      if (message.type === 'update_house') actions.markBySocket({ data: message.data, type: message.type });
+      if (message.type === 'update_house') actions.markRowSocket(Number(message.data.houseId), message.data.completed);
       if (message.type === 'user_joined') setConnections(message.data.userCount);
       if (message.type === 'user_left') setConnections(message.data.userCount);
     });
@@ -83,7 +160,7 @@ export default function StreetData() {
     })
 
     return () => {
-      socket.disconnect(); // Disconnect when the component unmounts
+      socket.disconnect();
     };
 
   }, []);
