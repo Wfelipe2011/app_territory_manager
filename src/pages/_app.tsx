@@ -1,4 +1,3 @@
-import jwt_decode from 'jwt-decode';
 import { AppProps } from 'next/app';
 import { useRouter as useNavigate } from 'next/navigation';
 import { useRouter } from 'next/router';
@@ -15,6 +14,7 @@ import { env } from '@/constant';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
 import NotFound from '@/pages/not-found';
 import { authState } from '@/states/auth';
+import { openToken } from '@/lib/openToken';
 
 export default function App({ Component, pageProps, ...rest }: AppProps) {
   return (
@@ -91,23 +91,6 @@ const Provider = ({ children }) => {
     setCookie(null, env.storage.mode, mode, configCookie);
     setCookie(null, env.storage.roles, roles.join(','), configCookie);
     setScreen('children');
-  };
-
-  const openToken = (token: string) => {
-    const tokenDecoded = jwt_decode<{
-      overseer?: string;
-      territoryId: number;
-      blockId?: number;
-      exp: number;
-      roles: string[];
-    }>(token);
-    return {
-      overseer: tokenDecoded?.overseer,
-      territoryId: tokenDecoded?.territoryId,
-      blockId: tokenDecoded?.blockId,
-      exp: tokenDecoded?.exp,
-      roles: tokenDecoded?.roles as any,
-    };
   };
 
   function shouldCancel() {

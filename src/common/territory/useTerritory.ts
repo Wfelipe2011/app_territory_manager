@@ -8,7 +8,7 @@ import { navigatorShare } from '@/utils/share';
 
 import { ITerritory, IUseTerritory } from './type';
 
-export const useTerritory = (territoryId: number, initialState: ITerritory): IUseTerritory => {
+export const useTerritory = (territoryId: number, initialState?: ITerritory): IUseTerritory => {
   const [territory, setTerritory] = useState<ITerritory>(
     initialState || {
       territoryId: 0,

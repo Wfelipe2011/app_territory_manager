@@ -8,7 +8,7 @@ import { loadState } from '@/states/load';
 
 import { IBlock, IUseBlock } from './type';
 
-export const useBlock = (blockId: number, territoryId: number, initialState: IBlock): IUseBlock => {
+export const useBlock = (blockId: number, territoryId: number, initialState?: IBlock): IUseBlock => {
   const [block, setBlock] = useState<IBlock>(
     initialState || {
       blockId: 0,

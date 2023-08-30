@@ -1,9 +1,10 @@
 import clsx from 'clsx';
 import { InferGetServerSidePropsType } from 'next';
 import { useRouter as useNavigate } from 'next/navigation';
-import { useRouter } from 'next/router';
 import { ArrowLeft } from 'react-feather';
 import { useRecoilValue } from 'recoil';
+
+import { openToken } from '@/lib/openToken';
 
 import { Street, useBlock } from '@/common/block';
 import { URL_API } from '@/infra/http/AxiosAdapter';
@@ -13,22 +14,35 @@ import { Body, Button, Header } from '@/ui';
 export async function getServerSideProps(context) {
   console.log(`Executing getServerSideProps for ${context.req.url}`);
   const { query, req } = context;
-  const blockId = query.b;
-  const territoryId = query.t;
-  const { ['@territoryManager/token']: tokenCookies } = req.cookies
+  let blockId = query?.b;
+  let territoryId = query?.t;
+  let body = undefined;
+  if (query?.s) {
+    const data = await fetch(`${URL_API}/signature/${query?.s}`);
+    const body = await data.json();
+    const { token } = body;
+    const tokenDecoded = openToken(token);
+    territoryId = tokenDecoded.territoryId;
+    blockId = tokenDecoded.blockId;
+    req.cookies['@territoryManager/token'] = token;
+  }
 
-  const data = await fetch(`${URL_API}/territories/${territoryId}/blocks/${blockId}`, {
-    headers: {
-      Authorization: `Bearer ${tokenCookies}`,
-    },
-  });
-  const body = await data.json();
+  if (blockId & territoryId) {
+    const { ['@territoryManager/token']: tokenCookies } = req.cookies;
+
+    const data = await fetch(`${URL_API}/territories/${territoryId}/blocks/${blockId}`, {
+      headers: {
+        Authorization: `Bearer ${tokenCookies}`,
+      },
+    });
+    body = await data.json();
+  }
   return {
     props: {
       data: body,
-      query
-    }
-  }
+      query,
+    },
+  };
 }
 
 export default function Block(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
