@@ -17,7 +17,7 @@ const DoughnutChartComponent = ({ values }: DoughnutChartProps) => {
         datasets: [
           {
             data: values,
-            backgroundColor: ['#CBE6BA', '#9EE073'],
+            backgroundColor: ['#9EE073', '#CBE6BA'],
             borderWidth: 0,
           },
         ],

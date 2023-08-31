@@ -9,6 +9,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import '@/styles/globals.css';
 // !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
 import '@/styles/colors.css';
+import '@/styles/spiral.css'
 
 import { env } from '@/constant';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';

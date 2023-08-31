@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { Share2 } from 'react-feather';
 
-import { Button } from '@/ui';
 import { DoughnutChart } from '@/ui/doughnutChart';
 
 import { IActions, IBlock } from '../type';
@@ -16,15 +15,9 @@ interface BlockCardProps {
   territoryId: number;
 }
 
-export function BlockCard({
-  index,
-  actions,
-  block,
-  territoryId,
-}: BlockCardProps) {
+export function BlockCard(props: BlockCardProps) {
+  const { block, actions, territoryId } = props;
   const router = useRouter();
-  const ALL_HOUSES = block.negativeCompleted + block.positiveCompleted;
-  const AVAILABLE_HOUSES = block.negativeCompleted;
 
   const redirect = () => {
     const query = new URLSearchParams();
@@ -36,62 +29,57 @@ export function BlockCard({
   return (
     <div
       className={clsx(
-        { 'rounded-tl-none border-t-0 bg-transparent': index === 0 },
-        '-ml-2 min-h-[200px] w-[calc(100%+12px)] rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-2 px-8 pb-6 shadow-lg',
-        'flex flex-col'
+        'flex min-h-[260px] w-full rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-3 shadow-lg',
       )}
     >
-      <h6 className='h-fit text-lg' onClick={redirect}>
-        {block.name}
-      </h6>
-      <div className='flex h-4/5 w-full gap-[10%]'>
-        <div className='flex w-[45%] flex-col items-center justify-start gap-4 text-lg'>
-          <div
-            className={clsx(
-              {
-                'h-[calc(100%-20px)]': block?.name,
-                hidden: !block?.name,
-              },
-              'flex w-full justify-start pl-2'
-            )}
-          >
-            <DoughnutChart
-              values={[block.positiveCompleted, block.negativeCompleted]}
-            />
-          </div>
-          <div className='flex h-4 w-full items-center justify-start gap-12 text-xs'>
-            <div className='flex w-fit flex-col items-center gap-1'>
-              <div className='bg-primary h-3 w-6'></div>À fazer
-            </div>
-            <div className='flex w-fit flex-col items-center gap-1'>
-              <div className='bg-secondary h-3 w-6'></div>
-              Concluído
-            </div>
+      <div className='flex flex-col justify-start h-full items-baseline w-1/2'>
+        <h6 className='block text-xl ml-2 font-medium ' onClick={redirect}>
+          <span className='ml-2'>
+            {block.name}
+          </span>
+        </h6>
+
+        <div className='flex flex-col w-full max-w-[170px] h-[200px]'>
+          <DoughnutChart
+            values={[block.positiveCompleted, block.negativeCompleted]}
+          />
+        </div>
+        <div className='pt-2'>
+          <span className='ml-4'>Sugestão: 2 pares</span>
+        </div>
+      </div>
+
+      <div className='flex flex-col justify-between items-end w-1/2'>
+
+        <div className='flex w-full justify-end'>
+          <div className='p-2 cursor-pointer mr-2'>
+            <Share2 onClick={() => actions.share(block.id)} size={24} />
           </div>
         </div>
 
-        <div className='flex w-[45%] flex-col justify-between'>
-          <div className='flex h-2/3 w-full flex-col items-end justify-around'>
-            <span>total de casas: {ALL_HOUSES}</span>
-            <span>casas disponíveis: {AVAILABLE_HOUSES}</span>
+        <div className='flex flex-col w-full p-4 gap-2'>
+
+          <div className='flex items-center gap-2'>
+            <div className='bg-secondary h-6 w-14'></div><span>À fazer</span>
           </div>
-          {block?.signature?.key ? (
-            <TimeToExpire signature={block.signature} />
-          ) : (
-            <div className={clsx('flex h-1/3  items-center justify-end')}>
-              <Button.Root
-                variant='secondary'
-                className={clsx(
-                  'justify-center !fill-gray-700 !stroke-gray-700 text-gray-700 shadow-xl'
-                )}
-                onClick={() => actions.share(block.id)}
-              >
-                Enviar <Share2 size={18} />
-              </Button.Root>
-            </div>
-          )}
+
+          <div className='flex items-center gap-2'>
+            <div className='bg-primary h-6 w-14'></div><span>Concluído</span>
+          </div>
+
+        </div>
+
+        <div className='flex w-full'>
+          {
+            block?.signature?.key ? (
+              <TimeToExpire signature={block.signature} />
+            ) : (
+              <div className='p-4 mb-2'></div>
+            )
+          }
         </div>
       </div>
+
     </div>
   );
 }
@@ -114,6 +102,11 @@ const TimeToExpireComponent = ({
     const hours = String(hoursNumber).padStart(2, '0');
     const minutes = String(minutesNumber).padStart(2, '0');
     const seconds = String(secondsNumber).padStart(2, '0');
+    // verifica se o tempo já expirou ou é negativo e parar o contador
+    if (diff <= 0) {
+      setExpireIn('00:00:00');
+      return;
+    }
     setExpireIn(`${hours}:${minutes}:${seconds}`);
   }, []);
 
@@ -126,9 +119,9 @@ const TimeToExpireComponent = ({
   }, [signature, signature?.expirationDate, timeToExpire]);
 
   return (
-    <div className='flex items-center justify-end gap-1'>
-      <span className='text-xs'>Tempo restante:</span>{' '}
-      <span className='text-xs font-semibold'>{expireIn}</span>
+    <div className='flex flex-col items-center justify-center gap-1 mb-1 w-full'>
+      <span className='text-md'>Tempo restante:</span>
+      <span className='text-md font-semibold'>{expireIn}</span>
     </div>
   );
 };
