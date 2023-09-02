@@ -12,18 +12,15 @@ export function HouseComponent({ house, actions }: HouseProps) {
     <div
       className={clsx(
         {
-          'bg-white': !house.status,
+          'bg-gray-100': !house.status,
           'bg-primary': house.status,
         },
-        'relative flex cursor-pointer flex-col items-center justify-center rounded-sm border-2 p-6 border-gray-100 shadow-mg transition-all duration-300'
+        'relative flex cursor-pointer flex-col items-center justify-center rounded-sm border-2 py-2 px-4  border-gray-50 shadow-mg transition-all duration-300'
       )}
       onClick={() => actions.mark(house.id)}
     >
-      <div className={clsx('')}>
+      <div className="text-gray-600 font-semibold">
         <span className='text-lg'>{house.number}</span>
-        <div className='absolute bottom-1 right-1 text-[7px]'>
-          {house.complement}
-        </div>
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ export const Subtitle = () => {
   );
 
   return (
-    <div className="w-full h-full flex bg-white mt-4 border border-gray-300 rounded-3xl py-4 px-2 gap-4">
+    <div className="w-full h-full flex justify-between bg-white my-4 border border-gray-300 rounded-3xl p-4 gap-2">
       <Column>
         <Data
           left={<div className="h-6 w-10 bg-primary block"></div>}
@@ -21,7 +21,7 @@ export const Subtitle = () => {
         <Data left="FD" right="Fundo" />
         <Data left="TR" right="Terreno" />
         <Data left="CM" right="Comércio" />
-        <div className="py-6">
+        <div className="py-4">
           <Data left="TJ" right="Testemunha de Jeová" />
         </div>
       </Column>
