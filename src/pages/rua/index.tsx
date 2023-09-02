@@ -104,15 +104,15 @@ export default function StreetData() {
           </Button.Root>
           <h1 className='text-xl font-semibold pl-4 ml-2 text-gray-700'>{street.streetName}</h1>
         </Header>
-        <Body className='px-6 py-2'>
+        <Body className='p-3'>
           <div className='flex items-end justify-between'>
             <div className='flex h-full items-center'>
               <h6 className='pt-4 text-lg font-semibold'>CASAS</h6>
             </div>
             {connections ? (
-              <div className='flex items-center justify-center gap-2'>
+              <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
                 {connections}
-                <Users size={20} fill='#9EE073' color='#9EE073' />
+                <Users size={24} fill='#9EE073' color='#9EE073' />
               </div>
             ) : null}
           </div>

@@ -45,15 +45,15 @@ export function Street({ address, actions, block }: AddressProps) {
   return (
     <div
       className={clsx(
-        'flex h-20 w-full items-center justify-center rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none bg-white p-4 gap-3 shadow-sm drop-shadow-xl '
+        'flex h-24 w-full items-center justify-center rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none bg-white p-4 gap-3 shadow-sm drop-shadow-xl '
       )}
     >
-      <div className='flex items-center flex-col p-2 px-3  rounded-full cursor-pointer bg-secondary' onClick={toMapsWithNavigator} >
+      <div className='flex items-center flex-col p-2 px-3  rounded-full cursor-pointer bg-[#DDF5CE]' onClick={toMapsWithNavigator} >
         <PinDrop />
       </div>
       <div onClick={() => void actions.goToStreet(address.id)} className={clsx('flex w-11/12 flex-col items-start cursor-pointer')}>
-        <h6 className='inline-block text-lg font-semibold w-full text-gray-900'>{address.name}</h6>
-        <p className='text-md text-gray-600'>
+        <h6 className='inline-block text-xl font-semibold w-full max-w-[280px] text-gray-900 truncate ...'>{address.name}</h6>
+        <p className='text-lg text-gray-600'>
           N° de {FIRST_HOUSE} à {LAST_HOUSE}
         </p>
       </div>
