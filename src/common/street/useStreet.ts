@@ -26,13 +26,11 @@ export const useStreet = (addressId: number, blockId: number, territoryId: numbe
         territoryId,
       });
       if (status === 503) {
-        alert('Servidor indisponível');
         setIsLoading('loading');
         setTimeout(() => getStreet(addressId, blockId, territoryId), 5000);
         return;
       }
       if (status > 299) {
-        alert('Erro ao buscar rua');
         setIsLoading('not-found');
         return;
       }
@@ -96,5 +94,6 @@ export const useStreet = (addressId: number, blockId: number, territoryId: numbe
       markRowSocket,
     },
     isLoading,
+    setIsLoading,
   };
 };

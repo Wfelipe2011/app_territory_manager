@@ -28,7 +28,6 @@ export const useBlock = (blockId: number, territoryId: number, initialState?: IB
       if (status > 299) {
         console.log({ status, data });
         setIsLoading('not-found');
-        alert('Erro ao buscar a quadra');
         return;
       }
       setBlock(data);
@@ -44,10 +43,10 @@ export const useBlock = (blockId: number, territoryId: number, initialState?: IB
   const goToStreet = (addressId: number): Promise<void> => {
     const exist = block.addresses.find((address) => address.id === addressId);
     if (!exist) {
-      alert('Rua não encontrada');
+      setIsLoading('not-found');
       return Promise.resolve();
     }
-    if (!blockId || !territoryId) return Promise.resolve(alert('Erro ao buscar a quadra'));
+    if (!blockId || !territoryId) return Promise.resolve(setIsLoading('not-found'));
     const query = `?a=${addressId}&b=${blockId}&t=${territoryId}`;
     router.push(`rua${query}`);
     return Promise.resolve();

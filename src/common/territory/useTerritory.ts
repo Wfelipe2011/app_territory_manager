@@ -22,13 +22,11 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
   const getTerritories = useCallback(async (id: number): Promise<void> => {
     setIsLoading('loading');
     if (!id) {
-      alert('Território não encontrado');
       setIsLoading('not-found');
       return;
     }
     const { status, data } = await TerritoryGateway.in().getById(id);
     if (status > 299) {
-      alert('Erro ao buscar os territórios');
       setIsLoading('not-found');
       return;
     }

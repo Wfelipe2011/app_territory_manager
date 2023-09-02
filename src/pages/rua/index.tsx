@@ -25,7 +25,7 @@ export default function StreetData() {
   const blockId = query.b;
   const territoryId = query.t;
   const [connections, setConnections] = useState<number>(0);
-  const { street, actions, getStreet, isLoading } = useStreet(Number(addressId), Number(blockId), Number(territoryId));
+  const { street, actions, getStreet, isLoading, setIsLoading } = useStreet(Number(addressId), Number(blockId), Number(territoryId));
 
   const room = `${String(territoryId)}-${String(blockId)}-${String(addressId)}`;
 
@@ -91,6 +91,15 @@ export default function StreetData() {
 
   }, []);
 
+  useEffect(() => {
+    if (!street.houses?.length) {
+      setIsLoading('loading');
+      setTimeout(async () => {
+        await getStreet(Number(addressId), Number(blockId), Number(territoryId));
+      }, 3000)
+    }
+  }, [street]);
+
   return (
     <RootModeScreen mode={isLoading}>
       <div className={clsx('relative')}>
@@ -123,7 +132,7 @@ export default function StreetData() {
                 gridTemplateColumns: `repeat(${columnsByWidth()}, minmax(0, 1fr))`,
               }}
             >
-              {street.houses.map((house) => (
+              {street.houses && street.houses.map((house) => (
                 <HouseComponent house={house} actions={actions} key={house.id} />
               ))}
             </div>
