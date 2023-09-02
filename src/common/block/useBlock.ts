@@ -22,9 +22,13 @@ export const useBlock = (blockId: number, territoryId: number, initialState?: IB
 
   const getBlock = useCallback(
     async (block: number, territory: number): Promise<void> => {
-      setIsLoading('loading');
       if (!block || !territory) return;
       const { status, data } = await blockGateway.getBlock(block, territory);
+      if (status === 503) {
+        setTimeout(() => getBlock(block, territory), 3000);
+        alert('Servidor em manutenção, tentando novamente em 3 segundos');
+        return;
+      }
       if (status > 299) {
         console.log({ status, data });
         setIsLoading('not-found');

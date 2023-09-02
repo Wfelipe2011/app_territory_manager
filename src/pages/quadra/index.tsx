@@ -1,13 +1,11 @@
 import clsx from 'clsx';
-import { useRouter as useNavigate } from 'next/navigation';
 import { useRouter } from 'next/router';
-import { ArrowLeft } from 'react-feather';
 import { useRecoilValue } from 'recoil';
 
 import { Street, useBlock } from '@/common/block';
 import { RootModeScreen } from '@/common/loading';
 import { authState } from '@/states/auth';
-import { Body, Button, Header } from '@/ui';
+import { Body, Header } from '@/ui';
 
 export default function Block() {
   const { query } = useRouter();
@@ -22,9 +20,6 @@ export default function Block() {
     Number(blockId || blockIdState),
     Number(territoryId || territoryIdState),
   );
-  const navigate = useNavigate();
-
-  const back = () => navigate.back();
 
   return (
     <RootModeScreen mode={isLoading}>
@@ -36,14 +31,14 @@ export default function Block() {
             </h1>
             <p className='text-gray-700'>Preencha as casas da quadra onde voce falou!</p>
             <hr className='my-2 w-1/2 h-0.5 bg-gray-800' />
-            <h4 className='text-xl font-semibold text-gray-700'>{block.territoryName}</h4>
-            <h5 className='text-xl font-semibold text-gray-700'>{block.blockName}</h5>
+            <h4 className='text-xl font-semibold text-gray-700'>{block?.territoryName}</h4>
+            <h5 className='text-xl font-semibold text-gray-700'>{block?.blockName}</h5>
           </div>
         </Header>
         <Body>
           <div className='h-6 w-full'></div>
           <div className='flex flex-col gap-2'>
-            {block.addresses?.map((address) => {
+            {block?.addresses?.map((address) => {
               const { addresses, ...blockWithoutAddress } = block;
               return (
                 <Street
