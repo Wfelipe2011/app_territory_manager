@@ -19,7 +19,7 @@ export function HouseComponent({ house, actions }: HouseProps) {
           'bg-secondary/[0.2]': !house.status,
           'bg-primary': house.status,
         },
-        'relative flex cursor-pointer flex-col items-center justify-center rounded-sm border-2 py-3 px-3  border-gray-50 shadow-mg transition-all duration-300'
+        'relative flex cursor-pointer flex-col items-center justify-center rounded-sm border-2 py-3 px-2  border-gray-50 shadow-mg transition-all duration-300'
       )}
       onClick={() => actions.mark(house.id)}
     >

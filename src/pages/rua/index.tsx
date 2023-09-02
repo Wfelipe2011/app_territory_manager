@@ -40,8 +40,8 @@ export default function StreetData() {
     if (widthScreen > 600) return 6;
     if (widthScreen > 500) return 5;
     if (widthScreen > 400) return 4;
-    if (widthScreen > 300) return 3;
-    return 2;
+    if (widthScreen > 300) return 4;
+    return 3;
   };
 
   useEffect(() => {
@@ -105,7 +105,7 @@ export default function StreetData() {
           <h1 className='text-xl font-semibold pl-4 ml-2 text-gray-700'>{street.streetName}</h1>
         </Header>
         <Body className='p-3'>
-          <div className='flex items-end justify-between'>
+          <div className='flex items-end justify-between gap-2'>
             <div className='flex h-full items-center'>
               <h6 className='pt-4 text-lg font-semibold'>CASAS</h6>
             </div>
@@ -116,17 +116,21 @@ export default function StreetData() {
               </div>
             ) : null}
           </div>
-          <div
-            className='mt-4 grid'
-            style={{
-              gridTemplateColumns: `repeat(${columnsByWidth()}, minmax(0, 1fr))`,
-            }}
-          >
-            {street.houses.map((house) => (
-              <HouseComponent house={house} actions={actions} key={house.id} />
-            ))}
+          <div className='flex flex-col gap-4 h-screen justify-between'>
+            <div
+              className='mt-4 grid'
+              style={{
+                gridTemplateColumns: `repeat(${columnsByWidth()}, minmax(0, 1fr))`,
+              }}
+            >
+              {street.houses.map((house) => (
+                <HouseComponent house={house} actions={actions} key={house.id} />
+              ))}
+            </div>
+            <div>
+              {street.houses?.length ? <Subtitle /> : null}
+            </div>
           </div>
-          {street.houses?.length ? <Subtitle /> : null}
         </Body>
       </div>
     </RootModeScreen>

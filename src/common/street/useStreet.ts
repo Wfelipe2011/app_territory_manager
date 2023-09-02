@@ -38,7 +38,6 @@ export const useStreet = (addressId: number, blockId: number, territoryId: numbe
       }
       setStreet({
         ...data,
-        houses: data?.houses.sort((a, b) => Number(a.number) - Number(b.number)),
       });
       setIsLoading('screen');
     },
