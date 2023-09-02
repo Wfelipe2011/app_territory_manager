@@ -28,22 +28,23 @@ export default function App({ Component, pageProps, ...rest }: AppProps) {
 }
 
 const Provider = ({ children }) => {
-  const { token } = useRecoilValue(authState);
+  const { query } = useRouter();
   const _setAuthState = useSetRecoilState(authState);
+
+  const { token } = useRecoilValue(authState);
   const [screen, setScreen] = useState<'not_found' | 'children'>('not_found');
   const router = useNavigate();
-  const { query } = useRouter();
   const signature = query.s;
+
 
   useEffect(() => {
     const path = location.pathname;
     if (path === '/' || path === '' || path === '/login')
       return setScreen('children');
-    if (!token) {
-      if (signature) {
-        void saveSignature(signature as string);
-        return;
-      }
+
+    if (signature) {
+      void saveSignature(signature as string);
+      return;
     } else {
       setScreen('children');
     }
