@@ -1,8 +1,9 @@
 import clsx from 'clsx';
-import { ArrowRight, MapPin } from 'react-feather';
 
 import { Button } from '@/ui';
 
+import { NavigateNext } from './navigate_next'
+import { PinDrop } from './pin_drop'
 import { IActions, IAddress, IBlock } from '../type';
 
 interface AddressProps {
@@ -16,16 +17,10 @@ export function Street({ address, actions, block }: AddressProps) {
   const LAST_HOUSE = address?.houses[address?.houses.length - 1];
 
   const addressTo = () => {
-    const [territoryNumber, territoryName] = block.territoryName.split('-');
-    const loc = `${territoryName} ${address.name}`;
+    const [_, territoryName] = block.territoryName.split('-');
+    const middleHouse = Math.round(address?.houses.length / 2);
+    const loc = `${territoryName} ${address.name} ${address?.houses[middleHouse]}`;
     return loc;
-  };
-
-  const toMaps = () => {
-    const loc = addressTo();
-    const encoded = encodeURI(loc);
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
-    window.open(mapsUrl, '_target');
   };
 
   const toMapsWithNavigator = () => {
@@ -34,15 +29,12 @@ export function Street({ address, actions, block }: AddressProps) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
-        // Use latitude e longitude como desejar
-        //alert("Latitude: " + latitude + ", Longitude: " + longitude);
         const origin = `origin=${latitude},${longitude}`;
         const to = addressTo();
         const encoded = encodeURI(to);
 
         const destination = `destination=${encoded}`;
         const urlMaps = `https://www.google.com/maps/dir/?api=1&${origin}&${destination}`;
-        //alert(urlMaps)
         window.open(urlMaps, '_target');
       });
     } else {
@@ -53,15 +45,15 @@ export function Street({ address, actions, block }: AddressProps) {
   return (
     <div
       className={clsx(
-        'flex h-20 w-full items-center rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none bg-white px-10 shadow-sm drop-shadow-xl'
+        'flex h-20 w-full items-center justify-center rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none bg-white p-4 gap-3 shadow-sm drop-shadow-xl '
       )}
     >
-      <div className={clsx('flex w-11/12 flex-col items-start')}>
-        <div className='flex items-center justify-start gap-2 w-full'>
-          <MapPin className='cursor-pointer' onClick={toMapsWithNavigator} />
-          <h6 onClick={() => void actions.goToStreet(address.id)} className='inline-block text-lg font-bold cursor-pointer w-full'>{address.name}</h6>
-        </div>
-        <p className='px-2'>
+      <div className='flex items-center flex-col p-2 px-3  rounded-full cursor-pointer bg-secondary' onClick={toMapsWithNavigator} >
+        <PinDrop />
+      </div>
+      <div onClick={() => void actions.goToStreet(address.id)} className={clsx('flex w-11/12 flex-col items-start cursor-pointer')}>
+        <h6 className='inline-block text-lg font-semibold w-full text-gray-900'>{address.name}</h6>
+        <p className='text-md text-gray-600'>
           N° de {FIRST_HOUSE} à {LAST_HOUSE}
         </p>
       </div>
@@ -72,7 +64,7 @@ export function Street({ address, actions, block }: AddressProps) {
         )}
         onClick={() => void actions.goToStreet(address.id)}
       >
-        <Button.Icon icon={ArrowRight} size={24} />
+        <Button.Icon icon={NavigateNext} size={24} />
       </Button.Root>
     </div>
   );

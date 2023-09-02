@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
 
+import { Mode } from '@/common/loading';
 import { blockGateway } from '@/infra/Gateway/BlockGateway';
-import { loadState } from '@/states/load';
 
-import { IBlock, IUseBlock } from './type';
+import { IBlock } from './type';
 
-export const useBlock = (blockId: number, territoryId: number, initialState?: IBlock): IUseBlock => {
+export const useBlock = (blockId: number, territoryId: number, initialState?: IBlock) => {
   const [block, setBlock] = useState<IBlock>(
     initialState || {
       blockId: 0,
@@ -19,23 +18,23 @@ export const useBlock = (blockId: number, territoryId: number, initialState?: IB
     }
   );
   const router = useRouter();
-  const [_, _setLoadState] = useRecoilState(loadState);
+  const [isLoading, setIsLoading] = useState<Mode>('loading');
 
   const getBlock = useCallback(
     async (block: number, territory: number): Promise<void> => {
-      _setLoadState({ loader: 'spiral', message: 'Buscando quadra' });
+      setIsLoading('loading');
       if (!block || !territory) return;
       const { status, data } = await blockGateway.getBlock(block, territory);
       if (status > 299) {
         console.log({ status, data });
-        _setLoadState({ loader: 'none', message: '' });
+        setIsLoading('not-found');
         alert('Erro ao buscar a quadra');
         return;
       }
       setBlock(data);
-      _setLoadState({ loader: 'none', message: '' });
+      setIsLoading('screen');
     },
-    [_setLoadState]
+    [setIsLoading]
   );
 
   useEffect(() => {
@@ -59,5 +58,6 @@ export const useBlock = (blockId: number, territoryId: number, initialState?: IB
     actions: {
       goToStreet,
     },
+    isLoading,
   };
 };

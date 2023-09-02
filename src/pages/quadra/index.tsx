@@ -1,52 +1,16 @@
 import clsx from 'clsx';
-import { InferGetServerSidePropsType } from 'next';
 import { useRouter as useNavigate } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { ArrowLeft } from 'react-feather';
 import { useRecoilValue } from 'recoil';
 
-import { openToken } from '@/lib/openToken';
-
 import { Street, useBlock } from '@/common/block';
-import { URL_API } from '@/infra/http/AxiosAdapter';
+import { RootModeScreen } from '@/common/loading';
 import { authState } from '@/states/auth';
 import { Body, Button, Header } from '@/ui';
 
-export async function getServerSideProps(context) {
-  console.log(`Executing getServerSideProps for ${context.req.url}`);
-  const { query, req } = context;
-  let blockId = query?.b;
-  let territoryId = query?.t;
-  let body = undefined;
-  if (query?.s) {
-    const data = await fetch(`${URL_API}/signature/${query?.s}`);
-    const body = await data.json();
-    const { token } = body;
-    const tokenDecoded = openToken(token);
-    territoryId = tokenDecoded.territoryId;
-    blockId = tokenDecoded.blockId;
-    req.cookies['@territoryManager/token'] = token;
-  }
-
-  if (blockId & territoryId) {
-    const { ['@territoryManager/token']: tokenCookies } = req.cookies;
-
-    const data = await fetch(`${URL_API}/territories/${territoryId}/blocks/${blockId}`, {
-      headers: {
-        Authorization: `Bearer ${tokenCookies}`,
-      },
-    });
-    body = await data.json();
-  }
-  return {
-    props: {
-      data: body,
-      query,
-    },
-  };
-}
-
-export default function Block(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { query, data } = props;
+export default function Block() {
+  const { query } = useRouter();
   const {
     blockId: blockIdState,
     territoryId: territoryIdState,
@@ -54,53 +18,45 @@ export default function Block(props: InferGetServerSidePropsType<typeof getServe
   } = useRecoilValue(authState);
   const blockId = query.b;
   const territoryId = query.t;
-  const { block, actions } = useBlock(
+  const { block, actions, isLoading } = useBlock(
     Number(blockId || blockIdState),
     Number(territoryId || territoryIdState),
-    data,
   );
   const navigate = useNavigate();
 
   const back = () => navigate.back();
 
   return (
-    <div className={clsx('relative')}>
-      <Header>
-        <Button.Root
-          className={clsx('left-2 !w-fit !p-2 !shadow-none', {
-            hidden: roles?.includes('admin' || 'overseer'),
-          })}
-          variant='ghost'
-          onClick={back}
-        >
-          <ArrowLeft />
-        </Button.Root>
-        <div>
-          <h1 className='flex items-center text-xl font-semibold'>
-            Olá Publicador(a),
-          </h1>
-          <p>Preencha as casas da quadra onde voce falou!</p>
-          <hr className='my-2 h-0.5 w-1/2 bg-gray-700' />
-          <h4 className='text-xl font-bold'>{block.territoryName}</h4>
-          <h5 className='text-xl font-bold'>{block.blockName}</h5>
-        </div>
-      </Header>
-      <Body>
-        <div className='h-6 w-full'></div>
-        <div className='flex flex-col gap-2'>
-          {block.addresses?.map((address) => {
-            const { addresses, ...blockWithoutAddress } = block;
-            return (
-              <Street
-                block={blockWithoutAddress}
-                key={address.id}
-                address={address}
-                actions={actions}
-              />
-            );
-          })}
-        </div>
-      </Body>
-    </div>
+    <RootModeScreen mode={isLoading}>
+      <div className={clsx('relative')}>
+        <Header>
+          <div>
+            <h1 className='flex items-center text-xl font-semibold'>
+              Olá Publicador(a),
+            </h1>
+            <p className='text-gray-600'>Preencha as casas da quadra onde voce falou!</p>
+            <hr className='my-2 h-0.5 w-1/2 bg-gray-600' />
+            <h4 className='text-xl font-semibold text-gray-600'>{block.territoryName}</h4>
+            <h5 className='text-xl font-semibold text-gray-600'>{block.blockName}</h5>
+          </div>
+        </Header>
+        <Body>
+          <div className='h-6 w-full'></div>
+          <div className='flex flex-col gap-2'>
+            {block.addresses?.map((address) => {
+              const { addresses, ...blockWithoutAddress } = block;
+              return (
+                <Street
+                  block={blockWithoutAddress}
+                  key={address.id}
+                  address={address}
+                  actions={actions}
+                />
+              );
+            })}
+          </div>
+        </Body>
+      </div>
+    </RootModeScreen>
   );
 }
