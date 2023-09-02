@@ -34,6 +34,7 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
     }
     setTerritory(data);
     setIsLoading('screen');
+    console.log({ data, status });
   }, []);
 
   const share = async (blockId: number): Promise<void> => {

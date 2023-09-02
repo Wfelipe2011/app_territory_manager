@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
-import { memo, useCallback, useEffect, useState } from 'react';
-import { Share2 } from 'react-feather';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { Check, Copy, Share2 } from 'react-feather';
 
 import { DoughnutChart } from '@/ui/doughnutChart';
+import { navigatorShare } from '@/utils/share';
 
 import { IActions, IBlock } from '../type';
 
@@ -18,6 +19,7 @@ interface BlockCardProps {
 export function BlockCard(props: BlockCardProps) {
   const { block, actions, territoryId } = props;
   const router = useRouter();
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const redirect = () => {
     const query = new URLSearchParams();
@@ -25,6 +27,35 @@ export function BlockCard(props: BlockCardProps) {
     query.set('t', String(territoryId));
     router.push(`/quadra?${query.toString()}`);
   };
+
+  async function copyToClipboard(e) {
+    setCopySuccess(true);
+    await navigatorShare({
+      title: 'Prezado(a) publicador(a)',
+      text: 'Segue o link para a quadra que você está designado(a) para pregar:',
+      url: `${window.location.origin}/quadra?s=${block?.signature?.key}`,
+    });
+    setTimeout(() => {
+      setCopySuccess(false);
+    }, 7000)
+  };
+
+  function sugestion(): string {
+    let sugestion = '';
+    if (block.negativeCompleted < 15) {
+      sugestion = '+1 quadra'
+    }
+    if (block.negativeCompleted >= 15 && block.negativeCompleted < 25) {
+      sugestion = '2 pares'
+    }
+    if (block.negativeCompleted >= 25 && block.negativeCompleted < 30) {
+      sugestion = '3 pares'
+    }
+    if (block.negativeCompleted >= 30 && block.negativeCompleted < 60) {
+      sugestion = '4 pares'
+    }
+    return sugestion;
+  }
 
   return (
     <div
@@ -45,7 +76,7 @@ export function BlockCard(props: BlockCardProps) {
           />
         </div>
         <div className='pt-2'>
-          <span className='ml-4'>Sugestão: 2 pares</span>
+          <span className='ml-4'>Sugestão: {sugestion()}</span>
         </div>
       </div>
 
@@ -53,18 +84,20 @@ export function BlockCard(props: BlockCardProps) {
 
         <div className='flex w-full justify-end'>
           <div className='p-2 cursor-pointer mr-2'>
-            <Share2 onClick={() => actions.share(block.id)} size={24} />
+            {
+              block?.signature?.key ? (<CopyComponent copySuccess={copySuccess} onClick={copyToClipboard} />) : (<Share2 onClick={() => actions.share(block.id)} size={24} />)
+            }
           </div>
         </div>
 
         <div className='flex flex-col w-full p-4 gap-2'>
 
           <div className='flex items-center gap-2'>
-            <div className='bg-secondary h-6 w-14'></div><span>À fazer</span>
+            <div className='bg-secondary h-6 w-14'></div><span>À fazer: {block.negativeCompleted}</span>
           </div>
 
           <div className='flex items-center gap-2'>
-            <div className='bg-primary h-6 w-14'></div><span>Concluído</span>
+            <div className='bg-primary h-6 w-14'></div><span>Concluído: {block.positiveCompleted}</span>
           </div>
 
         </div>
@@ -81,6 +114,17 @@ export function BlockCard(props: BlockCardProps) {
       </div>
 
     </div>
+  );
+}
+
+const CopyComponent = ({ copySuccess, onClick }: { copySuccess: boolean, onClick }) => {
+  return (
+    copySuccess ? (
+      <Check className='text-primary' />
+    ) : (
+      <Copy className='text-gray-700' onClick={onClick} />
+    )
+
   );
 }
 
