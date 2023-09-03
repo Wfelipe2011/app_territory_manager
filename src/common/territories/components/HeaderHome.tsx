@@ -30,11 +30,11 @@ export function HeaderHome({
         </p>
         <div
           className={clsx(
-            'flex w-full items-center justify-center gap-1 transition-all duration-300 ease-in-out'
+            'flex w-full items-center justify-center gap-1 mt-2 transition-all duration-300 ease-in-out'
           )}
         >
           <Input
-            placeholder='pesquise o território'
+            placeholder='Pesquise o território'
             className='border-white'
             value={search}
             onChange={handleChangeSearch}

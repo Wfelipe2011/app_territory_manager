@@ -32,12 +32,12 @@ export function TerritoryCard({
     <div
       className={clsx(
         { 'rounded-tl-none border-t-0 bg-transparent': index === 0 },
-        '-ml-2 min-h-[220px] w-[calc(100%+12px)] rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-2 pb-6 px-8 shadow-lg',
+        '-ml-2 min-h-[260px] w-[calc(100%+12px)] rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-2 pb-6 px-8 shadow-lg',
         'flex flex-col'
       )}
     >
-      <div className='flex h-1/5 w-full items-center justify-between h-fit text-lg'>
-        <h6 onClick={redirect}>{territoryCard.name}</h6>
+      <div className='flex justify-between h-full w-full items-center w-1/2'>
+        <h6 className='block text-xl ml-2 font-medium' onClick={redirect}>{territoryCard.name}</h6>
         <HeaderButtons actions={actions} territoryCard={territoryCard} />
       </div>
       <div className='flex h-4/5 w-full gap-[10%]'>
@@ -45,15 +45,7 @@ export function TerritoryCard({
           {territoryCard.positiveCompleted ||
             territoryCard.negativeCompleted ? (
             <>
-              <div
-                className={clsx(
-                  {
-                    'h-[calc(100%-20px)]': territoryCard?.name,
-                    hidden: !territoryCard?.name,
-                  },
-                  'flex w-full justify-start pl-2'
-                )}
-              >
+              <div className='flex flex-col w-full max-w-[170px] h-[200px]'>
                 <DoughnutChart
                   values={[
                     territoryCard.positiveCompleted,
@@ -61,12 +53,12 @@ export function TerritoryCard({
                   ]}
                 />
               </div>
-              <div className='flex h-4 w-full items-center justify-start gap-16 text-xs'>
-                <div className='flex w-fit flex-col items-center gap-1'>
-                  <div className='bg-primary h-3 w-6'></div>À fazer
+              <div className='flex h-4 w-full items-center justify-between gap-2 text-xs'>
+                <div className='flex w-full flex-col items-center gap-1'>
+                  <div className='bg-primary h-3 w-1/2'></div>À fazer
                 </div>
-                <div className='flex w-fit flex-col items-center gap-1'>
-                  <div className='bg-secondary h-3 w-6'></div>
+                <div className='flex w-full flex-col items-center gap-1'>
+                  <div className='bg-secondary h-3 w-1/2'></div>
                   Concluído
                 </div>
               </div>
