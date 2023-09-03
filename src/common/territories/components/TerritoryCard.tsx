@@ -78,18 +78,12 @@ export function TerritoryCard({
           )}
         </div>
 
-        <div className='flex w-[45%] flex-col justify-between'>
-          <InputSelect
-            list={[
-              { label: 'Dirigente', value: '' },
-              { label: 'Paulo', id: 'Paulo' },
-              { label: 'Lucas', id: 'Lucas' },
-            ]}
+        <div className='flex justify-center flex-col gap-2 p-2'>
+          <Input
             name='overseer'
             label=''
             placeholder='Dirigente'
             value={territoryCard.overseer}
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               actions.updateData(e, territoryCard.territoryId)
             }
