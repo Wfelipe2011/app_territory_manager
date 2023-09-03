@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
-import { Copy, Pause, Play, Share2 } from 'react-feather';
 
-import { Button, Input, InputSelect } from '@/ui';
+import { Actions } from '@/common/territories/components/Actions';
+import { HeaderButtons } from '@/common/territories/components/HeaderButtons';
+import { Input, InputSelect } from '@/ui';
 import { DoughnutChart } from '@/ui/doughnutChart';
 
 import { IActions, ITerritoryCard } from '../type';
@@ -117,75 +118,5 @@ export function TerritoryCard({
   );
 }
 
-interface HeaderButtonsProps {
-  territoryCard: ITerritoryCard;
-  actions: IActions;
-}
 
-const HeaderButtons = ({ territoryCard, actions }: HeaderButtonsProps) => {
-  const hasSignature = !!territoryCard.signature.key;
-  return (
-    <div className='flex items-center justify-end gap-2'>
-      {hasSignature ? (
-        <Button.Root
-          onClick={() =>
-            actions.copy(
-              territoryCard.territoryId,
-              territoryCard.signature.key as string
-            )
-          }
-          variant='ghost'
-          className='h-8 w-8 !rounded-full !p-0'
-        >
-          <Share2 size={16} />
-        </Button.Root>
-      ) : null}
-      <Button.Root
-        onClick={() => actions.changeRound(territoryCard.territoryId)}
-        variant='ghost'
-        className='h-8 w-8 !rounded-full !p-0'
-      >
-        {territoryCard.hasRounds ? <Pause size={16} /> : <Play size={16} />}
-      </Button.Root>
-    </div>
-  );
-};
 
-interface ActionsProps {
-  territoryCard: ITerritoryCard;
-  actions: IActions;
-}
-
-const Actions = ({ territoryCard, actions }: ActionsProps) => {
-  if (territoryCard.signature.key) {
-    return (
-      <Button.Root
-        onClick={() => actions.revoke(territoryCard.territoryId)}
-        className='!justify-start !px-2 text-xs'
-        variant='secondary'
-      >
-        Revogar acesso
-      </Button.Root>
-    );
-  }
-  return (
-    <div className='flex w-full justify-end'>
-      <Button.Root
-        variant='secondary'
-        className={clsx(
-          {
-            invisible:
-              !territoryCard.overseer ||
-              territoryCard.signature.key ||
-              territoryCard.overseer === 'Dirigente' ||
-              !territoryCard.hasRounds,
-          },
-          'w-full !px-2 text-xs'
-        )}
-        onClick={(e) => actions.share(territoryCard.territoryId, e)}
-      >
-        Enviar <Share2 size={16} />
-      </Button.Root>
-    </div>
-  );
-};

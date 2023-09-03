@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { Check, Copy, Share2 } from 'react-feather';
+import { memo, useCallback, useEffect, useState } from 'react';
 
+import { ShareCopy } from '@/common/territory/ShareCopy';
 import { DoughnutChart } from '@/ui/doughnutChart';
-import { navigatorShare } from '@/utils/share';
 
 import { IActions, IBlock } from '../type';
 
@@ -19,25 +18,12 @@ interface BlockCardProps {
 export function BlockCard(props: BlockCardProps) {
   const { block, actions, territoryId } = props;
   const router = useRouter();
-  const [copySuccess, setCopySuccess] = useState(false);
 
   const redirect = () => {
     const query = new URLSearchParams();
     query.set('b', String(block.id));
     query.set('t', String(territoryId));
     router.push(`/quadra?${query.toString()}`);
-  };
-
-  async function copyToClipboard(e) {
-    setCopySuccess(true);
-    await navigatorShare({
-      title: 'Prezado(a) publicador(a)',
-      text: 'Segue o link para a quadra que você está designado(a) para pregar:',
-      url: `${window.location.origin}/quadra?s=${block?.signature?.key}`,
-    });
-    setTimeout(() => {
-      setCopySuccess(false);
-    }, 7000)
   };
 
   function sugestion(): string {
@@ -83,11 +69,17 @@ export function BlockCard(props: BlockCardProps) {
       <div className='flex flex-col justify-between items-end w-1/2'>
 
         <div className='flex w-full justify-end'>
-          <div className='p-2 cursor-pointer mr-2'>
-            {
-              block?.signature?.key ? (<CopyComponent copySuccess={copySuccess} onClick={copyToClipboard} />) : (<Share2 onClick={() => actions.share(block.id)} size={24} />)
-            }
-          </div>
+          <ShareCopy
+            actions={actions}
+            id={block.id}
+            message={{
+              title: 'Prezado(a) publicador(a)',
+              text: 'Segue o link para a quadra que você está designado(a) para pregar:',
+              url: `${window.location.origin}/quadra?s=${block?.signature?.key}`,
+            }}
+            signatureKey={block?.signature?.key}
+            key={block.id}
+          />
         </div>
 
         <div className='flex flex-col w-full p-4 gap-2'>
@@ -117,16 +109,7 @@ export function BlockCard(props: BlockCardProps) {
   );
 }
 
-const CopyComponent = ({ copySuccess, onClick }: { copySuccess: boolean, onClick }) => {
-  return (
-    copySuccess ? (
-      <Check className='text-primary' />
-    ) : (
-      <Copy className='text-gray-700' onClick={onClick} />
-    )
 
-  );
-}
 
 const TimeToExpireComponent = ({
   signature,

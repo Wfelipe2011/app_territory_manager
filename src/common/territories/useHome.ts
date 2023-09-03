@@ -4,27 +4,28 @@
 /* eslint-disable @typescript-eslint/require-await */
 import { useCallback, useEffect, useState } from 'react';
 
+import { Mode } from '@/common/loading';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
 import { navigatorShare } from '@/utils/share';
 
 import { ITerritoryCard, IUseHome } from './type';
 
-export const useTerritories = (initialState: ITerritoryCard[]): IUseHome => {
+export const useTerritories = () => {
   const [search, setSearch] = useState<string>('');
-  const [territoryCards, setTerritoryCards] = useState<ITerritoryCard[]>(initialState || []);
+  const [territoryCards, setTerritoryCards] = useState<ITerritoryCard[]>([]);
+  const [isLoading, setIsLoading] = useState<Mode>('loading');
 
   const getTerritoryCards = useCallback(async (): Promise<void> => {
     const { status, data } = await TerritoryGateway.in().get();
     if (status > 299) {
-      alert('Erro ao buscar os territórios');
+      setIsLoading('not-found');
       return;
     }
-    console.log(data);
     setTerritoryCards(data);
+    setIsLoading('screen');
   }, []);
 
   useEffect(() => {
-    console.clear();
     void getTerritoryCards();
   }, [getTerritoryCards]);
 
@@ -59,9 +60,7 @@ export const useTerritories = (initialState: ITerritoryCard[]): IUseHome => {
     }
   };
 
-  const share = async (territoryId: number, e: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> => {
-    e.preventDefault();
-    e.stopPropagation();
+  const share = async (territoryId: number): Promise<void> => {
     const territory = territoryCards.find((territory) => territory.territoryId === territoryId);
     if (!territory) {
       alert('Território não encontrado');
@@ -71,13 +70,32 @@ export const useTerritories = (initialState: ITerritoryCard[]): IUseHome => {
       overseer: territory.overseer,
       expirationTime: territory.signature.expirationDate,
     };
-    const { data, status } = await TerritoryGateway.in().signInTerritory(input, territoryId);
+    const { data, status } = await TerritoryGateway.in().signInTerritory(input, +territoryId);
     if (status > 299) {
       alert('Erro ao compartilhar o território');
       return;
     }
     const { signature } = data;
-    copy(territoryId, signature);
+    setTerritoryCards((old) =>
+      old.map((territory) => {
+        if (territory.territoryId === territoryId) {
+          territory.signature.key = signature;
+          territory.overseer = input.overseer;
+        }
+        return territory;
+      })
+    );
+
+    const origin = window.location.origin;
+
+    const toShare = {
+      title: `Território para trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
+      url: `${origin}/territorio?s=${signature}`,
+      text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${new Date(
+        territory.signature.expirationDate + ' GMT-3'
+      ).toLocaleDateString()} \n\n\r`,
+    };
+    await navigatorShare(toShare);
   };
 
   const updateData = (event: React.ChangeEvent<HTMLInputElement>, territoryId: number): void => {
@@ -155,24 +173,6 @@ export const useTerritories = (initialState: ITerritoryCard[]): IUseHome => {
     setTerritoryCards(data);
   };
 
-  const copy = async (territoryId: number, signature: string): Promise<void> => {
-    const territory = territoryCards.find((territory) => territory.territoryId === territoryId);
-    if (!territory) {
-      alert('Território não encontrado');
-      return;
-    }
-    const origin = window.location.origin;
-
-    const toShare = {
-      title: `Território para trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
-      url: `${origin}/territorio?s=${signature}`,
-      text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${new Date(
-        territory.signature.expirationDate + ' GMT-3'
-      ).toLocaleDateString()} \n\n\r`,
-    };
-    await navigatorShare(toShare);
-  };
-
   return {
     search,
     territoryCards,
@@ -182,9 +182,9 @@ export const useTerritories = (initialState: ITerritoryCard[]): IUseHome => {
       updateData,
       revoke,
       updateDateTime,
-      copy,
     },
     handleChangeSearch,
     submitSearch: () => void submitSearch(),
+    isLoading,
   };
 };
