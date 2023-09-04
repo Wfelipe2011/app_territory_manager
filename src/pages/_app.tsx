@@ -7,15 +7,15 @@ import { RecoilRoot } from 'recoil';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import '@/styles/globals.css';
-// !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
 import '@/styles/colors.css';
 import '@/styles/spiral.css'
 
+import { openToken } from '@/lib/openToken';
+
+import { Mode, RootModeScreen } from '@/common/loading';
 import { env } from '@/constant';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
-import NotFound from '@/pages/not-found';
 import { authState } from '@/states/auth';
-import { openToken } from '@/lib/openToken';
 
 export default function App({ Component, pageProps, ...rest }: AppProps) {
   return (
@@ -32,7 +32,7 @@ const Provider = ({ children }) => {
   const _setAuthState = useSetRecoilState(authState);
 
   const { token } = useRecoilValue(authState);
-  const [screen, setScreen] = useState<'not_found' | 'children'>('not_found');
+  const [isLoading, setIsLoading] = useState<Mode>('loading');
   const router = useNavigate();
   const signature = query.s;
 
@@ -40,13 +40,13 @@ const Provider = ({ children }) => {
   useEffect(() => {
     const path = location.pathname;
     if (path === '/' || path === '' || path === '/login')
-      return setScreen('children');
+      return setIsLoading('screen');
 
     if (signature) {
       void saveSignature(signature as string);
       return;
     } else {
-      setScreen('children');
+      setIsLoading('screen');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, router, signature]);
@@ -56,7 +56,7 @@ const Provider = ({ children }) => {
       signatureId
     );
     if (status > 299) {
-      alert('Erro ao buscar assinatura');
+      setIsLoading('not-found')
       return;
     }
     const { token, mode } = data;
@@ -92,15 +92,12 @@ const Provider = ({ children }) => {
     setCookie(null, env.storage.signatureId, signatureId, configCookie);
     setCookie(null, env.storage.mode, mode, configCookie);
     setCookie(null, env.storage.roles, roles.join(','), configCookie);
-    setScreen('children');
+    setIsLoading('screen');
   };
 
-  function shouldCancel() {
-    const pathsToIgnore = ['/login', '/'];
-    const isPathToIgnore = pathsToIgnore.includes(location.pathname);
-    const shouldCancel = token || signature || isPathToIgnore;
-    return shouldCancel;
-  }
-
-  return <>{screen === 'not_found' ? <NotFound /> : children}</>;
+  return (
+    <RootModeScreen mode={isLoading}>
+      {children}
+    </RootModeScreen>
+  )
 };
