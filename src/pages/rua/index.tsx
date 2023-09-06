@@ -125,7 +125,7 @@ export default function StreetData() {
               </div>
             ) : null}
           </div>
-          <div className='flex flex-col gap-4 h-screen justify-between'>
+          <div className='flex flex-col gap-4 h-screen'>
             <div
               className='mt-4 grid'
               style={{
