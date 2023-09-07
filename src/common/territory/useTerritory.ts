@@ -20,7 +20,6 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
   const [isLoading, setIsLoading] = useState<Mode>('loading');
 
   const getTerritories = useCallback(async (id: number): Promise<void> => {
-    setIsLoading('loading');
     if (!id) {
       setIsLoading('not-found');
       return;
@@ -32,7 +31,6 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
     }
     setTerritory(data);
     setIsLoading('screen');
-    console.log({ data, status });
   }, []);
 
   const share = async (blockId: number): Promise<void> => {
@@ -69,6 +67,7 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
 
   return {
     territory,
+    getTerritories,
     actions: {
       share,
     },
