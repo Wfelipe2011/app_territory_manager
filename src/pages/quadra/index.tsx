@@ -14,11 +14,10 @@ export default function Block() {
     territoryId: territoryIdState,
     roles,
   } = useRecoilValue(authState);
-  const blockId = query.b;
-  const territoryId = query.t;
+
   const { block, actions, isLoading } = useBlock(
-    Number(blockId || blockIdState),
-    Number(territoryId || territoryIdState),
+    Number(blockIdState),
+    Number(territoryIdState),
   );
 
   return (

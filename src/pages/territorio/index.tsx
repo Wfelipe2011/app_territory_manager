@@ -12,18 +12,15 @@ import { authState } from '@/states/auth';
 import { Body, Button, Header } from '@/ui';
 
 
-
 export default function Territory() {
-  const { query } = useRouter();
-  const territoryIdQuery = query.t as string;
   const { territoryId: territoryIdState, overseer, roles } = useRecoilValue(authState);
-  const { territory, getTerritories, actions, isLoading } = useTerritory(Number(territoryIdQuery || territoryIdState));
+  const { territory, getTerritories, actions, isLoading } = useTerritory(Number(territoryIdState));
 
   const navigate = useNavigate();
   const back = () => navigate.back();
 
   useEffect(() => {
-    const interval = setInterval(() => getTerritories(Number(territoryIdQuery || territoryIdState)), 1000 * 30)
+    const interval = setInterval(() => getTerritories(Number(territoryIdState)), 1000 * 30)
     return () => {
       clearInterval(interval);
     }
