@@ -3,7 +3,7 @@
 import clsx from 'clsx';
 import { useRouter as useNavigate } from 'next/navigation';
 import { useRouter } from 'next/router';
-import { ArrowLeft } from 'react-feather';
+import { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { RootModeScreen } from '@/common/loading';
@@ -12,15 +12,19 @@ import { authState } from '@/states/auth';
 import { Body, Button, Header } from '@/ui';
 
 
-
 export default function Territory() {
-  const { query } = useRouter();
-  const territoryIdQuery = query.t as string;
   const { territoryId: territoryIdState, overseer, roles } = useRecoilValue(authState);
-  const { territory, actions, isLoading } = useTerritory(Number(territoryIdQuery || territoryIdState));
+  const { territory, getTerritories, actions, isLoading } = useTerritory(Number(territoryIdState));
 
   const navigate = useNavigate();
   const back = () => navigate.back();
+
+  useEffect(() => {
+    const interval = setInterval(() => getTerritories(Number(territoryIdState)), 1000 * 30)
+    return () => {
+      clearInterval(interval);
+    }
+  }, []);
 
   return (
     <RootModeScreen mode={isLoading}>

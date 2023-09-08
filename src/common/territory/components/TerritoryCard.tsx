@@ -17,14 +17,6 @@ interface BlockCardProps {
 
 export function BlockCard(props: BlockCardProps) {
   const { block, actions, territoryId } = props;
-  const router = useRouter();
-
-  const redirect = () => {
-    const query = new URLSearchParams();
-    query.set('b', String(block.id));
-    query.set('t', String(territoryId));
-    router.push(`/quadra?${query.toString()}`);
-  };
 
   function sugestion(): string {
     let sugestion = '';
@@ -50,7 +42,7 @@ export function BlockCard(props: BlockCardProps) {
       )}
     >
       <div className='flex flex-col justify-start h-full items-baseline w-1/2'>
-        <h6 className='block text-xl ml-2 font-medium ' onClick={redirect}>
+        <h6 className='block text-xl ml-2 font-medium'>
           <span className='ml-2'>
             {block.name}
           </span>

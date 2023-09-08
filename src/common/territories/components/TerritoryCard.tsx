@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import clsx from 'clsx';
-import { useRouter } from 'next/navigation';
 
 import { Actions } from '@/common/territories/components/Actions';
 import { HeaderButtons } from '@/common/territories/components/HeaderButtons';
@@ -16,14 +15,6 @@ interface TerritoryCardProps {
 }
 
 export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardProps) {
-  const router = useRouter();
-
-  const redirect = () => {
-    const query = new URLSearchParams();
-    query.set('t', String(territoryCard.territoryId));
-    router.push(`/territorio?${query.toString()}`);
-  };
-
   return (
     <div
       className={clsx(
@@ -33,9 +24,7 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
       )}
     >
       <div className='flex h-full w-full items-center justify-between'>
-        <h6 className='ml-2 block text-xl font-medium' onClick={redirect}>
-          {territoryCard.name}
-        </h6>
+        <h6 className='ml-2 block text-xl font-medium'>{territoryCard.name}</h6>
         <HeaderButtons actions={actions} territoryCard={territoryCard} />
       </div>
       <div className='flex h-4/5 w-full gap-[10%]'>

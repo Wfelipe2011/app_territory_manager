@@ -92,13 +92,11 @@ export default function StreetData() {
   }, []);
 
   useEffect(() => {
-    if (!street.houses?.length) {
-      setIsLoading('loading');
-      setTimeout(async () => {
-        await getStreet(Number(addressId), Number(blockId), Number(territoryId));
-      }, 3000)
+    const interval = setInterval(() => getStreet(Number(addressId), Number(blockId), Number(territoryId)), 1000 * 30)
+    return () => {
+      clearInterval(interval);
     }
-  }, [street]);
+  }, []);
 
   return (
     <RootModeScreen mode={isLoading}>
@@ -125,7 +123,7 @@ export default function StreetData() {
               </div>
             ) : null}
           </div>
-          <div className='flex flex-col gap-4 h-screen justify-between'>
+          <div className='flex flex-col gap-4 h-screen'>
             <div
               className='mt-4 grid'
               style={{
