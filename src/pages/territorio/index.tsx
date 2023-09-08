@@ -1,20 +1,27 @@
 'use client';
 
 import clsx from 'clsx';
+import { parseCookies } from 'nookies';
 import { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { RootModeScreen } from '@/common/loading';
 import { BlockCard, useTerritory } from '@/common/territory';
+import { env } from '@/constant';
 import { authState } from '@/states/auth';
 import { Body, Header } from '@/ui';
 
 export default function Territory() {
+  const { territoryId } = env.storage;
+  const { [territoryId]: territoryIdCookies } = parseCookies();
   const { territoryId: territoryIdState } = useRecoilValue(authState);
   const { territory, getTerritories, actions, isLoading } = useTerritory(Number(territoryIdState));
 
   useEffect(() => {
-    const interval = setInterval(() => getTerritories(Number(territoryIdState)), 1000 * 30);
+    const interval = setInterval(() => {
+      const territoryId = Number(territoryIdState) || Number(territoryIdCookies);
+      getTerritories(territoryId);
+    }, 1000 * 30);
     return () => {
       clearInterval(interval);
     };
