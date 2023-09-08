@@ -53,7 +53,7 @@ const ValidatorCookies = ({ children }) => {
   }, []);
 
   if (!render) {
-    return <NotFound />;
+    return <RootModeScreen mode='loading'>''</RootModeScreen>;
   }
 
   return <>{children}</>;
