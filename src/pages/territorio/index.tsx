@@ -12,15 +12,15 @@ import { authState } from '@/states/auth';
 import { Body, Header } from '@/ui';
 
 export default function Territory() {
-  const { territoryId } = env.storage;
-  const { [territoryId]: territoryIdCookies } = parseCookies();
   const { territoryId: territoryIdState } = useRecoilValue(authState);
   const { territory, getTerritories, actions, isLoading } = useTerritory(Number(territoryIdState));
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const territoryId = Number(territoryIdState) || Number(territoryIdCookies);
-      getTerritories(territoryId);
+      const { territoryId } = env.storage;
+      const { [territoryId]: territoryIdCookies } = parseCookies();
+      const territoryIdToSearch = Number(territoryIdState) || Number(territoryIdCookies);
+      getTerritories(territoryIdToSearch);
     }, 1000 * 30);
     return () => {
       clearInterval(interval);
