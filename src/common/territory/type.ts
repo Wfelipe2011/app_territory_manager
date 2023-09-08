@@ -29,6 +29,7 @@ export type IBlock = {
    signature: ISignature | null
    negativeCompleted: number
    positiveCompleted: number
+   connections: number
 }
 
 export type ISignature = {

@@ -5,7 +5,7 @@ import { blockGateway } from '@/infra/Gateway/BlockGateway';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
 import { navigatorShare } from '@/utils/share';
 
-import { ITerritory, IUseTerritory } from './type';
+import { ITerritory } from './type';
 
 export const useTerritory = (territoryId: number, initialState?: ITerritory) => {
   const [territory, setTerritory] = useState<ITerritory>(
@@ -20,6 +20,7 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
   const [isLoading, setIsLoading] = useState<Mode>('loading');
 
   const getTerritories = useCallback(async (id: number): Promise<void> => {
+    console.log({ id })
     if (!id) {
       setIsLoading('not-found');
       return;

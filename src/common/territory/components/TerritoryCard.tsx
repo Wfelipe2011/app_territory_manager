@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import clsx from 'clsx';
-import { useRouter } from 'next/navigation';
 import { memo, useCallback, useEffect, useState } from 'react';
+import { User, Users } from 'react-feather';
 
 import { ShareCopy } from '@/common/territory/ShareCopy';
 import { DoughnutChart } from '@/ui/doughnutChart';
@@ -15,51 +15,46 @@ interface BlockCardProps {
   territoryId: number;
 }
 
-export function BlockCard(props: BlockCardProps) {
-  const { block, actions, territoryId } = props;
-
+export function BlockCard({ block, actions, territoryId }: BlockCardProps) {
   function sugestion(): string {
     let sugestion = '';
     if (block.negativeCompleted < 15) {
-      sugestion = '+1 quadra'
+      sugestion = '+1 quadra';
     }
     if (block.negativeCompleted >= 15 && block.negativeCompleted < 25) {
-      sugestion = '2 pares'
+      sugestion = '2 pares';
     }
     if (block.negativeCompleted >= 25 && block.negativeCompleted < 30) {
-      sugestion = '3 pares'
+      sugestion = '3 pares';
     }
     if (block.negativeCompleted >= 30 && block.negativeCompleted < 60) {
-      sugestion = '4 pares'
+      sugestion = '4 pares';
     }
     return sugestion;
   }
 
   return (
-    <div
-      className={clsx(
-        'flex min-h-[260px] w-full rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-3 shadow-lg',
-      )}
-    >
-      <div className='flex flex-col justify-start h-full items-baseline w-1/2'>
-        <h6 className='block text-xl ml-2 font-medium'>
-          <span className='ml-2'>
-            {block.name}
-          </span>
+    <div className={clsx('flex min-h-[260px] w-full rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-3 shadow-lg')}>
+      <div className='flex h-full w-1/2 flex-col items-baseline justify-start'>
+        <h6 className='ml-2 block text-xl font-medium'>
+          <span className='ml-2'>{block.name}</span>
         </h6>
 
-        <div className='flex flex-col w-full max-w-[170px] h-[200px]'>
-          <DoughnutChart
-            values={[block.positiveCompleted, block.negativeCompleted]}
-          />
+        <div className='flex h-[200px] w-full max-w-[170px] flex-col'>
+          <DoughnutChart values={[block.positiveCompleted, block.negativeCompleted]} />
         </div>
-        <div className='pt-2'>
-          <span className='ml-4'>Sugestão: {sugestion()}</span>
+        <div className='w-full'>
+          {!block.signature?.key ? (
+            <div className='flex w-full items-center justify-center gap-2'>Sugestão: {sugestion()}</div>
+          ) : (
+            <div className='flex w-full items-center justify-center gap-2'>
+              <TimeToExpire signature={block.signature} />
+            </div>
+          )}
         </div>
       </div>
 
-      <div className='flex flex-col justify-between items-end w-1/2'>
-
+      <div className='flex w-1/2 flex-col items-end justify-between'>
         <div className='flex w-full justify-end'>
           <ShareCopy
             actions={actions}
@@ -74,40 +69,35 @@ export function BlockCard(props: BlockCardProps) {
           />
         </div>
 
-        <div className='flex flex-col w-full p-4 gap-2'>
-
+        <div className='flex w-full flex-col gap-2 p-4'>
           <div className='flex items-center gap-2'>
-            <div className='bg-secondary h-6 w-14'></div><span>À fazer: {block.negativeCompleted}</span>
+            <div className='bg-secondary h-6 w-14'></div>
+            <span>À fazer: {block.negativeCompleted}</span>
           </div>
 
           <div className='flex items-center gap-2'>
-            <div className='bg-primary h-6 w-14'></div><span>Concluído: {block.positiveCompleted}</span>
+            <div className='bg-primary h-6 w-14'></div>
+            <span>Concluído: {block.positiveCompleted}</span>
           </div>
-
         </div>
 
         <div className='flex w-full'>
-          {
-            block?.signature?.key ? (
-              <TimeToExpire signature={block.signature} />
-            ) : (
-              <div className='p-4 mb-2'></div>
-            )
-          }
+          {block?.signature?.key ? (
+            <div className='flex w-full items-end justify-end gap-2 p-2 font-semibold'>
+              {block.connections}
+              {block.connections === 1 ? <User className='stroke-primary fill-primary' /> : <Users className='stroke-primary fill-primary' />}
+              {/* <div className='h-2 w-2 animate-pulse rounded-full bg-green-700'></div> */}
+            </div>
+          ) : (
+            <div className='mb-2 p-4'></div>
+          )}
         </div>
       </div>
-
     </div>
   );
 }
 
-
-
-const TimeToExpireComponent = ({
-  signature,
-}: {
-  signature: IBlock['signature'];
-}) => {
+const TimeToExpireComponent = ({ signature }: { signature: IBlock['signature'] }) => {
   const [expireIn, setExpireIn] = useState<string>('');
 
   const timeToExpire = useCallback((endDate: string) => {
@@ -138,7 +128,7 @@ const TimeToExpireComponent = ({
   }, [signature, signature?.expirationDate, timeToExpire]);
 
   return (
-    <div className='flex flex-col items-center justify-center gap-1 mb-1 w-full'>
+    <div className='mb-1 flex w-full flex-col items-center justify-center gap-1'>
       <span className='text-md'>Tempo restante:</span>
       <span className='text-md font-semibold'>{expireIn}</span>
     </div>
