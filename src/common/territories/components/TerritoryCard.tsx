@@ -15,6 +15,13 @@ interface TerritoryCardProps {
 }
 
 export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardProps) {
+  const getDate = () => {
+    const date = territoryCard.signature.expirationDate?.includes('T')
+      ? territoryCard.signature.expirationDate.split('T')[0]
+      : territoryCard.signature.expirationDate;
+    return date ?? undefined;
+  }
+
   return (
     <div
       className={clsx(
@@ -55,7 +62,7 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
             name='overseer'
             label=''
             placeholder='Dirigente'
-            value={territoryCard.overseer}
+            value={territoryCard?.overseer || ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => actions.updateData(e, territoryCard.territoryId)}
           />
           <Input
@@ -63,11 +70,7 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
             label=''
             placeholder='Prazo'
             type='date'
-            value={
-              territoryCard.signature.expirationDate?.includes('T')
-                ? territoryCard.signature.expirationDate.split('T')[0]
-                : territoryCard.signature.expirationDate
-            }
+            value={getDate()}
             className={clsx({
               'bg-secondary': !territoryCard.signature.expirationDate,
             })}

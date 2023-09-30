@@ -117,11 +117,12 @@ export default function HomePage() {
   return (
     <main>
       <Head>
-        <title>Hi</title>
+        <title>Territory Manager</title>
+        <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={clsx('relative h-screen')}>
+      <div className={clsx('relative h-screen m-auto max-w-[500px] flex flex-col justify-center')}>
         <div className='flex h-2/4 items-center justify-center'>
-          <div className='max-w-[66%] overflow-hidden rounded-full bg-[#7AAD58] p-4'>
+          <div className='max-w-[250px] overflow-hidden rounded-full bg-[#7AAD58] p-4'>
             <Image src={image} alt='logo' className='w-full' />
           </div>
         </div>
@@ -139,7 +140,7 @@ export default function HomePage() {
                   value={loginData.email}
                   name='email'
                   label='E-mail'
-                  className='!h-12'
+                  className='!h-12 text-gray-800'
                 />
                 <Input
                   onChange={handleChange}
@@ -153,8 +154,8 @@ export default function HomePage() {
             </div>
             <Button.Root
               type='submit'
-              variant='secondary'
-              className='flex w-10/12 !flex-row'
+              variant='primary'
+              className='flex w-10/12 !flex-row h-12 text-gray-800'
             >
               Entrar
             </Button.Root>
