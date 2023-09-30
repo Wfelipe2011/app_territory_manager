@@ -38,13 +38,11 @@ export default function HomePage() {
     setLoginData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!loginData.email || !loginData.password) {
       notify({
-        title: 'Erro',
+        title: 'Ops',
         message: 'Preencha todos os campos',
       });
       return;
@@ -52,18 +50,16 @@ export default function HomePage() {
     _setLoadState({ loader: 'spiral', message: 'Realizando login' });
 
     const { status, data } = await authGateway.login(loginData);
-    if (status > 299) {
+    if (status > 299 || !status) {
       notify({
-        title: 'Erro',
-        message: data.message || 'Erro ao realizar login',
+        title: 'Ops',
+        message: data?.message || 'Erro ao realizar login',
       });
       return;
     }
-    const { overseer, territoryId, blockId, exp, roles } = openToken(
-      data.token
-    );
+    const { overseer, territoryId, blockId, exp, roles } = openToken(data?.token);
     _setAuthState({
-      token: data.token,
+      token: data?.token,
       overseer,
       territoryId,
       blockId,
@@ -77,21 +73,11 @@ export default function HomePage() {
     };
     setCookie(undefined, env.storage.token, data.token, configCookie);
     setCookie(undefined, env.storage.mode, 'default', configCookie);
-    setCookie(
-      undefined,
-      env.storage.territoryId,
-      String(territoryId),
-      configCookie
-    );
+    setCookie(undefined, env.storage.territoryId, String(territoryId), configCookie);
     setCookie(undefined, env.storage.blockId, String(blockId), configCookie);
     setCookie(undefined, env.storage.overseer, String(overseer), configCookie);
     const rolesToSave = roles?.join(',');
-    setCookie(
-      undefined,
-      env.storage.roles,
-      JSON.stringify(rolesToSave),
-      configCookie
-    );
+    setCookie(undefined, env.storage.roles, JSON.stringify(rolesToSave), configCookie);
     setCookie(undefined, env.storage.expirationTime, String(exp), configCookie);
     await sleep(1000);
     router.push('/territorios');
@@ -134,28 +120,11 @@ export default function HomePage() {
             <div className='flex h-1/3 w-10/12 flex-col items-center justify-center gap-10'>
               <h4>Insira suas informações para realizar o login</h4>
               <div className='flex w-full flex-col gap-4'>
-                <Input
-                  onChange={handleChange}
-                  value={loginData.email}
-                  name='email'
-                  label='E-mail'
-                  className='!h-12'
-                />
-                <Input
-                  onChange={handleChange}
-                  value={loginData.password}
-                  name='password'
-                  label='Senha'
-                  type='password'
-                  className='!h-12'
-                />
+                <Input onChange={handleChange} value={loginData.email} name='email' label='E-mail' className='!h-12' />
+                <Input onChange={handleChange} value={loginData.password} name='password' label='Senha' type='password' className='!h-12' />
               </div>
             </div>
-            <Button.Root
-              type='submit'
-              variant='secondary'
-              className='flex w-10/12 !flex-row'
-            >
+            <Button.Root type='submit' variant='secondary' className='flex w-10/12 !flex-row'>
               Entrar
             </Button.Root>
           </form>
