@@ -28,7 +28,7 @@ export const Input: React.FC<IInput> = ({
           {rest.required ? <span className="text-red-500"> *</span> : ""}
         </label>
       )}
-      <div className="flex relative text-xs">
+      <div className="flex relative text-xs items-center">
         <input
           className={clsx(
             'px-2 py-1 rounded-lg w-full transition-all ease-in-out duration-300 border border-secondary hover:border-blue-600 focus:border-blue-600 focus:outline-none',
@@ -62,7 +62,7 @@ const Password = ({
 }) => (
   <button
     type="button"
-    className="text-slate-500 text-sm font-semibold absolute right-2 top-1/4"
+    className="text-slate-500 text-sm font-semibold absolute right-2"
     onClick={() => {
       setCurrentType(currentType === "password" ? "text" : "password");
     }}
