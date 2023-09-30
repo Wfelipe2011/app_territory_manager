@@ -9,7 +9,6 @@ import { env } from '@/constant';
 import type HttpClient from './HttpClient';
 
 export const URL_API = 'https://territory-manager.serveo.net/v1';
-// export const URL_API = 'https://territory-manager.com.br/v1';
 
 export default class AxiosAdapter implements HttpClient {
   constructor() {
