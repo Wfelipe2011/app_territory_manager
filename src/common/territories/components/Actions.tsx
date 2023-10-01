@@ -4,13 +4,17 @@ import { Button } from "@/ui";
 interface ActionsProps {
   territoryCard: ITerritoryCard;
   actions: IActions;
+  changeOverseer: (overseer: string) => void;
 }
 
-export const Actions = ({ territoryCard, actions }: ActionsProps) => {
+export const Actions = ({ territoryCard, actions, changeOverseer }: ActionsProps) => {
   if (territoryCard.signature.key) {
     return (
       <Button.Root
-        onClick={() => actions.revoke(territoryCard.territoryId)}
+        onClick={() => {
+          changeOverseer('')
+          actions.revoke(territoryCard.territoryId)
+        }}
         className='!justify-start !px-2 text-xs'
         variant='secondary'
       >
