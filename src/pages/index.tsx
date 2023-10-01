@@ -103,11 +103,12 @@ export default function HomePage() {
   return (
     <main>
       <Head>
-        <title>Hi</title>
+        <title>Territory Manager</title>
+        <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={clsx('relative h-screen')}>
+      <div className={clsx('relative h-screen m-auto max-w-[500px] flex flex-col justify-center')}>
         <div className='flex h-2/4 items-center justify-center'>
-          <div className='max-w-[66%] overflow-hidden rounded-full bg-[#7AAD58] p-4'>
+          <div className='max-w-[250px] overflow-hidden rounded-full bg-[#7AAD58] p-4'>
             <Image src={image} alt='logo' className='w-full' />
           </div>
         </div>
@@ -120,11 +121,28 @@ export default function HomePage() {
             <div className='flex h-1/3 w-10/12 flex-col items-center justify-center gap-10'>
               <h4>Insira suas informações para realizar o login</h4>
               <div className='flex w-full flex-col gap-4'>
-                <Input onChange={handleChange} value={loginData.email} name='email' label='E-mail' className='!h-12' />
-                <Input onChange={handleChange} value={loginData.password} name='password' label='Senha' type='password' className='!h-12' />
+                <Input
+                  onChange={handleChange}
+                  value={loginData.email}
+                  name='email'
+                  label='E-mail'
+                  className='!h-12 text-gray-800'
+                />
+                <Input
+                  onChange={handleChange}
+                  value={loginData.password}
+                  name='password'
+                  label='Senha'
+                  type='password'
+                  className='!h-12'
+                />
               </div>
             </div>
-            <Button.Root type='submit' variant='secondary' className='flex w-10/12 !flex-row'>
+            <Button.Root
+              type='submit'
+              variant='primary'
+              className='flex w-10/12 !flex-row h-12 text-gray-800'
+            >
               Entrar
             </Button.Root>
           </form>

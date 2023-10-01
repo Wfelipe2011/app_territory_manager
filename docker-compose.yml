@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  frontend:
+    cpus: '1'
+    mem_limit: 1g
+    build:
+      context: .
+    container_name: frontend_container
+    ports:
+      - '3000:3000'  # Suponha que seu frontend esteja em execução na porta 80
+    volumes:
+      - ./src:/app/src
+
