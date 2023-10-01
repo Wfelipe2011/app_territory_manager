@@ -7,6 +7,7 @@ import { Input, InputSelect } from '@/ui';
 import { DoughnutChart } from '@/ui/doughnutChart';
 
 import { IActions, ITerritoryCard } from '../type';
+import { useEffect, useState } from 'react';
 
 interface TerritoryCardProps {
   territoryCard: ITerritoryCard;
@@ -15,12 +16,18 @@ interface TerritoryCardProps {
 }
 
 export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardProps) {
+  const [overseer, setOverseer] = useState(territoryCard.overseer)
   const getDate = () => {
     const date = territoryCard.signature.expirationDate?.includes('T')
       ? territoryCard.signature.expirationDate.split('T')[0]
       : territoryCard.signature.expirationDate;
     return date ?? undefined;
   }
+
+  useEffect(() => {
+    if (!territoryCard.overseer) setOverseer('')
+    if (!territoryCard.signature?.key) setOverseer('')
+  }, [])
 
   return (
     <div
@@ -62,8 +69,12 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
             name='overseer'
             label=''
             placeholder='Dirigente'
-            value={territoryCard?.overseer || ''}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => actions.updateData(e, territoryCard.territoryId)}
+            value={overseer}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              actions.updateData(e, territoryCard.territoryId)
+              setOverseer(e.target.value)
+            }
+            }
           />
           <Input
             name='expirationTime'
@@ -76,7 +87,11 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
             })}
             onChange={(e) => actions.updateDateTime(e, territoryCard.territoryId)}
           />
-          <Actions territoryCard={territoryCard} actions={actions} />
+          <Actions
+            changeOverseer={setOverseer}
+            key={territoryCard.territoryId}
+            territoryCard={territoryCard}
+            actions={actions} />
         </div>
       </div>
     </div>

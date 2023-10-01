@@ -55,7 +55,7 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
     const signature = data.signature as string;
     await navigatorShare({
       title: 'Prezado(a) publicador(a)',
-      text: 'Segue o link para a quadra que você está designado(a) para pregar:',
+      text: `Segue o link para a *${exist.name}* que você está designado(a) para pregar:`,
       url: `${window.location.origin}/quadra?s=${signature}`,
     });
 
