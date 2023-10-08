@@ -9,7 +9,7 @@ export default {
         primary: ['Quicksand', ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        primary: '#9EE073',
+        primary: '#79AD57',
         secondary: '#CBE6BA',
         negative: '#EE3D3D80',
         dark: '#222222',
