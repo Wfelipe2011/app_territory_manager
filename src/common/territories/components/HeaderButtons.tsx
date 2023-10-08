@@ -24,7 +24,7 @@ export const HeaderButtons = ({ territoryCard, actions }: HeaderButtonsProps) =>
             id={territoryCard.territoryId}
             message={{
               title: `Território para trabalhar até ${new Date(territoryCard.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
-              url: `${origin}/territorio?s=${territoryCard?.signature?.key}`,
+              url: `${origin}/home?p=territorio/${territoryCard.territoryId}&s=${territoryCard?.signature?.key}`,
               text: `Prezado irmão *_${territoryCard.overseer}_*\nsegue o link para o território *${territoryCard.name}* que você irá trabalhar até ${new Date(
                 territoryCard.signature.expirationDate + ' GMT-3'
               ).toLocaleDateString()} \n\n\r`,
