@@ -20,9 +20,7 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
   const [isLoading, setIsLoading] = useState<Mode>('loading');
 
   const getTerritories = useCallback(async (id: number): Promise<void> => {
-    console.log({ id })
     if (!id) {
-      setIsLoading('not-found');
       return;
     }
     const { status, data } = await TerritoryGateway.in().getById(id);
@@ -56,7 +54,7 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
     await navigatorShare({
       title: 'Prezado(a) publicador(a)',
       text: `Segue o link para a *${exist.name}* que você está designado(a) para pregar:`,
-      url: `${window.location.origin}/quadra?s=${signature}`,
+      url: `${window.location.origin}/home?p=territorio/${territory.territoryId}/quadra/${blockId}&s=${signature}`,
     });
 
     void getTerritories(territoryId);

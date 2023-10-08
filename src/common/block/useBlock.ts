@@ -44,17 +44,7 @@ export const useBlock = (blockId: number, territoryId: number, initialState?: IB
     void getBlock(blockId ?? 0, territoryId ?? 0);
   }, [blockId, getBlock, territoryId]);
 
-  const goToStreet = (addressId: number): Promise<void> => {
-    const exist = block.addresses.find((address) => address.id === addressId);
-    if (!exist) {
-      setIsLoading('not-found');
-      return Promise.resolve();
-    }
-    if (!blockId || !territoryId) return Promise.resolve(setIsLoading('not-found'));
-    const query = `?a=${addressId}&b=${blockId}&t=${territoryId}`;
-    router.push(`rua${query}`);
-    return Promise.resolve();
-  };
+  const goToStreet = (addressId: number): void => void router.push(`/territorio/${territoryId}/quadra/${blockId}/rua/${addressId}`);
 
   return {
     block,
