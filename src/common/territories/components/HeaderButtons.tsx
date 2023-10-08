@@ -1,3 +1,6 @@
+import { useRouter as useNavigation } from 'next/navigation';
+import { Eye } from "react-feather";
+
 import { IActions, ITerritoryCard } from "@/common/territories/type";
 import { ShareCopy } from "@/common/territory/ShareCopy";
 
@@ -7,8 +10,13 @@ interface HeaderButtonsProps {
 }
 
 export const HeaderButtons = ({ territoryCard, actions }: HeaderButtonsProps) => {
+  const navigation = useNavigation();
+  const blockNavigation = () => {
+    navigation.push(`/territorio/${territoryCard.territoryId}`);
+  }
   return (
     <div className='flex items-center justify-end gap-2'>
+      {territoryCard?.signature?.key && (<Eye className='cursor-pointer' onClick={blockNavigation} />)}
       {
         territoryCard.overseer && territoryCard.signature.expirationDate && (
           <ShareCopy
@@ -26,13 +34,6 @@ export const HeaderButtons = ({ territoryCard, actions }: HeaderButtonsProps) =>
           />
         )
       }
-      {/* <Button.Root
-        onClick={() => actions.changeRound(territoryCard.territoryId)}
-        variant='ghost'
-        className='h-8 w-8 !rounded-full !p-0'
-      >
-        {territoryCard.hasRounds ? <Pause size={16} /> : <Play size={16} />}
-      </Button.Root> */}
     </div>
   );
 };

@@ -87,10 +87,9 @@ export const useTerritories = () => {
     );
 
     const origin = window.location.origin;
-
     const toShare = {
       title: `Território para trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
-      url: `${origin}/territorio?s=${signature}`,
+      url: `${origin}/home?p=territorio/${territoryId}&s=${signature}`,
       text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${new Date(
         territory.signature.expirationDate + ' GMT-3'
       ).toLocaleDateString()} \n\n\r`,

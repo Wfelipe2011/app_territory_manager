@@ -1,24 +1,16 @@
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import { useRecoilValue } from 'recoil';
 
 import { Street, useBlock } from '@/common/block';
 import { RootModeScreen } from '@/common/loading';
-import { authState } from '@/states/auth';
 import { Body, Header } from '@/ui';
 
 export default function Block() {
-  const { query } = useRouter();
-  const {
-    blockId: blockIdState,
-    territoryId: territoryIdState,
-    roles,
-  } = useRecoilValue(authState);
+  const { query } = useRouter()
+  const blockId = Number(query.block_id)
+  const territoryId = Number(query.territory_id)
 
-  const { block, actions, isLoading } = useBlock(
-    Number(blockIdState),
-    Number(territoryIdState),
-  );
+  const { block, actions, isLoading } = useBlock(blockId, territoryId);
 
   return (
     <RootModeScreen mode={isLoading}>
