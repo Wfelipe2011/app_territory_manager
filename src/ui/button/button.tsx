@@ -5,7 +5,7 @@ import { ButtonIcon } from './button-icon';
 import { ButtonLoading } from './button-loading';
 
 const button = tv({
-  base: 'flex items-center disabled:opacity-70 disabled:cursor-not-allowed rounded-md shadow-sm font-medium focus:outline-none hover:opacity-80 gap-2',
+  base: 'flex items-center disabled:opacity-70 disabled:cursor-not-allowed rounded-md shadow-sm font-medium focus:outline-none hover:opacity-80 gap-2 shadow-xl rounded-xl',
   variants: {
     variant: {
       primary: 'bg-primary text-gray-700',
