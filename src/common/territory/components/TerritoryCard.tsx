@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import clsx from 'clsx';
+import { useRouter as useNavigation } from 'next/navigation';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { User, Users } from 'react-feather';
+import { Eye, User, Users } from 'react-feather';
 
 import { ShareCopy } from '@/common/territory/ShareCopy';
 import { DoughnutChart } from '@/ui/doughnutChart';
@@ -16,6 +17,7 @@ interface BlockCardProps {
 }
 
 export function BlockCard({ block, actions, territoryId }: BlockCardProps) {
+  const navigation = useNavigation();
   function sugestion(): string {
     let sugestion = '';
     if (block.negativeCompleted < 15) {
@@ -31,6 +33,10 @@ export function BlockCard({ block, actions, territoryId }: BlockCardProps) {
       sugestion = '4 pares';
     }
     return sugestion;
+  }
+
+  const blockNavigation = () => {
+    navigation.push(`/territorio/${territoryId}/quadra/${block.id}`);
   }
 
   return (
@@ -55,14 +61,15 @@ export function BlockCard({ block, actions, territoryId }: BlockCardProps) {
       </div>
 
       <div className='flex w-1/2 flex-col items-end justify-between'>
-        <div className='flex w-full justify-end'>
+        <div className='flex w-full justify-end items-center gap-2'>
+          {block?.signature?.key && (<Eye className='cursor-pointer' onClick={blockNavigation} />)}
           <ShareCopy
             actions={actions}
             id={block.id}
             message={{
               title: 'Prezado(a) publicador(a)',
               text: 'Segue o link para a quadra que você está designado(a) para pregar:',
-              url: `${window.location.origin}/quadra?s=${block?.signature?.key}`,
+              url: `${window.location.origin}/home?p=territorio/${territoryId}/quadra/${block.id}&s=${block.signature?.key}`,
             }}
             signatureKey={block?.signature?.key}
             key={block.id}
