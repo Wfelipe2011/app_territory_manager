@@ -21,7 +21,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
   children: React.ReactNode;
   mode: Mode;
 }) => {
-  const projectVersion = 'Alfa 0.1';
+  const projectVersion = 'Alfa 1.0';
   return (
     <>
       {mode === 'loading' && <Loading />}
