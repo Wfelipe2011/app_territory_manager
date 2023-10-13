@@ -1,3 +1,5 @@
+import { Period } from '@/enum/Period';
+
 export type IUseHome = {
   search: string;
   territoryCards: ITerritoryCard[];
@@ -15,7 +17,10 @@ export type ITerritoryCard = {
     expirationDate: string;
   };
   hasRounds: boolean;
-  positiveCompleted: number;
+  positiveCompleted: {
+    date: Date;
+    period: Period;
+  }[];
   negativeCompleted: number;
 };
 
