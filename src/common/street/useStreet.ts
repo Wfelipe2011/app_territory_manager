@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { useCallback, useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import { Mode } from '@/common/loading';
 import { streetGateway } from '@/infra/Gateway/StreetGateway';
+import { authState } from '@/states/auth';
 
 import { Street } from './type';
 
@@ -16,6 +15,7 @@ export const useStreet = (addressId: number, blockId: number, territoryId: numbe
     territoryName: '',
     houses: [],
   } as Street);
+  const [values, setValues] = useRecoilState(authState);
 
   const getStreet = useCallback(
     async (addressId: number, blockId: number, territoryId: number) => {
@@ -25,12 +25,8 @@ export const useStreet = (addressId: number, blockId: number, territoryId: numbe
         blockId,
         territoryId,
       });
-      if (status === 503) {
-        setIsLoading('loading');
-        setTimeout(() => getStreet(addressId, blockId, territoryId), 5000);
-        return;
-      }
       if (status > 299) {
+        setValues({ ...values, notFoundStatusCode: status });
         setIsLoading('not-found');
         return;
       }
@@ -39,7 +35,7 @@ export const useStreet = (addressId: number, blockId: number, territoryId: numbe
       });
       setIsLoading('screen');
     },
-    [setIsLoading]
+    [setValues, values]
   );
 
   useEffect(() => {

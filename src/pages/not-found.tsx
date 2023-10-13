@@ -1,26 +1,88 @@
-import { Link2Off } from 'lucide-react';
+import { AlertTriangle, HelpCircle, Link2Off, Lock, ServerCrash, ShieldClose, TimerOff } from 'lucide-react';
 import { Metadata } from 'next';
-import Link from 'next/link';
 import * as React from 'react';
+import { useRecoilState } from 'recoil';
+
+import { authState } from '@/states/auth';
 
 export const metadata: Metadata = {
   title: 'Not Found',
 };
 
 export default function NotFound() {
+  const [message, setMessage] = React.useState({
+    title: 'Não encontramos o link que está procurando',
+    message: 'Por favor verifique com o responsável que forneceu o link!',
+    icon: <Link2Off size={30} className='drop-shadow-glow animate-flicker text-zinc-800' />
+  })
+  const [values, setValues] = useRecoilState(authState);
+
+  React.useEffect(() => {
+    if (values.notFoundStatusCode) {
+      switch (values.notFoundStatusCode) {
+        case 400:
+          setMessage({
+            title: 'Solicitação inválida',
+            message: 'A solicitação feita parece estar incorreta. Verifique se todos os campos estão preenchidos corretamente e tente novamente.',
+            icon: <AlertTriangle size={30} className='drop-shadow-glow animate-flicker text-red-500' />
+          });
+          break;
+        case 401:
+          setMessage({
+            title: 'Acesso não autorizado',
+            message: 'Você não possui permissão para acessar este recurso. Verifique se está devidamente autenticado ou entre em contato com o suporte para obter assistência.',
+            icon: <Lock size={30} className='drop-shadow-glow animate-flicker text-red-500' />
+          });
+          break;
+        case 403:
+          setMessage({
+            title: 'Acesso negado',
+            message: 'Você não tem permissão para acessar este link. Por favor, entre em contato com o remetente para obter as permissões necessárias.',
+            icon: <ShieldClose size={30} className='drop-shadow-glow animate-flicker text-red-500' />
+          });
+          break;
+        case 404:
+          setMessage({
+            title: 'Link não encontrado',
+            message: 'O link que você está tentando acessar não existe ou foi removido. Por favor, verifique com o remetente do link para mais informações.',
+            icon: <Link2Off size={30} className='drop-shadow-glow animate-flicker text-zinc-800' />
+          });
+          break;
+        case 405:
+          setMessage({
+            title: 'Link expirado',
+            message: 'O link que você está tentando acessar expirou. Entre em contato com o remetente para obter um novo link válido.',
+            icon: <TimerOff size={30} className='drop-shadow-glow animate-flicker text-zinc-800' />
+          });
+          break;
+        case 500:
+          setMessage({
+            title: 'Problema temporário',
+            message: 'Estamos enfrentando problemas temporários no servidor. Por favor, tente novamente mais tarde ou entre em contato com o suporte se o problema persistir.',
+            icon: <ServerCrash size={30} className='drop-shadow-glow animate-flicker text-red-500' />
+          });
+          break;
+        default:
+          setMessage({
+            title: 'Oops! Algo deu errado',
+            message: 'Encontramos um problema inesperado. Por favor, tente novamente mais tarde ou entre em contato com o suporte para obter ajuda adicional.',
+            icon: <HelpCircle size={30} className='drop-shadow-glow animate-flicker text-zinc-800' />
+          });
+          break;
+      }
+    }
+  }
+    , [values.notFoundStatusCode])
   return (
     <main>
       <section className='bg-gray-50'>
         <div className='layout flex min-h-screen flex-col items-center justify-center text-center text-black'>
-          <Link2Off
-            size={30}
-            className='drop-shadow-glow animate-flicker text-zinc-800'
-          />
+          {message.icon}
           <h1 className='mt-8 text-2xl md:text-4xl'>
-            Não encontramos o link que está procurando
+            {message.title}
           </h1>
           <p className='mt-4 text-lg'>
-            Por favor verifique com o dirigente a quadra que irá trabalhar!
+            {message.message}
           </p>
         </div>
       </section>
