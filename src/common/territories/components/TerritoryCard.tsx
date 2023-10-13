@@ -109,7 +109,7 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
                   borderColor={[...getColors().map((item) => item.border)]}
                 />
               </div>
-              <div className='absolute -bottom-1 left-0 flex w-[150%] flex-wrap gap-2'>
+              <div className='absolute -bottom-2 left-0 flex w-[150%] flex-wrap gap-2'>
                 {calculatePeriodCounts().map((item, index) => {
                   if (item === 0) return null;
                   const color = getColors()[index].bg;
