@@ -6,19 +6,31 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 interface DoughnutChartProps {
   values: number[];
+  labels?: string[];
+  backgroundColor?: string[];
+  borderColor?: string[];
 }
 
-const DoughnutChartComponent = ({ values }: DoughnutChartProps) => {
+const DoughnutChartComponent = ({ labels, values, backgroundColor, borderColor }: DoughnutChartProps) => {
   if (!values) return null;
   return (
     <Doughnut
+      options={{
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+      }}
       data={{
-        labels: [],
+        labels: labels ?? [],
         datasets: [
           {
+            label: '#',
             data: values,
-            backgroundColor: ['#9EE073', '#CBE6BA'],
-            borderWidth: 0,
+            backgroundColor: backgroundColor ?? ['#9EE073', '#CBE6BA'],
+            borderColor: borderColor ?? ['#9EE073', '#CBE6BA'],
+            borderWidth: 1,
           },
         ],
       }}
