@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import { Mode } from '@/common/loading';
 import { blockGateway } from '@/infra/Gateway/BlockGateway';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
+import { authState } from '@/states/auth';
 import { navigatorShare } from '@/utils/share';
 
 import { ITerritory } from './type';
@@ -18,6 +20,7 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
     }
   );
   const [isLoading, setIsLoading] = useState<Mode>('loading');
+  const [values, setValues] = useRecoilState(authState);
 
   const getTerritories = useCallback(async (id: number): Promise<void> => {
     if (!id) {
@@ -25,6 +28,7 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
     }
     const { status, data } = await TerritoryGateway.in().getById(id);
     if (status > 299) {
+      setValues({ ...values, notFoundStatusCode: status });
       setIsLoading('not-found');
       return;
     }
