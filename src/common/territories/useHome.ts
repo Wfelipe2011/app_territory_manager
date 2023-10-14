@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/require-await */
 import { useCallback, useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import { Mode } from '@/common/loading';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
+import { authState } from '@/states/auth';
 import { navigatorShare } from '@/utils/share';
 
 import { ITerritoryCard, IUseHome } from './type';
@@ -14,16 +12,18 @@ export const useTerritories = () => {
   const [search, setSearch] = useState<string>('');
   const [territoryCards, setTerritoryCards] = useState<ITerritoryCard[]>([]);
   const [isLoading, setIsLoading] = useState<Mode>('loading');
+  const [values, setValues] = useRecoilState(authState);
 
   const getTerritoryCards = useCallback(async (): Promise<void> => {
     const { status, data } = await TerritoryGateway.in().get();
     if (status > 299) {
+      setValues({ ...values, notFoundStatusCode: status });
       setIsLoading('not-found');
       return;
     }
     setTerritoryCards(data);
     setIsLoading('screen');
-  }, []);
+  }, [setValues, values]);
 
   useEffect(() => {
     void getTerritoryCards();
@@ -107,7 +107,6 @@ export const useTerritories = () => {
     setTerritoryCards((old) =>
       old.map((territory) => {
         if (territory.territoryId === territoryId) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           (territory as any)[name] = value;
         }
         return territory;
@@ -125,7 +124,6 @@ export const useTerritories = () => {
     setTerritoryCards((old) =>
       old.map((territory) => {
         if (territory.territoryId === territoryId) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           territory.signature.expirationDate = value;
         }
         return territory;

@@ -46,7 +46,7 @@ export function BlockCard({ block, actions, territoryId }: BlockCardProps) {
           <span className='ml-2'>{block.name}</span>
         </h6>
 
-        <div className='flex h-[200px] w-full max-w-[170px] flex-col'>
+        <div className='flex h-[200px] w-full max-w-[170px] flex-col pt-3'>
           <DoughnutChart values={[block.positiveCompleted, block.negativeCompleted]} />
         </div>
         <div className='w-full'>

@@ -3,7 +3,7 @@ import { useRouter as useNavigation } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { setCookie } from 'nookies';
 import { useEffect, useState } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { openToken } from '@/lib/openToken';
 
@@ -19,6 +19,7 @@ export default function Home() {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState<Mode>('loading');
   const _setAuthState = useSetRecoilState(authState);
+  const [values, setValues] = useRecoilState(authState);
   const signature = query.s as string;
   const path = query.p as string;
 
@@ -30,6 +31,7 @@ export default function Home() {
     setIsLoading('loading');
     const { data, status } = await TerritoryGateway.in().getSignature(signatureId);
     if (status > 299) {
+      setValues({ ...values, notFoundStatusCode: status });
       setIsLoading('not-found');
       return;
     }
