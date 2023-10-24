@@ -21,7 +21,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
   children: React.ReactNode;
   mode: Mode;
 }) => {
-  const projectVersion = 'Alfa 1.0';
+  const projectVersion = 'Beta 1.0';
   return (
     <>
       {mode === 'loading' && <Loading />}
@@ -40,9 +40,9 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
         openOnClick={true}
         place="top"
       >
-        A versão alfa é a primeira fase de testes de um software.
+        A versão Beta 1.0 representa um estágio avançado de desenvolvimento do software.
         <br />
-        Pode conter muitos bugs.
+        Pode conter alguns problemas menores.
       </Tooltip>
     </>
   );
