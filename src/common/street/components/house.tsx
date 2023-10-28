@@ -8,10 +8,9 @@ type HouseProps = {
 };
 
 export function HouseComponent({ house, actions }: HouseProps) {
-  // 110/2/CM => house
-  // dividir após /
   const [numberHouse, ...rest] = house.number.split('/')
   const complement = house.number.split('/')
+  const notHit = house.legend === "Não Bater"
   return (
     <div
       className={clsx(
@@ -19,9 +18,17 @@ export function HouseComponent({ house, actions }: HouseProps) {
           'bg-secondary/[0.2]': !house.status,
           'bg-primary': house.status,
         },
+        {
+          'bg-red-400': notHit
+        },
         'relative flex cursor-pointer flex-col items-center justify-center rounded-sm border-2 py-3 px-2  border-gray-50 shadow-mg transition-all duration-300'
       )}
-      onClick={() => actions.mark(house.id)}
+
+      onClick={() => {
+        if (!notHit) {
+          actions.mark(house.id)
+        }
+      }}
     >
       <div className="text-gray-600 font-semibold">
         <span className='text-lg'>{numberHouse}</span>

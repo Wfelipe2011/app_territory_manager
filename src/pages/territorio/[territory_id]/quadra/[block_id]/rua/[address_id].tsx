@@ -32,7 +32,6 @@ export default function StreetData() {
   };
 
   useEffect(() => {
-
     const widthScreen = window.innerWidth;
     const columnsByWidth = () => {
       if (widthScreen > 800) return 8;
@@ -126,7 +125,7 @@ export default function StreetData() {
                 gridTemplateColumns: `repeat(${columnsByWidth}, minmax(0, 1fr))`,
               }}
             >
-              {street.houses && street.houses.map((house) => (
+              {street.houses && street.houses.sort((a, b) => a.order - b.order).map((house) => (
                 <HouseComponent house={house} actions={actions} key={house.id} />
               ))}
             </div>
