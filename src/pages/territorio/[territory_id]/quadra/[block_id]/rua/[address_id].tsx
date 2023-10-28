@@ -73,7 +73,7 @@ export default function StreetData() {
 
       socket.on(String(room), async (message) => {
         console.log(`Received update for territory ${room}:`, message);
-        if (message.type === 'update_house') await getStreet(Number(addressId), Number(blockId), Number(territoryId));
+        if (message.type === 'update_house') getStreet(Number(addressId), Number(blockId), Number(territoryId));
         if (message.type === 'user_joined') setConnections(message.data.userCount);
         if (message.type === 'user_left') setConnections(message.data.userCount);
       });

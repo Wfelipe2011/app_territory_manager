@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 
 import { Mode } from '@/common/loading';
@@ -39,7 +40,7 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
   const share = async (blockId: number): Promise<void> => {
     const exist = territory.blocks.find((block) => block.id === blockId);
     if (!exist) {
-      alert('Quadra não encontrado');
+      toast.error('Quadra não encontrado');
       return;
     }
 
@@ -50,7 +51,7 @@ export const useTerritory = (territoryId: number, initialState?: ITerritory) => 
     const { status, data } = await blockGateway.signInBlock(input);
     if (status > 299) {
       console.log({ data, status });
-      alert('Erro ao tentar compartilhar a quadra');
+      toast.error('Erro ao tentar compartilhar a quadra');
       return;
     }
 

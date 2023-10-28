@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 
 import { Mode } from '@/common/loading';
@@ -62,7 +63,7 @@ export const useStreet = (addressId: number, blockId: number, territoryId: numbe
 
     const { status } = await streetGateway.markHouse(input);
     if (status === 403) {
-      alert('Você não tem permissão para alterar o status dessa casa');
+      toast.error('Você não tem permissão para alterar o status dessa casa');
       street.houses.map((h) => {
         if (h.id === id) {
           h.status = !h.status;
@@ -71,7 +72,7 @@ export const useStreet = (addressId: number, blockId: number, territoryId: numbe
       setStreet({ ...street });
     }
     if (status === 503) {
-      alert('Servidor indisponível');
+      toast.error('Servidor indisponível');
       setIsLoading('loading');
       setTimeout(() => getStreet(addressId, blockId, territoryId), 5000);
       return;
