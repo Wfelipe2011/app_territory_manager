@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 
 import { Mode } from '@/common/loading';
@@ -32,7 +33,7 @@ export const useTerritories = () => {
   const changeRound = async (id: number): Promise<void> => {
     const territory = territoryCards.find((territory) => territory.territoryId === id);
     if (!territory) {
-      alert('Território não encontrado');
+      toast.error('Território não encontrado');
       return;
     }
     if (territory.hasRounds) {
@@ -47,7 +48,7 @@ export const useTerritories = () => {
   const finishRound = async (id: number): Promise<void> => {
     const { status } = await TerritoryGateway.in().finishRound(id);
     if (status > 299) {
-      alert('Erro ao fechar rodada do território');
+      toast.error('Erro ao fechar rodada do território');
       return;
     }
   };
@@ -55,7 +56,7 @@ export const useTerritories = () => {
   const startRound = async (id: number): Promise<void> => {
     const { status } = await TerritoryGateway.in().startRound(id);
     if (status > 299) {
-      alert('Erro ao abrir rodada do território');
+      toast.error('Erro ao abrir rodada do território');
       return;
     }
   };
@@ -63,7 +64,7 @@ export const useTerritories = () => {
   const share = async (territoryId: number): Promise<void> => {
     const territory = territoryCards.find((territory) => territory.territoryId === territoryId);
     if (!territory) {
-      alert('Território não encontrado');
+      toast.error('Território não encontrado');
       return;
     }
     const input = {
@@ -72,7 +73,7 @@ export const useTerritories = () => {
     };
     const { data, status } = await TerritoryGateway.in().signInTerritory(input, +territoryId);
     if (status > 299) {
-      alert('Erro ao compartilhar o território');
+      toast.error('Erro ao compartilhar o território');
       return;
     }
     const { signature } = data;
@@ -101,7 +102,7 @@ export const useTerritories = () => {
     const { name, value } = event.target;
     const territory = territoryCards.find((territory) => territory.territoryId === territoryId);
     if (!territory) {
-      alert('Território não encontrado');
+      toast.error('Território não encontrado');
       return;
     }
     setTerritoryCards((old) =>
@@ -118,7 +119,7 @@ export const useTerritories = () => {
     const { value } = event.target;
     const territory = territoryCards.find((territory) => territory.territoryId === territoryId);
     if (!territory) {
-      alert('Território não encontrado');
+      toast.error('Território não encontrado');
       return;
     }
     setTerritoryCards((old) =>
@@ -134,13 +135,12 @@ export const useTerritories = () => {
   const revoke = async (territoryId: number): Promise<void> => {
     const territory = territoryCards.find((territory) => territory.territoryId === territoryId);
     if (!territory) {
-      alert('Território não encontrado');
+      toast.error('Território não encontrado');
       return;
     }
     const { status } = await TerritoryGateway.in().revoke(territoryId);
-    console.log(status);
     if (status > 299) {
-      alert('Erro ao revogar o território');
+      toast.error('Erro ao revogar o território');
       return;
     }
 
@@ -164,7 +164,7 @@ export const useTerritories = () => {
   const submitSearch = async (): Promise<void> => {
     const { status, data } = await TerritoryGateway.in().get(search);
     if (status > 299) {
-      alert('Erro ao buscar os territórios');
+      toast.error('Erro ao buscar os territórios');
       return;
     }
     setTerritoryCards(data);
