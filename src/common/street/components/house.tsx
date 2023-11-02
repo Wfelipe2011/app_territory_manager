@@ -41,6 +41,12 @@ export function HouseComponent({ house, actions }: HouseProps) {
                     <span>{value.message}</span>
                   </div>
                 )
+              },
+
+            },
+            {
+              error: {
+                duration: 2000,
               }
             }
           );
@@ -53,6 +59,6 @@ export function HouseComponent({ house, actions }: HouseProps) {
         <span className='text-lg'>{numberHouse}</span>
         <span className='text-sm'>{rest ? " " + rest.join('/') : ""}</span>
       </div>
-    </div>
+    </div >
   );
 }
