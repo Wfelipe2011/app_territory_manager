@@ -17,8 +17,8 @@ export function HouseComponent({ house, actions }: HouseProps) {
     <div
       className={clsx(
         {
-          'bg-secondary/[0.2]': !house.status,
-          'bg-primary': house.status,
+          'bg-secondary/[0.2]': !notHit && !house.status,
+          'bg-primary': !notHit && house.status,
         },
         {
           'bg-red-400': notHit
