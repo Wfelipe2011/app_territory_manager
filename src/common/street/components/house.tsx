@@ -33,7 +33,15 @@ export function HouseComponent({ house, actions }: HouseProps) {
             {
               loading: 'Salvando...',
               success: <b>Casa {numberHouse} {house.status ? "marcada" : "desmarcada"} com sucesso!</b>,
-              error: <b>Erro ao {house.status ? "marcada" : "desmarcada"} casa {numberHouse}!</b>
+              error: (value) => {
+                return (
+                  <div>
+                    <b>Erro ao {!house.status ? "marcar" : "desmarcar"} casa {numberHouse}!</b>
+                    <br />
+                    <span>{value.message}</span>
+                  </div>
+                )
+              }
             }
           );
         } else {
