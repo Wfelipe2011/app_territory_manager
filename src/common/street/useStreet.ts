@@ -63,19 +63,18 @@ export const useStreet = (addressId: number, blockId: number, territoryId: numbe
 
     const { status } = await streetGateway.markHouse(input);
     if (status === 403) {
-      toast.error('Você não tem permissão para alterar o status dessa casa');
       street.houses.map((h) => {
         if (h.id === id) {
           h.status = !h.status;
         }
       });
       setStreet({ ...street });
+      throw new Error('Você não tem permissão para alterar o status dessa casa.');
     }
     if (status === 503) {
-      toast.error('Servidor indisponível');
       setIsLoading('loading');
       setTimeout(() => getStreet(addressId, blockId, territoryId), 5000);
-      return;
+      throw new Error('Servidor fora do ar.');
     }
   };
 
