@@ -1,26 +1,24 @@
-import { useRouter as useNavigation } from 'next/navigation';
 import { Eye } from "react-feather";
 
-import { IActions, ITerritoryCard } from "@/common/territories/type";
+import { ITerritoryCard } from "@/common/territories/type";
+import { ITerritoryActions } from "@/common/territories/useTerritories";
 import { ShareCopy } from "@/common/territory/ShareCopy";
+
 
 interface HeaderButtonsProps {
   territoryCard: ITerritoryCard;
-  actions: IActions;
+  actions: ITerritoryActions;
 }
 
 export const HeaderButtons = ({ territoryCard, actions }: HeaderButtonsProps) => {
-  const navigation = useNavigation();
-  const blockNavigation = () => {
-    navigation.push(`/territorio/${territoryCard.territoryId}`);
-  }
+
   return (
     <div className='flex items-center justify-end gap-2'>
-      {territoryCard?.signature?.key && (<Eye className='cursor-pointer' onClick={blockNavigation} />)}
+      {territoryCard?.signature?.key && (<Eye className='cursor-pointer' onClick={() => actions.blockNavigation(territoryCard.territoryId)} />)}
       {
         territoryCard.overseer && territoryCard.signature.expirationDate && (
           <ShareCopy
-            actions={{ share: actions.share }}
+            actions={actions}
             id={territoryCard.territoryId}
             message={{
               title: `Território para trabalhar até ${new Date(territoryCard.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,

@@ -32,7 +32,7 @@ export function ShareCopy(props: ShareProps) {
   };
 
   return (
-    <div className='p-2 cursor-pointer mr-2'>
+    <div className='p-2 cursor-pointer'>
       {
         signatureKey ? (<CopyComponent copySuccess={copySuccess} onClick={copyToClipboard} />) : (<Share2 onClick={() => actions.share(id)} size={24} />)
       }

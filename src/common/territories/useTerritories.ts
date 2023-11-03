@@ -11,6 +11,16 @@ export interface TerritoryTypes {
   name: string;
 }
 
+export type ITerritoryActions = {
+  share: (territoryId: string) => Promise<void>;
+  copyShare: (territoryId: string) => Promise<void>;
+  changeRound: (id: string) => Promise<void>;
+  updateData: (event: any, territoryId: string) => void;
+  revoke: (territoryId: string) => Promise<any>;
+  updateDateTime: (event: any, territoryId: string) => void;
+  blockNavigation: (territoryId: string) => void;
+};
+
 let timeout: NodeJS.Timeout;
 
 export const useTerritories = () => {

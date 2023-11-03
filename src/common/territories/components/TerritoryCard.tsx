@@ -4,16 +4,17 @@ import { useEffect, useState } from 'react';
 
 import { Actions } from '@/common/territories/components/Actions';
 import { HeaderButtons } from '@/common/territories/components/HeaderButtons';
+import { ITerritoryActions } from '@/common/territories/useTerritories';
 import { Period, PeriodBR } from '@/enum/Period';
-import { Input, InputSelect } from '@/ui';
+import { Input } from '@/ui';
 import { DoughnutChart } from '@/ui/doughnutChart';
 
-import { IActions, ITerritoryCard } from '../type';
+import { ITerritoryCard } from '../type';
 
 interface TerritoryCardProps {
   territoryCard: ITerritoryCard;
   index: number;
-  actions: IActions;
+  actions: ITerritoryActions;
 }
 
 export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardProps) {
@@ -88,9 +89,7 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
   return (
     <div
       className={clsx(
-        { 'rounded-tl-none border-t-0 bg-transparent': index === 0 },
-        '-ml-2 min-h-[260px] w-[calc(100%+12px)] rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-2 px-8 pb-6 shadow-lg',
-        'flex flex-col'
+        ' min-h-[260px] w-full rounded-lg border p-4 shadow-lg flex flex-col'
       )}
     >
       <div className='flex h-full w-full items-center justify-between'>
