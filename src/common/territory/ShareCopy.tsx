@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { Check, Copy, Share2 } from "react-feather";
 
-import { navigatorShare } from "@/utils/share";
+import { ITerritoryActions } from "@/common/territory/useTerritoryActions";
 
 interface ShareProps {
-  id: number;
+  id: string;
   signatureKey?: string;
   message: {
     title: string;
     text: string;
     url: string;
   };
-  actions: { share(id: number): void };
+  actions: {
+    share: (id: string) => Promise<void>;
+    copyShare: (id: string) => Promise<void>;
+  }
 }
 
 export function ShareCopy(props: ShareProps) {
@@ -22,7 +25,7 @@ export function ShareCopy(props: ShareProps) {
 
   async function copyToClipboard() {
     setCopySuccess(true);
-    await navigatorShare({ title, text, url, });
+    actions.copyShare(id)
     setTimeout(() => {
       setCopySuccess(false);
     }, 7000)
