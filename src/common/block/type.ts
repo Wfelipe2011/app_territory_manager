@@ -8,9 +8,9 @@ export type IActions = {
 };
 
 export type IBlock = {
-  territoryId: number;
+  territoryId: string;
   territoryName: string;
-  blockId: number;
+  blockId: string;
   blockName: string;
   addresses: IAddress[];
 };

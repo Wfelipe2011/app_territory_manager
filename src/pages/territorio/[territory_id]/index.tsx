@@ -10,20 +10,19 @@ import { Body, Header } from '@/ui';
 
 export default function Territory() {
   const { query } = useRouter()
-
-  const territoryId = Number(query?.territory_id || 0)
-  const { territory, getTerritories, actions, isLoading } = useTerritory(territoryId);
+  const { territory_id: territoryId, round } = query as { territory_id: string, round: string };
+  const { territory, getTerritories, actions, isLoading } = useTerritory(territoryId, round);
 
   useEffect(() => {
     if (territory) {
       const interval = setInterval(() => {
-        getTerritories(territoryId);
+        getTerritories(territoryId, round);
       }, 1000 * 30);
       return () => {
         clearInterval(interval);
       };
     }
-  }, [query]);
+  }, [getTerritories, query, round, territory, territoryId]);
 
   return (
     <RootModeScreen mode={isLoading}>
@@ -38,7 +37,7 @@ export default function Territory() {
         <Body>
           <div className='flex h-full w-full flex-col  gap-4'>
             {territory.blocks?.map((block, index) => (
-              <BlockCard key={block.id} block={block} index={index} actions={actions} territoryId={territory.territoryId} />
+              <BlockCard key={block.id} block={block} index={index} actions={actions} territoryId={territory.territoryId} round={round} />
             ))}
           </div>
         </Body>
