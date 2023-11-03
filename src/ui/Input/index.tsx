@@ -1,12 +1,13 @@
 import clsx from "clsx";
 import { Dispatch, SetStateAction, useState } from "react";
-import { AlertCircle, Eye, EyeOff as NotEye } from "react-feather";
+import { Eye, EyeOff as NotEye } from "react-feather";
 
 /* eslint-disable */
 export interface IInput extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   customHeight?: boolean;
   errorMessage?: string;
+  icon?: React.ReactNode;
   ref?: any;
 }
 
@@ -16,39 +17,39 @@ export const Input: React.FC<IInput> = ({
   customHeight = false,
   errorMessage,
   className,
+  icon,
   ...rest
 }) => {
   const [currentType, setCurrentType] = useState(type);
 
   return (
-    <div className="flex flex-col w-full gap-1">
-      {label && (
-        <label className="2xl:text-lg xl:text-sm lg:text-xs">
-          {label}
-          {rest.required ? <span className="text-red-500"> *</span> : ""}
-        </label>
+    <div>
+      {label && (<label className="block text-sm my-2 font-medium leading-6 text-gray-900">
+        {label}
+        {rest.required ? <span className="text-red-500"> *</span> : ""}
+      </label>
       )}
-      <div className="flex relative text-xs items-center">
+      <div className="relative rounded-md shadow-sm">
         <input
-          className={clsx(
-            'px-2 py-1 rounded-lg w-full transition-all ease-in-out duration-300 border border-secondary hover:border-blue-600 focus:border-blue-600 focus:outline-none',
-            { "2xl:h-12 xl:h-10 lg:h-9": customHeight },
-            { "border-red-500": errorMessage },
-            { "bg-white brightness-75 cursor-not-allowed": rest.disabled },
-            className
-          )}
           type={currentType}
           ref={rest.ref}
           {...rest}
+          className={clsx(
+            'block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+            className
+          )}
         />
         {type === "password" && (
-          <Password setCurrentType={setCurrentType} currentType={currentType} />
+          <div className="absolute inset-y-0  flex items-center right-2">
+            <Password setCurrentType={setCurrentType} currentType={currentType} />
+          </div>
         )}
-        {errorMessage && type !== "password" && <ErrorIcon />}
+        {icon && (
+          <div className="absolute inset-y-0  flex items-center right-2">
+            {icon}
+          </div>
+        )}
       </div>
-      {errorMessage && (
-        <span className="text-red-500 text-sm pt-2">{errorMessage}</span>
-      )}
     </div>
   );
 };
@@ -62,7 +63,7 @@ const Password = ({
 }) => (
   <button
     type="button"
-    className="text-slate-500 text-sm font-semibold absolute right-2"
+    className="text-slate-500 text-sm font-semibold"
     onClick={() => {
       setCurrentType(currentType === "password" ? "text" : "password");
     }}
@@ -71,8 +72,3 @@ const Password = ({
   </button>
 );
 
-const ErrorIcon = () => (
-  <div className="flex items-center gap-1 text-red-500 text-sm font-semibold absolute right-1 2xl:top-4 lg:top-3">
-    <AlertCircle />
-  </div>
-);

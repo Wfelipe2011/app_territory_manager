@@ -1,23 +1,24 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import clsx from 'clsx';
-import { useRouter as useNavigation } from 'next/navigation';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { Eye, User, Users } from 'react-feather';
 
 import { ShareCopy } from '@/common/territory/ShareCopy';
+import { ITerritoryActions } from '@/common/territory/useTerritoryActions';
 import { DoughnutChart } from '@/ui/doughnutChart';
 
-import { IActions, IBlock } from '../type';
+import { IBlock } from '../type';
 
 interface BlockCardProps {
   block: IBlock;
   index: number;
-  actions: IActions;
-  territoryId: number;
+  actions: ITerritoryActions;
+  territoryId: string;
+  round: string;
 }
 
-export function BlockCard({ block, actions, territoryId }: BlockCardProps) {
-  const navigation = useNavigation();
+export function BlockCard({ block, actions, territoryId, round }: BlockCardProps) {
+
   function sugestion(): string {
     let sugestion = '';
     if (block.negativeCompleted < 15) {
@@ -33,10 +34,6 @@ export function BlockCard({ block, actions, territoryId }: BlockCardProps) {
       sugestion = '4 pares';
     }
     return sugestion;
-  }
-
-  const blockNavigation = () => {
-    navigation.push(`/territorio/${territoryId}/quadra/${block.id}`);
   }
 
   return (
@@ -62,7 +59,7 @@ export function BlockCard({ block, actions, territoryId }: BlockCardProps) {
 
       <div className='flex w-1/2 flex-col items-end justify-between'>
         <div className='flex w-full justify-end items-center gap-2'>
-          {block?.signature?.key && (<Eye className='cursor-pointer' onClick={blockNavigation} />)}
+          {block?.signature?.key && (<Eye className='cursor-pointer' onClick={() => actions.blockNavigation(territoryId, block.id, round)} />)}
           <ShareCopy
             actions={actions}
             id={block.id}

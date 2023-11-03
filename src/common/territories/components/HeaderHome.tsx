@@ -1,7 +1,8 @@
-import clsx from 'clsx';
-import { Search } from 'react-feather';
+import Image from 'next/image';
+import { Info, Search } from 'react-feather';
 
-import { Header, Input } from '@/ui';
+import image from '@/assets/territory_manager.png';
+import { Input } from '@/ui';
 
 interface IHeaderHomeProps {
   search: string;
@@ -9,41 +10,42 @@ interface IHeaderHomeProps {
   submitSearch: () => void;
 }
 
+let timeout: NodeJS.Timeout;
+
 export function HeaderHome({
   search,
   handleChangeSearch,
   submitSearch,
 }: IHeaderHomeProps) {
+
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
       submitSearch();
-    }
+    }, 500);
   };
 
   return (
-    <Header>
-      <div className='flex h-full flex-col justify-evenly p-4'>
-        <h1 className='text-xl font-semibold'>Olá admin</h1>
-        <p className='text-sm'>
-          Gerencie aqui os Territórios digitais e compartilhe com os dirigentes
-          do campo.
-        </p>
-        <div
-          className={clsx(
-            'flex w-full items-center justify-center gap-1 mt-2 transition-all duration-300 ease-in-out'
-          )}
-        >
-          <Input
-            placeholder='Pesquise o território'
-            className='border-white'
-            value={search}
-            onChange={handleChangeSearch}
-            enterKeyHint='search'
-            onKeyDown={handleSearch}
-          />
-          <Search size={16} />
+    <div className='p-4 py-6'>
+      <div className='flex justify-between items-center'>
+        <div className='flex gap-3'>
+          <div className='max-w-[50px] overflow-hidden rounded-full '>
+            <Image src={image} alt='logo' className='w-full' />
+          </div>
+          <div className='flex'>
+            <Input
+              placeholder='Pesquise o território'
+              className='shadow-xl'
+              value={search}
+              onChange={handleChangeSearch}
+              enterKeyHint='search'
+              onKeyDown={handleSearch}
+              icon={<Search size={16} />}
+            />
+          </div>
         </div>
+        <Info size={28} fill="rgb(121 173 87 / var(--tw-text-opacity))" className='text-gray-50' />
       </div>
-    </Header>
+    </div>
   );
 }

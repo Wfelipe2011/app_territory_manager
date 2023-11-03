@@ -20,11 +20,10 @@ const { [token]: tokenCookies, [signatureId]: signature } = parseCookies();
 export default function StreetData() {
   const navigate = useNavigate();
   const { query } = useRouter()
-  const territoryId = query.territory_id as string
-  const blockId = query.block_id as string
-  const addressId = query.address_id as string;
+  const { address_id, block_id, round, territory_id } = query as { territory_id: string, block_id: string, address_id: string, round: string };
+
   const [connections, setConnections] = useState<number>(0);
-  const { street, actions, getStreet, isLoading } = useStreet(+addressId, +blockId, +territoryId);
+  const { street, actions, getStreet, isLoading } = useStreet(address_id, block_id, territory_id, round);
   const [columnsByWidth, setColumnsByWidth] = useState<number>(3);
 
   const back = () => {
@@ -32,7 +31,6 @@ export default function StreetData() {
   };
 
   useEffect(() => {
-
     const widthScreen = window.innerWidth;
     const columnsByWidth = () => {
       if (widthScreen > 800) return 8;
@@ -45,8 +43,8 @@ export default function StreetData() {
     };
     setColumnsByWidth(columnsByWidth());
 
-    if (territoryId && blockId && addressId) {
-      const room = `${String(territoryId)}-${String(blockId)}-${String(addressId)}`;
+    if (address_id && block_id && territory_id && round) {
+      const room = `${territory_id}-${block_id}-${address_id}-${round}`;
       const socket = io(urlSocket, {
         transports: ['websocket'],
         auth: {
@@ -65,7 +63,7 @@ export default function StreetData() {
           roomName: room,
           username: uuid(),
         });
-        await getStreet(Number(addressId), Number(blockId), Number(territoryId));
+        await getStreet(address_id, block_id, territory_id, round);
       });
 
       socket.on("join", (message: IMessage) => {
@@ -74,7 +72,7 @@ export default function StreetData() {
 
       socket.on(String(room), async (message) => {
         console.log(`Received update for territory ${room}:`, message);
-        if (message.type === 'update_house') await getStreet(Number(addressId), Number(blockId), Number(territoryId));
+        if (message.type === 'update_house') getStreet(address_id, block_id, territory_id, round);
         if (message.type === 'user_joined') setConnections(message.data.userCount);
         if (message.type === 'user_left') setConnections(message.data.userCount);
       });
@@ -92,7 +90,7 @@ export default function StreetData() {
       };
 
     }
-  }, [query]);
+  }, [address_id, block_id, getStreet, query, round, territory_id]);
 
   return (
     <RootModeScreen mode={isLoading}>
@@ -105,7 +103,11 @@ export default function StreetData() {
           >
             <ArrowLeft />
           </Button.Root>
-          <h1 className='text-xl font-semibold pl-4 ml-2 text-gray-700'>{street.streetName}</h1>
+          <div className='flex flex-col items-start p-4'>
+
+            <h2>{street.territoryName}</h2>
+            <h1 className='text-xl font-semibold text-gray-700'>{street.streetName}</h1>
+          </div>
         </Header>
         <Body className='p-3'>
           <div className='flex items-end justify-between gap-2'>
@@ -126,7 +128,7 @@ export default function StreetData() {
                 gridTemplateColumns: `repeat(${columnsByWidth}, minmax(0, 1fr))`,
               }}
             >
-              {street.houses && street.houses.map((house) => (
+              {street.houses && street.houses.sort((a, b) => +a.order - +b.order).map((house) => (
                 <HouseComponent house={house} actions={actions} key={house.id} />
               ))}
             </div>

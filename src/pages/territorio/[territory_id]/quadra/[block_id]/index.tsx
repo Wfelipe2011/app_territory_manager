@@ -7,10 +7,9 @@ import { Body, Header } from '@/ui';
 
 export default function Block() {
   const { query } = useRouter()
-  const blockId = Number(query.block_id)
-  const territoryId = Number(query.territory_id)
+  const { block_id, round, territory_id } = query as { territory_id: string, block_id: string, round: string };
 
-  const { block, actions, isLoading } = useBlock(blockId, territoryId);
+  const { block, actions, isLoading } = useBlock(block_id, territory_id, round);
 
   return (
     <RootModeScreen mode={isLoading}>
