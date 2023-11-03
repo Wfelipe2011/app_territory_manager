@@ -101,7 +101,9 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
         <div className='relative flex w-[45%] flex-col items-center justify-start gap-4 text-lg'>
           {territoryCard.positiveCompleted.length || territoryCard.negativeCompleted ? (
             <>
-              <div className='flex h-[200px] w-full max-w-[170px] flex-col py-4'>
+              <div
+                id="admin-chart"
+                className='flex h-[200px] w-full max-w-[170px] flex-col py-4'>
                 <DoughnutChart
                   labels={[PeriodBR.MORNING, PeriodBR.AFTERNOON, PeriodBR.EVENING, PeriodBR.WEEKEND, 'A fazer']}
                   values={[...calculatePeriodCounts(), territoryCard.negativeCompleted]}
@@ -142,6 +144,7 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
 
         <div className='flex flex-col justify-center gap-2 p-2'>
           <Input
+            id='admin-overseer'
             name='overseer'
             label=''
             placeholder='Dirigente'

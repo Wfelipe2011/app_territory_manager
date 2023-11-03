@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import { useState } from 'react';
-import { ShoppingBag } from 'react-feather';
 
 import { BuildIcon } from '@/assets/icons/BuildIcon';
 import { HouseIcon } from '@/assets/icons/HouseIcon';
@@ -74,7 +73,9 @@ export default function Territorios() {
         <div>
           <div className='flex w-full items-center gap-2 justify-between px-2'>
 
-            <div className=" my-2 flex items-center">
+            <div
+              id="admin-filter-type"
+              className="my-2 flex items-center">
               <div className="flex">
                 {types.options.map((type, index) => {
                   const isSelected = selectedType === type.id;
@@ -107,7 +108,7 @@ export default function Territorios() {
               </div>
             </div>
 
-            <div>
+            <div id="admin-filter-round">
               <select className='bg-gray-50 border-gray-300 rounded-md' onChange={handleSelectRound} value={round.selected}>
                 {round.options.map((round, index) => (
                   <option key={index} value={round}>
