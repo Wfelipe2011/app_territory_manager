@@ -1,30 +1,10 @@
 import { useRouter as useNavigation } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useRecoilState } from 'recoil';
 
-import { Mode } from '@/common/loading';
 import { useTerritoryActionShare } from '@/common/territories/useTerritoryActionShare';
+import { useTerritoryData } from '@/common/territories/useTerritoryData';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
-import AxiosAdapter from '@/infra/http/AxiosAdapter';
-import { authState } from '@/states/auth';
-
-import { ITerritoryCard, IUseHome } from './type';
-
-const axios = new AxiosAdapter();
-
-export interface Round {
-  id: number;
-  roundNumber: number;
-  houseId: number;
-  territoryId: number;
-  blockId: number;
-  completed: boolean;
-  startDate: Date;
-  updateDate: Date | null;
-  endDate: Date | null;
-  tenantId: number;
-}
 
 export interface TerritoryTypes {
   id: number;
@@ -34,94 +14,15 @@ export interface TerritoryTypes {
 let timeout: NodeJS.Timeout;
 
 export const useTerritories = () => {
-  const [search, setSearch] = useState<string>('');
-
-  const [types, setTypes] = useState({
-    options: [] as TerritoryTypes[],
-    selected: '',
-  });
-  const [round, setRound] = useState({
-    options: [] as number[],
-    selected: '',
-  });
-  const [territoryCards, setTerritoryCards] = useState<ITerritoryCard[]>([]);
-  const [isLoading, setIsLoading] = useState<Mode>('loading');
-  const [values, setValues] = useRecoilState(authState);
+  const { search, setSearch, round, setRound, types, setTypes, isLoading, territoryCards, setTerritoryCards, getTerritoryCards } = useTerritoryData();
   const navigation = useNavigation();
 
-  // actions navigation
   const blockNavigation = (territoryId: string) => {
     navigation.push(`/territorio/${territoryId}?round=${round.selected}`);
   };
 
-  // actions round
-  const getRound = async (): Promise<string> => {
-    if (round.selected) return round.selected;
-
-    const { data: rounds } = await axios.get<Round[]>('rounds');
-    if (!rounds || !rounds?.length) {
-      setValues({ ...values, notFoundStatusCode: 404 });
-      toast.error('Nenhuma rodada encontrada');
-      setIsLoading('not-found');
-      return '';
-    }
-
-    const roundsSort = rounds.sort((a, b) => b.roundNumber - a.roundNumber);
-    setRound({
-      options: roundsSort.map((round) => round.roundNumber),
-      selected: round.selected || roundsSort[0].roundNumber.toString(),
-    });
-    return roundsSort[0].roundNumber.toString();
-  };
-
-  // actions types
-  const getType = async (): Promise<string> => {
-    if (types.selected) return types.selected;
-
-    const { status, data } = await TerritoryGateway.in().getTerritoryTypes<TerritoryTypes[]>();
-    if (!data) {
-      setValues({ ...values, notFoundStatusCode: status });
-      toast.error('Nenhum tipo de território encontrado');
-      setIsLoading('not-found');
-      return '';
-    }
-
-    const typesSort = data.sort((a, b) => b.name.localeCompare(a.name));
-    setTypes({
-      options: typesSort,
-      selected: types.selected || typesSort[0].id.toString(),
-    });
-    return typesSort[0].id.toString();
-  };
-
-  // actions territory
-  const getTerritoryCards = async (): Promise<void> => {
-    const [roundNumber, type] = await Promise.all([getRound(), getType()]);
-
-    const { status, data } = await TerritoryGateway.in().get(roundNumber, type.toString(), search);
-    if (status > 299) {
-      setValues({ ...values, notFoundStatusCode: status });
-      setIsLoading('not-found');
-      return;
-    }
-    setTerritoryCards(data);
-    setIsLoading('screen');
-  };
-
   useEffect(() => {
     void getTerritoryCards();
-    // return () => {
-    //   setTerritoryCards([]);
-    //   setIsLoading('loading');
-    //   setRound({
-    //     options: [],
-    //     selected: '',
-    //   });
-    //   setTypes({
-    //     options: [],
-    //     selected: '',
-    //   });
-    // };
   }, [round.selected, types.selected]);
 
   // actions round
