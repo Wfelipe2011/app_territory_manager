@@ -75,7 +75,7 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
         border: '#4ee474',
       },
       {
-        bg: '#f1f1f1',
+        bg: '#e7e7e7',
         border: '#d3d3d3',
       },
     ];
@@ -89,7 +89,8 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
   return (
     <div
       className={clsx(
-        ' min-h-[260px] w-full rounded-lg border p-4 shadow-lg flex flex-col'
+        'min-h-[260px] w-full rounded-lg border p-4 shadow-md flex flex-col',
+        territoryCard.signature.key && 'shadow-primary border-primary shadow-sm',
       )}
     >
       <div className='flex h-full w-full items-center justify-between'>

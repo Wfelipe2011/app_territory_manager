@@ -121,7 +121,7 @@ export default function Territorios() {
 
         </div>
         <Body>
-          <div className='flex h-full w-full flex-col gap-4'>
+          <div className='flex h-full w-full flex-col p-2 gap-4'>
             {territoryCards?.map((territoryCard, index) => (
               <TerritoryCard
                 key={territoryCard.territoryId}
