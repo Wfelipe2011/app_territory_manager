@@ -1,13 +1,13 @@
 import { useRouter as useNavigation } from 'next/navigation';
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 
 import { Mode } from '@/common/loading';
+import { useTerritoryActionShare } from '@/common/territories/useTerritoryActionShare';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
 import AxiosAdapter from '@/infra/http/AxiosAdapter';
 import { authState } from '@/states/auth';
-import { navigatorShare } from '@/utils/share';
 
 import { ITerritoryCard, IUseHome } from './type';
 
@@ -158,73 +158,6 @@ export const useTerritories = () => {
     }
   };
 
-  // actions share
-  const share = async (territoryId: string): Promise<void> => {
-    const territory = territoryCards.find((territory) => territory.territoryId == territoryId);
-    if (!territory) {
-      toast.error('Território não encontrado');
-      return;
-    }
-    const input = {
-      overseer: territory.overseer,
-      expirationTime: territory.signature.expirationDate,
-      round: round.selected,
-    };
-    const { data, status } = await TerritoryGateway.in().signInTerritory(input, territoryId);
-    if (status > 299) {
-      toast.error('Erro ao compartilhar o território');
-      return;
-    }
-    const { signature } = data;
-    setTerritoryCards((old) =>
-      old.map((territory) => {
-        if (territory.territoryId === territoryId) {
-          territory.signature.key = signature;
-          territory.overseer = input.overseer;
-        }
-        return territory;
-      })
-    );
-    const queryRound = new URLSearchParams({ round: round.selected });
-    const query = new URLSearchParams({ p: `territorio/${territoryId}?${queryRound.toString()}`, s: signature });
-    const origin = window.location.origin;
-    const toShare = {
-      title: `Território para trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
-      url: `${origin}/home?${query.toString()}`,
-      text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${new Date(
-        territory.signature.expirationDate + ' GMT-3'
-      ).toLocaleDateString()} \n\n\r`,
-    };
-    await navigatorShare(toShare);
-  };
-
-  // actions share
-  const copyShare = (territoryId: string) => {
-    const territory = territoryCards.find((territory) => territory.territoryId == territoryId);
-    if (!territory) {
-      toast.error('Território não encontrado');
-      return;
-    }
-
-    if (!territory.signature.key) {
-      toast.error('Chave não encontrada');
-      return;
-    }
-
-    const queryRound = new URLSearchParams({ round: round.selected });
-    const query = new URLSearchParams({ p: `territorio/${territoryId}?${queryRound.toString()}`, s: territory.signature.key });
-    const origin = window.location.origin;
-    const toCopy = `${origin}/home?${query.toString()}`;
-    navigator.clipboard.writeText(toCopy);
-    return {
-      title: `Território para trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
-      url: toCopy,
-      text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${new Date(
-        territory.signature.expirationDate + ' GMT-3'
-      ).toLocaleDateString()} \n\n\r`,
-    };
-  };
-
   const updateData = (event: React.ChangeEvent<HTMLInputElement>, territoryId: string): void => {
     const { name, value } = event.target;
     const territory = territoryCards.find((territory) => territory.territoryId === territoryId);
@@ -303,12 +236,15 @@ export const useTerritories = () => {
     territoryCards,
     actions: {
       changeRound,
-      share,
       updateData,
       revoke,
       updateDateTime,
       blockNavigation,
-      copyShare,
+      ...useTerritoryActionShare({
+        territoryCards,
+        setTerritoryCards,
+        round,
+      }),
     },
     round,
     setRound,
