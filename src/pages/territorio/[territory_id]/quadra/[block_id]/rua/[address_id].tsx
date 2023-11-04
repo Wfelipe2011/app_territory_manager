@@ -1,17 +1,35 @@
 import clsx from 'clsx';
+import { driver } from 'driver.js';
 import { useRouter as useNavigate } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Users } from 'react-feather';
+import { ArrowLeft, HelpCircle, Users } from 'react-feather';
 import { io, Socket } from 'socket.io-client';
 import { v4 as uuid } from 'uuid';
+
+import "driver.js/dist/driver.css";
 
 import { RootModeScreen } from '@/common/loading';
 import { HouseComponent, IMessage, Subtitle, useStreet } from '@/common/street';
 import { env } from '@/constant';
 import { URL_API } from '@/infra/http/AxiosAdapter';
 import { Body, Button, Header } from '@/ui';
+
+const driverObj = driver({
+  showProgress: true,
+  steps: [
+    { element: '#publisher-return', popover: { title: 'Voltar', description: 'Clique aqui para retornar à página anterior.' } },
+    { element: '#publisher-connections', popover: { title: 'Conexões', description: 'Visualize em tempo real quantos publicadores estão trabalhando nesta rua.' } },
+    { element: '#publisher-mark', popover: { title: 'Marcar ou Desmarcar', description: 'Utilize esta opção para marcar ou desmarcar as casas.' } },
+    { element: '#publisher-legend', popover: { title: 'Legenda', description: 'Consulte a legenda do seu território para entender o significado de cada sigla e cor das casas.' } },
+    { element: '#publisher-not-hit', popover: { title: 'Não bater', description: 'As casas que não devem ser visitadas serão destacadas com essa cor.' } },
+  ],
+  nextBtnText: 'Próximo',
+  prevBtnText: 'Anterior',
+  doneBtnText: 'Finalizar',
+  progressText: '{{current}} de {{total}}',
+});
 
 const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
 const { token, signatureId } = env.storage;
@@ -94,9 +112,11 @@ export default function StreetData() {
 
   return (
     <RootModeScreen mode={isLoading}>
+      <HelpCircle onClick={() => driverObj.drive()} size={50} fill="rgb(121 173 87 / 1)" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4' />
       <div className={clsx('relative')}>
         <Header size='small'>
           <Button.Root
+            id="publisher-return"
             className='absolute left-2 !w-fit !shadow-none !p-2'
             variant='ghost'
             onClick={back}
@@ -117,12 +137,19 @@ export default function StreetData() {
             {connections ? (
               <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
                 {connections}
-                <Users size={24} fill='#9EE073' color='#9EE073' />
+                <Users
+                  id="publisher-connections"
+                  size={24} fill='#9EE073' color='#9EE073' />
               </div>
-            ) : null}
+            ) : (
+              <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
+                <Users id="publisher-connections" className='stroke-gray-500 fill-gray-500' />
+              </div>
+            )}
           </div>
           <div className='flex flex-col gap-4 h-screen'>
             <div
+              id="publisher-mark"
               className='mt-4 grid'
               style={{
                 gridTemplateColumns: `repeat(${columnsByWidth}, minmax(0, 1fr))`,
@@ -132,7 +159,7 @@ export default function StreetData() {
                 <HouseComponent house={house} actions={actions} key={house.id} />
               ))}
             </div>
-            <div>
+            <div id="publisher-legend" >
               {street.houses?.length ? <Subtitle /> : null}
             </div>
           </div>

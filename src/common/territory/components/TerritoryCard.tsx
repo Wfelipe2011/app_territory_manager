@@ -43,7 +43,7 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
           <span className='ml-2'>{block.name}</span>
         </h6>
 
-        <div className='flex h-[200px] w-full max-w-[170px] flex-col pt-3'>
+        <div id="overseer-chart" className='flex h-[200px] w-full max-w-[170px] flex-col pt-3'>
           <DoughnutChart values={[block.positiveCompleted, block.negativeCompleted]} />
         </div>
         <div className='w-full'>
@@ -88,12 +88,14 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
         <div className='flex w-full'>
           {block?.signature?.key ? (
             <div className='flex w-full items-end justify-end gap-2 p-2 font-semibold'>
-              {block.connections}
-              {block.connections === 1 ? <User className='stroke-primary fill-primary' /> : <Users className='stroke-primary fill-primary' />}
+              {block.connections >= 1 && (<span className='text-lg'>{block.connections}</span>)}
+              {block.connections >= 1 ? <Users id="overseer-connections" className='stroke-primary fill-primary' /> : <User id="overseer-connections" className='stroke-primary fill-primary' />}
               {/* <div className='h-2 w-2 animate-pulse rounded-full bg-green-700'></div> */}
             </div>
           ) : (
-            <div className='mb-2 p-4'></div>
+            <div className='flex w-full items-end justify-end gap-2 p-2 font-semibold'>
+              <User id="overseer-connections" className='stroke-gray-500 fill-gray-500' />
+            </div>
           )}
         </div>
       </div>

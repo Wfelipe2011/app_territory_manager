@@ -10,11 +10,11 @@ import { Input } from '@/ui';
 const driverObj = driver({
   showProgress: true,
   steps: [
-    { element: '#admin-filter-search', popover: { title: 'Pesquisar território', description: 'Pesquise o território diretamente por nome ou número.' } },
-    { element: '#admin-filter-type', popover: { title: 'Filtrar por tipo', description: 'Filtre os territórios por tipo.' } },
-    { element: '#admin-filter-round', popover: { title: 'Filtrar por rodada', description: 'Filtre os territórios por rodada.' } },
-    { element: '#admin-chart', popover: { title: 'Gráfico', description: 'Acompanhe no gráfico os detalhes desse território. Porcentagem de conclusão e período em que foi trabalho.' } },
-    { element: '#admin-overseer', popover: { title: 'Dirigente', description: 'Adicione o nome do dirigente que irá usar esse território e em seguida o período que ele estará disponível para ele.' } }
+    { element: '#admin-filter-search', popover: { title: 'Pesquisar Território', description: 'Encontre o território por nome ou número.' } },
+    { element: '#admin-filter-type', popover: { title: 'Filtrar por Tipo', description: 'Filtre os territórios de acordo com o tipo.' } },
+    { element: '#admin-filter-round', popover: { title: 'Filtrar por Rodada', description: 'Filtre os territórios de acordo com a rodada.' } },
+    { element: '#admin-chart', popover: { title: 'Gráfico', description: 'Visualize no gráfico os detalhes deste território, incluindo a porcentagem de conclusão e o período de trabalho.' } },
+    { element: '#admin-overseer', popover: { title: 'Dirigente', description: 'Adicione o nome do dirigente que utilizará este território e especifique o período de disponibilidade para ele.' } }
   ],
   nextBtnText: 'Próximo',
   prevBtnText: 'Anterior',

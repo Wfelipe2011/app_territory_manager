@@ -74,7 +74,7 @@ export function Street({ address, actions, block }: AddressProps) {
       )}
     >
       {url ? (<a className='flex cursor-pointer flex-col items-center rounded-full bg-[#DDF5CE] p-2' href={url} target='_blank'>
-        <div className='flex h-6 w-6 items-center justify-center fill-zinc-600'>
+        <div id='publisher-gps' className='flex h-6 w-6 items-center justify-center fill-zinc-600'>
           <CarIcon />
         </div>
       </a>) : (<div className='p-2' />)}
@@ -85,6 +85,7 @@ export function Street({ address, actions, block }: AddressProps) {
         </p>
       </div>
       <Button.Root
+        id="publisher-details"
         variant='ghost'
         className={clsx('!shadow-non text-primary flex h-8 w-1/12 items-center justify-center shadow-none !p-0 font-bold')}
         onClick={() => void actions.goToStreet(address.id)}

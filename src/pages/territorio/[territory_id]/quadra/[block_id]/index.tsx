@@ -1,9 +1,25 @@
 import clsx from 'clsx';
+import { driver } from 'driver.js';
 import { useRouter } from 'next/router';
+import { HelpCircle } from 'react-feather';
+
+import "driver.js/dist/driver.css";
 
 import { Street, useBlock } from '@/common/block';
 import { RootModeScreen } from '@/common/loading';
 import { Body, Header } from '@/ui';
+
+const driverObj = driver({
+  showProgress: true,
+  steps: [
+    { element: '#publisher-gps', popover: { title: 'GPS', description: 'Clique aqui para abrir o GPS e ser direcionado para a localização da quadra.' } },
+    { element: '#publisher-details', popover: { title: 'Detalhes', description: 'Visualize os detalhes do endereço e marque as casas nesta seção.' } },
+  ],
+  nextBtnText: 'Próximo',
+  prevBtnText: 'Anterior',
+  doneBtnText: 'Finalizar',
+  progressText: '{{current}} de {{total}}',
+});
 
 export default function Block() {
   const { query } = useRouter()
@@ -13,6 +29,7 @@ export default function Block() {
 
   return (
     <RootModeScreen mode={isLoading}>
+      <HelpCircle onClick={() => driverObj.drive()} size={50} fill="rgb(121 173 87 / 1)" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4' />
       <div className={clsx('relative')}>
         <Header>
           <div>
