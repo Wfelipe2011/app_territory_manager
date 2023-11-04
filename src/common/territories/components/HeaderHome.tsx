@@ -1,5 +1,6 @@
 import { driver } from "driver.js";
 import Image from 'next/image';
+import { useEffect } from "react";
 import { Info, Search } from 'react-feather';
 
 import "driver.js/dist/driver.css";
@@ -7,20 +8,7 @@ import "driver.js/dist/driver.css";
 import image from '@/assets/territory_manager.png';
 import { Input } from '@/ui';
 
-const driverObj = driver({
-  showProgress: true,
-  steps: [
-    { element: '#admin-filter-search', popover: { title: 'Pesquisar Território', description: 'Encontre o território por nome ou número.' } },
-    { element: '#admin-filter-type', popover: { title: 'Filtrar por Tipo', description: 'Filtre os territórios de acordo com o tipo.' } },
-    { element: '#admin-filter-round', popover: { title: 'Filtrar por Rodada', description: 'Filtre os territórios de acordo com a rodada.' } },
-    { element: '#admin-chart', popover: { title: 'Gráfico', description: 'Visualize no gráfico os detalhes deste território, incluindo a porcentagem de conclusão e o período de trabalho.' } },
-    { element: '#admin-overseer', popover: { title: 'Dirigente', description: 'Adicione o nome do dirigente que utilizará este território e especifique o período de disponibilidade para ele.' } }
-  ],
-  nextBtnText: 'Próximo',
-  prevBtnText: 'Anterior',
-  doneBtnText: 'Finalizar',
-  progressText: '{{current}} de {{total}}',
-});
+
 
 interface IHeaderHomeProps {
   search: string;
@@ -43,6 +31,24 @@ export function HeaderHome({
     }, 500);
   };
 
+  const driverAction = () => {
+    const driverObj = driver({
+      showProgress: true,
+      steps: [
+        { element: '#admin-filter-search', popover: { title: 'Pesquisar Território', description: 'Encontre o território por nome ou número.' } },
+        { element: '#admin-filter-type', popover: { title: 'Filtrar por Tipo', description: 'Filtre os territórios de acordo com o tipo.' } },
+        { element: '#admin-filter-round', popover: { title: 'Filtrar por Rodada', description: 'Filtre os territórios de acordo com a rodada.' } },
+        { element: '#admin-chart', popover: { title: 'Gráfico', description: 'Visualize no gráfico os detalhes deste território, incluindo a porcentagem de conclusão e o período de trabalho.' } },
+        { element: '#admin-overseer', popover: { title: 'Dirigente', description: 'Adicione o nome do dirigente que utilizará este território e especifique o período de disponibilidade para ele.' } }
+      ],
+      nextBtnText: 'Próximo',
+      prevBtnText: 'Anterior',
+      doneBtnText: 'Finalizar',
+      progressText: '{{current}} de {{total}}',
+    });
+    driverObj.drive()
+  }
+
   return (
     <div className='p-4 '>
       <div className='flex justify-between items-center'>
@@ -63,7 +69,7 @@ export function HeaderHome({
           />
 
         </div>
-        <Info onClick={() => driverObj.drive()} size={28} fill="rgb(121 173 87 / var(--tw-text-opacity))" className='text-gray-50 cursor-pointer' />
+        <Info onClick={driverAction} size={28} fill="rgb(121 173 87 / var(--tw-text-opacity))" className='text-gray-50 cursor-pointer' />
       </div>
     </div>
   );

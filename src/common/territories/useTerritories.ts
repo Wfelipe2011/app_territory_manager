@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter as useNavigation } from 'next/navigation';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
