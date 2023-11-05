@@ -56,8 +56,19 @@ export function HouseComponent({ house, actions }: HouseProps) {
       }}
     >
       <div className="text-gray-600 font-semibold">
-        <span className='text-lg'>{numberHouse}</span>
-        <span className='text-sm'>{rest ? " " + rest.join('/') : ""}</span>
+        <span
+
+          className={clsx(
+            { 'text-gray-50': notHit || house.status, },
+            'text-lg'
+          )}
+        >{numberHouse}</span>
+        <span
+          className={clsx(
+            { 'text-gray-50': notHit || house.status, },
+            'text-sm'
+          )}
+        >{rest ? " " + rest.join('/') : ""}</span>
       </div>
     </div >
   );

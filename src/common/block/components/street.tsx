@@ -87,7 +87,7 @@ export function Street({ address, actions, block }: AddressProps) {
       <Button.Root
         id="publisher-details"
         variant='ghost'
-        className={clsx('!shadow-non text-primary flex h-8 w-1/12 items-center justify-center shadow-none !p-0 font-bold')}
+        className={clsx('!shadow-non text-primary flex h-8 w-1/12 items-center justify-center shadow-none !p-0 mr-2 font-bold')}
         onClick={() => void actions.goToStreet(address.id)}
       >
         <Button.Icon icon={NavigateNext} size={24} />
