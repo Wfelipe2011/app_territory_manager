@@ -76,10 +76,10 @@ export const useTerritoryData = () => {
     return typesSorted[0].id.toString();
   };
 
-  const getTerritoryCards = async (): Promise<void> => {
+  const getTerritoryCards = async (search?: string): Promise<void> => {
     const [selectedRoundNumber, selectedType] = await Promise.all([getTerritoryRound(), getTerritoryType()]);
 
-    const { status, data } = await TerritoryGateway.in().get(selectedRoundNumber, selectedType.toString(), searchQuery);
+    const { status, data } = await TerritoryGateway.in().get(selectedRoundNumber, selectedType.toString(), search ?? searchQuery);
     if (status > 299) {
       setValues({ ...values, notFoundStatusCode: status });
       setIsLoading('not-found');

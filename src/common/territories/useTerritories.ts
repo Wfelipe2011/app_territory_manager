@@ -133,13 +133,13 @@ export const useTerritories = () => {
   // actions search
   const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setSearch(event.target.value);
-    void submitSearch();
+    void submitSearch(event.target.value);
   };
 
-  const submitSearch = async (): Promise<void> => {
+  const submitSearch = async (search?: string): Promise<void> => {
     clearTimeout(timeout);
     timeout = setTimeout(async () => {
-      void getTerritoryCards();
+      void getTerritoryCards(search);
     }, 300);
   };
 

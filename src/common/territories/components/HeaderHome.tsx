@@ -20,13 +20,6 @@ export function HeaderHome({
   submitSearch,
 }: IHeaderHomeProps) {
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      submitSearch();
-    }, 500);
-  };
-
   const driverAction = () => {
     const driverObj = driver({
       showProgress: true,
@@ -63,7 +56,7 @@ export function HeaderHome({
               className='shadow-md'
               value={search}
               onChange={handleChangeSearch}
-              onKeyDown={handleSearch}
+              onKeyDown={submitSearch}
               icon={<Search size={16} />}
             />
           </div>

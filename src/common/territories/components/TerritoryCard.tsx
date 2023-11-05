@@ -19,8 +19,9 @@ interface TerritoryCardProps {
 }
 
 export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardProps) {
-  const [overseer, setOverseer] = useState(territoryCard.overseer);
-  const [date, setDate] = useState(territoryCard.signature.expirationDate && dayjs(territoryCard.signature.expirationDate).format('YYYY-MM-DD'));
+
+  const [overseer, setOverseer] = useState<string>();
+  const [date, setDate] = useState<string>();
 
   const calculatePeriodCounts = (): number[] => {
     const counts = {
@@ -78,8 +79,16 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
   };
 
   useEffect(() => {
+
     if (!territoryCard.overseer) setOverseer('');
     if (!territoryCard.signature?.key) setOverseer('');
+    setOverseer(territoryCard.overseer)
+    setDate(dayjs(territoryCard.signature.expirationDate).format('YYYY-MM-DD'))
+
+    return () => {
+      setOverseer('');
+      setDate('');
+    }
   }, [territoryCard]);
 
   return (
