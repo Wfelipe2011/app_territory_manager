@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+import { Input } from '@material-tailwind/react';
 import clsx from 'clsx';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
 import { Actions } from '@/common/territories/components/Actions';
 import { HeaderButtons } from '@/common/territories/components/HeaderButtons';
 import { ITerritoryActions } from '@/common/territories/useTerritories';
 import { Period, PeriodBR } from '@/enum/Period';
-import { Input } from '@/ui';
 import { DoughnutChart } from '@/ui/doughnutChart';
 
 import { ITerritoryCard } from '../type';
@@ -19,12 +20,7 @@ interface TerritoryCardProps {
 
 export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardProps) {
   const [overseer, setOverseer] = useState(territoryCard.overseer);
-  const getDate = () => {
-    const date = territoryCard.signature.expirationDate?.includes('T')
-      ? territoryCard.signature.expirationDate.split('T')[0]
-      : territoryCard.signature.expirationDate;
-    return date ?? undefined;
-  };
+  const [date, setDate] = useState(territoryCard.signature.expirationDate && dayjs(territoryCard.signature.expirationDate).format('YYYY-MM-DD'));
 
   const calculatePeriodCounts = (): number[] => {
     const counts = {
@@ -89,21 +85,19 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
   return (
     <div
       className={clsx(
-        'min-h-[260px] w-full rounded-lg border p-4 shadow-md flex flex-col',
-        territoryCard.signature.key && 'shadow-primary border-primary shadow-sm',
+        'flex min-h-[260px] w-full flex-col rounded-lg border p-4 shadow-md',
+        territoryCard.signature.key && 'shadow-primary border-primary shadow-sm'
       )}
     >
       <div className='flex h-full w-full items-center justify-between'>
         <h6 className='ml-2 block text-xl font-medium'>{territoryCard.name}</h6>
         <HeaderButtons actions={actions} territoryCard={territoryCard} />
       </div>
-      <div className='flex h-4/5 w-full gap-[10%]'>
+      <div className='flex h-4/5 w-full gap-3'>
         <div className='relative flex w-[45%] flex-col items-center justify-start gap-4 text-lg'>
           {territoryCard.positiveCompleted.length || territoryCard.negativeCompleted ? (
             <>
-              <div
-                id="admin-chart"
-                className='flex h-[200px] w-full max-w-[170px] flex-col py-4'>
+              <div id='admin-chart' className='flex h-[210px] w-full max-w-[150px] flex-col py-4'>
                 <DoughnutChart
                   labels={[PeriodBR.MORNING, PeriodBR.AFTERNOON, PeriodBR.EVENING, PeriodBR.WEEKEND, 'A fazer']}
                   values={[...calculatePeriodCounts(), territoryCard.negativeCompleted]}
@@ -142,11 +136,11 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
           )}
         </div>
 
-        <div id='admin-overseer' className='flex flex-col justify-center gap-2 p-2'>
+        <div className='flex flex-col gap-2 p-2 py-5'>
           <Input
+            id='admin-overseer'
             name='overseer'
-            label=''
-            placeholder='Dirigente'
+            label='Nome Dirigente'
             value={overseer}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               actions.updateData(e, territoryCard.territoryId);
@@ -154,15 +148,18 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
             }}
           />
           <Input
+            id='admin-expirationTime'
             name='expirationTime'
-            label=''
-            placeholder='Prazo'
+            label='Duração do acesso'
             type='date'
-            value={getDate()}
+            value={date}
             className={clsx({
               'bg-secondary': !territoryCard.signature.expirationDate,
             })}
-            onChange={(e) => actions.updateDateTime(e, territoryCard.territoryId)}
+            onChange={(e) => {
+              actions.updateDateTime(e, territoryCard.territoryId);
+              setDate(e.target.value);
+            }}
           />
           <Actions changeOverseer={setOverseer} key={territoryCard.territoryId} territoryCard={territoryCard} actions={actions} />
         </div>

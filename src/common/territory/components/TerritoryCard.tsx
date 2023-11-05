@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import clsx from 'clsx';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { Eye, User, Users } from 'react-feather';
+import { Clock, Eye, User, Users } from 'react-feather';
 
 import { ShareCopy } from '@/common/territory/ShareCopy';
 import { ITerritoryActions } from '@/common/territory/useTerritoryActions';
@@ -25,13 +25,13 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
       sugestion = '+1 quadra';
     }
     if (block.negativeCompleted >= 15 && block.negativeCompleted < 25) {
-      sugestion = '2 pares';
+      sugestion = '2 pares ou mais.';
     }
     if (block.negativeCompleted >= 25 && block.negativeCompleted < 30) {
-      sugestion = '3 pares';
+      sugestion = '3 pares ou mais.';
     }
-    if (block.negativeCompleted >= 30 && block.negativeCompleted < 60) {
-      sugestion = '4 pares';
+    if (block.negativeCompleted >= 30) {
+      sugestion = '4 pares ou mais.';
     }
     return sugestion;
   }
@@ -48,9 +48,11 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
         </div>
         <div className='w-full'>
           {!block.signature?.key ? (
-            <div className='flex w-full items-center justify-center gap-2'>Sugestão: {sugestion()}</div>
+            <div id="overseer-time" className='p-1 pl-2 flex w-full  items-center  gap-2'>
+              <Clock className='text-gray-700' />
+            </div>
           ) : (
-            <div className='flex w-full items-center justify-center gap-2'>
+            <div className='flex w-full gap-2'>
               <TimeToExpire signature={block.signature} />
             </div>
           )}
@@ -73,7 +75,7 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
           />
         </div>
 
-        <div className='flex w-full flex-col gap-2 p-4'>
+        <div className='flex w-full flex-col gap-2 p-2'>
           <div className='flex items-center gap-2'>
             <div className='bg-secondary h-6 w-14'></div>
             <span>À fazer: {block.negativeCompleted}</span>
@@ -83,23 +85,24 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
             <div className='bg-primary h-6 w-14'></div>
             <span>Concluído: {block.positiveCompleted}</span>
           </div>
+          <div id="overseer-sugestion" className='text-sm'>Sugestão: {sugestion()}</div>
         </div>
 
-        <div className='flex w-full'>
+        <div className='flex w-full '>
           {block?.signature?.key ? (
-            <div className='flex w-full items-end justify-end gap-2 p-2 font-semibold'>
+            <div className='flex w-full items-center justify-end gap-2 p-2 font-semibold'>
               {block.connections >= 1 && (<span className='text-lg'>{block.connections}</span>)}
               {block.connections >= 1 ? <Users id="overseer-connections" className='stroke-primary fill-primary' /> : <User id="overseer-connections" className='stroke-primary fill-primary' />}
               {/* <div className='h-2 w-2 animate-pulse rounded-full bg-green-700'></div> */}
             </div>
           ) : (
-            <div className='flex w-full items-end justify-end gap-2 p-2 font-semibold'>
+            <div className='flex w-full items-center justify-end gap-2 p-2 font-semibold'>
               <User id="overseer-connections" className='stroke-gray-500 fill-gray-500' />
             </div>
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
@@ -134,9 +137,8 @@ const TimeToExpireComponent = ({ signature }: { signature: IBlock['signature'] }
   }, [signature, signature?.expirationDate, timeToExpire]);
 
   return (
-    <div className='mb-1 flex w-full flex-col items-center justify-center gap-1'>
-      <span className='text-md'>Tempo restante:</span>
-      <span className='text-md font-semibold'>{expireIn}</span>
+    <div id="overseer-time" className='p-1 pl-2 flex w-full  items-center  gap-2'>
+      <Clock className='text-primary' /> <span className='text-lg  font-semibold'>{expireIn}</span>
     </div>
   );
 };

@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-
+import { Button, Input } from "@material-tailwind/react";
 import clsx from 'clsx';
 import jwt_decode from 'jwt-decode';
 import Head from 'next/head';
@@ -9,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { setCookie } from 'nookies';
 import * as React from 'react';
 import { useState } from 'react';
+import { Eye, EyeOff } from "react-feather";
 import toast from 'react-hot-toast';
 import { useSetRecoilState } from 'recoil';
 
@@ -18,7 +18,7 @@ import { env } from '@/constant';
 import { authGateway } from '@/infra/Gateway/AuthGateway';
 import { authState } from '@/states/auth';
 import { loadState } from '@/states/load';
-import { Body, Button, Input } from '@/ui';
+import { Body } from '@/ui';
 
 type LoginData = {
   email: string;
@@ -30,6 +30,7 @@ export default function HomePage() {
     email: 'john@gmail.com',
     password: '123456',
   });
+  const [currentType, setCurrentType] = useState("password");
   const _setAuthState = useSetRecoilState(authState);
   const _setLoadState = useSetRecoilState(loadState);
   const [isLoading, setIsLoading] = useState<Mode>('screen');
@@ -96,6 +97,7 @@ export default function HomePage() {
       roles: tokenDecoded?.roles as any,
     };
   };
+
   return (
     <main>
       <Head>
@@ -122,29 +124,46 @@ export default function HomePage() {
                     value={loginData.email}
                     name='email'
                     label='E-mail'
-                    className='!h-12 text-gray-800'
                   />
                   <Input
                     onChange={handleChange}
                     value={loginData.password}
                     name='password'
                     label='Senha'
-                    type='password'
-                    className='!h-12'
+                    type={currentType}
+                    icon={<Password currentType={currentType} setCurrentType={setCurrentType} />}
                   />
                 </div>
               </div>
-              <Button.Root
+              <Button
                 type='submit'
-                variant='primary'
-                className='flex w-10/12 !flex-row h-12 text-gray-800'
+                className='w-10/12 bg-primary text-gray-50'
               >
                 Entrar
-              </Button.Root>
+              </Button>
             </form>
           </Body>
         </div>
       </RootModeScreen>
     </main>
+  );
+}
+
+
+const Password = ({
+  setCurrentType,
+  currentType,
+}) => {
+
+  return (
+    <button
+      type="button"
+      className="text-slate-500 text-sm font-semibold"
+      onClick={() => {
+        setCurrentType(currentType === "password" ? "text" : "password");
+      }}
+    >
+      {currentType === "password" ? <Eye size={16} /> : <EyeOff size={16} />}
+    </button>
   );
 }

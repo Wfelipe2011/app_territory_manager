@@ -1,3 +1,5 @@
+import { Option, Select } from '@material-tailwind/react';
+import { ThemeProvider } from "@material-tailwind/react";
 import clsx from 'clsx';
 import { useState } from 'react';
 
@@ -34,12 +36,13 @@ export default function Territorios() {
   const [selectedType, setSelectedType] = useState(1);
   const [showComponent, setShowComponent] = useState(true);
 
-  const handleSelectRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectRound = (value?: string) => {
+    if (!value) return;
     setRound(
       (prev) => {
         return {
           ...prev,
-          selected: e.target.value
+          selected: value
         }
       }
     )
@@ -59,6 +62,19 @@ export default function Territorios() {
       setSelectedType(id); // Atualiza o tipo após a animação de saída
       setShowComponent(true); // Inicia a animação de entrada
     }, 300);
+  }
+
+  const customTheme = {
+    select: {
+      styles: {
+        base: {
+          container: {
+            minWidth: "min-w-[85px]",
+          },
+        }
+      }
+    }
+
   }
 
   return (
@@ -109,13 +125,19 @@ export default function Territorios() {
             </div>
 
             <div id="admin-filter-round">
-              <select className='bg-gray-50 border-gray-300 rounded-md' onChange={handleSelectRound} value={round.selected}>
-                {round.options.map((round, index) => (
-                  <option key={index} value={round}>
-                    Rodada: {round}
-                  </option>
-                ))}
-              </select>
+              <ThemeProvider value={customTheme}>
+                <Select
+                  label="Rodada"
+                  onChange={(value) => handleSelectRound(value)}
+                  value={round.selected}
+                >
+                  {round.options.map((round, index) => (
+                    <Option key={index} value={String(round)}>
+                      {round}
+                    </Option>
+                  ))}
+                </Select >
+              </ThemeProvider>
             </div>
 
           </div>

@@ -12,8 +12,6 @@ import { RootModeScreen } from '@/common/loading';
 import { BlockCard, useTerritory } from '@/common/territory';
 import { Body, Header } from '@/ui';
 
-
-
 export default function Territory() {
   const { query } = useRouter()
   const { territory_id: territoryId, round } = query as { territory_id: string, round: string };
@@ -35,8 +33,10 @@ export default function Territory() {
       showProgress: true,
       steps: [
         { element: '#overseer-chart', popover: { title: 'Gráfico', description: 'Acompanhe no gráfico os detalhes deste território, incluindo a porcentagem de conclusão.' } },
-        { element: '#overseer-share', popover: { title: 'Compartilhar', description: 'Compartilhe este território com outros publicadores.' } },
+        { element: '#overseer-sugestion', popover: { title: 'Sugestão', description: 'Aqui você encontra uma sugestão de quantos pares podem ser colocados nesta quadra.' } },
+        { element: '#overseer-share', popover: { title: 'Compartilhar', description: 'Aqui você encontra o link para compartilhar este território com os publicadores.' } },
         { element: '#overseer-connections', popover: { title: 'Conexões', description: 'Acompanhe em tempo real quantos publicadores estão trabalhando nesta quadra.' } },
+        { element: '#overseer-time', popover: { title: 'Expiração', description: 'Acompanhe em tempo real o tempo de expiração do link de compartilhamento.' } },
       ],
       nextBtnText: 'Próximo',
       prevBtnText: 'Anterior',

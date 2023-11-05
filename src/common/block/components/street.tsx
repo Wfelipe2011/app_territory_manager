@@ -70,11 +70,11 @@ export function Street({ address, actions, block }: AddressProps) {
   return (
     <div
       className={clsx(
-        'flex h-24 w-full items-center justify-center gap-3 rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none bg-white p-2 shadow-sm drop-shadow-xl '
+        'flex h-24 w-full items-center justify-center gap-3 rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none bg-white p-2 pl-4 shadow-sm drop-shadow-xl '
       )}
     >
       {url ? (<a className='flex cursor-pointer flex-col items-center rounded-full bg-[#DDF5CE] p-2' href={url} target='_blank'>
-        <div id='publisher-gps' className='flex h-6 w-6 items-center justify-center fill-zinc-600'>
+        <div id='publisher-gps' className='flex h-7 w-7 items-center justify-center fill-zinc-600'>
           <CarIcon />
         </div>
       </a>) : (<div className='p-2' />)}
