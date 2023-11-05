@@ -1,5 +1,4 @@
 import { Option, Select } from '@material-tailwind/react';
-import { ThemeProvider } from "@material-tailwind/react";
 import clsx from 'clsx';
 import { useState } from 'react';
 
@@ -64,19 +63,6 @@ export default function Territorios() {
     }, 300);
   }
 
-  const customTheme = {
-    select: {
-      styles: {
-        base: {
-          container: {
-            minWidth: "min-w-[85px]",
-          },
-        }
-      }
-    }
-
-  }
-
   return (
     <RootModeScreen mode={isLoading}>
 
@@ -125,19 +111,18 @@ export default function Territorios() {
             </div>
 
             <div id="admin-filter-round">
-              <ThemeProvider value={customTheme}>
-                <Select
-                  label="Rodada"
-                  onChange={(value) => handleSelectRound(value)}
-                  value={round.selected}
-                >
-                  {round.options.map((round, index) => (
-                    <Option key={index} value={String(round)}>
-                      {round}
-                    </Option>
-                  ))}
-                </Select >
-              </ThemeProvider>
+              <Select
+                label="Rodada"
+                onChange={(value) => handleSelectRound(value)}
+                value={round.selected}
+                containerProps={{ className: "!min-w-[85px]" }}
+              >
+                {round.options.map((round, index) => (
+                  <Option key={index} value={String(round)}>
+                    {round}
+                  </Option>
+                ))}
+              </Select >
             </div>
 
           </div>

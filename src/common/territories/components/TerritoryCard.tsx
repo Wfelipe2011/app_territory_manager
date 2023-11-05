@@ -136,7 +136,7 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
           )}
         </div>
 
-        <div className='flex flex-col gap-2 p-2 py-5'>
+        <div className='flex flex-col gap-2 p-2 py-5 w-48'>
           <Input
             id='admin-overseer'
             name='overseer'
@@ -146,6 +146,7 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
               actions.updateData(e, territoryCard.territoryId);
               setOverseer(e.target.value);
             }}
+            containerProps={{ className: "min-w-[100px]" }}
           />
           <Input
             id='admin-expirationTime'
@@ -160,6 +161,7 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
               actions.updateDateTime(e, territoryCard.territoryId);
               setDate(e.target.value);
             }}
+            containerProps={{ className: "min-w-[100px]" }}
           />
           <Actions changeOverseer={setOverseer} key={territoryCard.territoryId} territoryCard={territoryCard} actions={actions} />
         </div>
