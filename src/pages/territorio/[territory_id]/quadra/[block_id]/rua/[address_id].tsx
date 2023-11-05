@@ -1,15 +1,17 @@
 import clsx from 'clsx';
 import { driver } from 'driver.js';
+import Image from 'next/image';
 import { useRouter as useNavigate } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, HelpCircle, Users } from 'react-feather';
+import { ArrowLeft, HelpCircle, MessageCircle, Users } from 'react-feather';
 import { io, Socket } from 'socket.io-client';
 import { v4 as uuid } from 'uuid';
 
 import 'driver.js/dist/driver.css';
 
+import post from '@/assets/post_add.png'
 import { RootModeScreen } from '@/common/loading';
 import { HouseComponent, IMessage, Subtitle, useStreet } from '@/common/street';
 import { env } from '@/constant';
@@ -109,6 +111,7 @@ export default function StreetData() {
           popover: { title: 'Legenda', description: 'Consulte a legenda do seu território para entender o significado de cada sigla e cor das casas.' },
         },
         { element: '#publisher-not-hit', popover: { title: 'Não bater', description: 'As casas que não devem ser visitadas serão destacadas com essa cor.' } },
+        { element: "#publisher-report", popover: { title: 'Reportar', description: 'Clique aqui para reportar alguma mudança no território.' } },
       ],
       nextBtnText: 'Próximo',
       prevBtnText: 'Anterior',
@@ -117,6 +120,13 @@ export default function StreetData() {
     });
     driverObj.drive()
   }
+
+  const report = () => {
+    const mensagem = encodeURIComponent(`REPORTAR MUDANÇA\nOlá, gostaria de reportar uma mudança no território.\nTerritório: ${street.territoryName}\nQuadra: ${street.blockName}\nRua:  ${street.streetName}\nAlteração:`);
+    const numeroTelefone = '5515981464391';
+    const link = `https://api.whatsapp.com/send?phone=${numeroTelefone}&text=${mensagem}`;
+    window.open(link);
+  };
 
   return (
     <RootModeScreen mode={isLoading}>
@@ -141,16 +151,19 @@ export default function StreetData() {
             <div className='flex h-full items-center'>
               <h6 className='pt-4 text-lg font-semibold'>CASAS</h6>
             </div>
-            {connections ? (
-              <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
-                {connections}
-                <Users id='publisher-connections' size={24} fill='#9EE073' color='#9EE073' />
-              </div>
-            ) : (
-              <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
-                <Users id='publisher-connections' className='fill-gray-500 stroke-gray-500' />
-              </div>
-            )}
+            <div className='flex items-center gap-3'>
+              <Image src={post} onClick={report} id="publisher-report" className='cursor-pointer' alt="Reportar mudanças" />
+              {connections ? (
+                <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
+                  {connections}
+                  <Users id='publisher-connections' size={24} fill='#9EE073' color='#9EE073' />
+                </div>
+              ) : (
+                <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
+                  <Users id='publisher-connections' className='fill-gray-500 stroke-gray-500' />
+                </div>
+              )}
+            </div>
           </div>
           <div className='flex h-screen flex-col gap-4'>
             <div
