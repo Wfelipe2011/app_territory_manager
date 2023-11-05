@@ -136,7 +136,7 @@ export function TerritoryCard({ territoryCard, index, actions }: TerritoryCardPr
           )}
         </div>
 
-        <div className='flex flex-col gap-2 p-2 py-5 w-36'>
+        <div className='flex flex-col gap-2 p-2 py-5 w-44'>
           <Input
             id='admin-overseer'
             name='overseer'
