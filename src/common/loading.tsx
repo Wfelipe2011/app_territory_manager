@@ -1,3 +1,4 @@
+import { Toaster } from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 
 import NotFound from "@/pages/not-found";
@@ -24,6 +25,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
   const projectVersion = 'Beta 1.1.0';
   return (
     <>
+      <Toaster />
       {mode === 'loading' && <Loading />}
       {mode === 'screen' && children}
       {mode === 'not-found' && <NotFound />}
