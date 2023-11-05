@@ -37,7 +37,7 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
   }
 
   return (
-    <div className={clsx('flex min-h-[260px] w-full rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none border p-3 shadow-lg')}>
+    <div className={clsx('flex min-h-[260px] w-full rounded-b-[40px] rounded-l-[40px] gap-2 rounded-t-[40px] rounded-br-none rounded-tr-none border p-3 shadow-lg')}>
       <div className='flex h-full w-1/2 flex-col items-baseline justify-start'>
         <h6 className='ml-2 block text-xl font-medium'>
           <span className='ml-2'>{block.name}</span>
