@@ -21,7 +21,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
   children: React.ReactNode;
   mode: Mode;
 }) => {
-  const projectVersion = 'Beta 1.0';
+  const projectVersion = 'Beta 1.1.0';
   return (
     <>
       {mode === 'loading' && <Loading />}
@@ -40,7 +40,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
         openOnClick={true}
         place="top"
       >
-        A versão Beta 1.0 representa um estágio avançado de desenvolvimento do software.
+        A versão Beta representa um estágio avançado de desenvolvimento do software.
         <br />
         Pode conter alguns problemas menores.
       </Tooltip>
