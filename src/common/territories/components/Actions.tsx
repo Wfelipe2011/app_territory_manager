@@ -17,7 +17,7 @@ export const Actions = ({ territoryCard, actions, changeOverseer }: ActionsProps
           changeOverseer('')
           actions.revoke(territoryCard.territoryId)
         }}
-        className='bg-primary px-2'
+        className='bg-primary px-1'
       >
         Revogar acesso
       </Button>
@@ -28,7 +28,7 @@ export const Actions = ({ territoryCard, actions, changeOverseer }: ActionsProps
       id='admin-revoke-access'
       disabled
       variant="outlined"
-      className='px-2'
+      className='px-1'
     >
       Revogar acesso
     </Button>
