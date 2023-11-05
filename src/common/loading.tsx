@@ -22,7 +22,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
   children: React.ReactNode;
   mode: Mode;
 }) => {
-  const projectVersion = 'Beta 1.0';
+  const projectVersion = 'Beta 1.1.0';
   return (
     <>
       <Toaster />
