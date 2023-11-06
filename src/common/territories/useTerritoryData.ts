@@ -68,7 +68,9 @@ export const useTerritoryData = () => {
       return '';
     }
 
-    const typesSorted = data.sort((a, b) => b.name.localeCompare(a.name));
+    const typesSorted = data
+      .sort((a, b) => b.name.localeCompare(a.name))
+      .filter((type) => type.name.includes('Residencial') || type.name.includes('Comercial'));
     setTerritoryTypes({
       options: typesSorted,
       selected: territoryTypes.selected || typesSorted[0].id.toString(),

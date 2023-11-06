@@ -1,6 +1,6 @@
 import { Option, Select } from '@material-tailwind/react';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { BuildIcon } from '@/assets/icons/BuildIcon';
 import { HouseIcon } from '@/assets/icons/HouseIcon';
@@ -14,8 +14,8 @@ import {
 import { Body } from '@/ui';
 
 const Icon = {
-  1: <HouseIcon />,
-  2: <StoreIcon />,
+  'Residencial': <HouseIcon />,
+  'Comercial': <StoreIcon />,
 }
 
 export default function Territorios() {
@@ -32,7 +32,7 @@ export default function Territorios() {
     submitSearch
   } = useTerritories();
 
-  const [selectedType, setSelectedType] = useState(1);
+  const [selectedType, setSelectedType] = useState<string>();
   const [showComponent, setShowComponent] = useState(true);
 
   const handleSelectRound = (value?: string) => {
@@ -58,10 +58,15 @@ export default function Territorios() {
       }
     )
     setTimeout(() => {
-      setSelectedType(id); // Atualiza o tipo após a animação de saída
+      setSelectedType(String(id)); // Atualiza o tipo após a animação de saída
       setShowComponent(true); // Inicia a animação de entrada
     }, 300);
   }
+
+  useEffect(() => {
+    setSelectedType(String(types.selected))
+    console.log('types.selected', types.selected)
+  }, [types.selected]);
 
   return (
     <RootModeScreen mode={isLoading}>
@@ -80,7 +85,7 @@ export default function Territorios() {
               className="my-2 flex items-center">
               <div className="flex">
                 {types.options.map((type, index) => {
-                  const isSelected = selectedType === type.id;
+                  const isSelected = selectedType == String(type.id);
                   return (
                     <button
                       key={index}
@@ -91,7 +96,7 @@ export default function Territorios() {
                       )}
                       value={type.id}
                     >
-                      {Icon[type.id]}
+                      {Icon[type.name]}
                       {
                         isSelected &&
                         <span
