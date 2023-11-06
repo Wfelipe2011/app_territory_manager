@@ -39,6 +39,7 @@ export const useTerritoryData = () => {
   const [territoryCards, setTerritoryCards] = useState<ITerritoryCard[]>([]);
 
   const getTerritoryRound = async (): Promise<string> => {
+    setIsLoading('loading');
     if (territoryRound.selected) return territoryRound.selected;
 
     const { data: rounds } = await axios.get<Round[]>('rounds');

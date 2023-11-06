@@ -65,7 +65,6 @@ export default function Territorios() {
 
   useEffect(() => {
     setSelectedType(String(types.selected))
-    console.log('types.selected', types.selected)
   }, [types.selected]);
 
   return (
