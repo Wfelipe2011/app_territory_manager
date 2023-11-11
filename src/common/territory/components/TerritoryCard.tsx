@@ -66,8 +66,8 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
             actions={actions}
             id={block.id}
             message={{
-              title: 'Prezado(a) publicador(a)',
-              text: 'Segue o link para a quadra que você está designado(a) para pregar:',
+              title: 'DESIGNAÇÃO DE TERRITÓRIO\nPrezado(a) publicador(a)',
+              text: 'DESIGNAÇÃO DE TERRITÓRIO\nSegue o link para a quadra que você está designado(a) para pregar:',
               url: `${window.location.origin}/home?p=territorio/${territoryId}/quadra/${block.id}&s=${block.signature?.key}`,
             }}
             signatureKey={block?.signature?.key}

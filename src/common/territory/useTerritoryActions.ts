@@ -29,7 +29,7 @@ export const useTerritoryActions = (props: ITerritoryActionsProps): ITerritoryAc
     const query = new URLSearchParams({ p: `territorio/${territory.territoryId}/quadra/${block.id}?${queryRound.toString()}`, s: signature });
     return {
       title: 'DESIGNAÇÃO DE TERRITÓRIO\nPrezado(a) publicador(a)',
-      text: `Segue o link para a *${block.name}* que você está designado(a) para pregar:`,
+      text: `DESIGNAÇÃO DE TERRITÓRIO\nSegue o link para a *${block.name}* que você está designado(a) para pregar:`,
       url: `${window.location.origin}/home?${query.toString()}`,
     };
   }

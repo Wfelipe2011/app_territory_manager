@@ -54,9 +54,9 @@ export const useTerritoryActionShare = (props: ITerritoryActionsShareProps): IUs
     const toShare = {
       title: `DESIGNAÇÃO DE TERRITÓRIO\nTerritório para trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')}`,
       url: `${origin}/home?${query.toString()}`,
-      text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${dayjs(
-        territory.signature.expirationDate
-      ).format('DD/MM/YYYY')} \n\n\r`,
+      text: `DESIGNAÇÃO DE TERRITÓRIO\nPrezado irmão *_${territory.overseer}_*\nsegue o link para o território *${
+        territory.name
+      }* que você irá trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')} \n\n\r`,
     };
     await navigatorShare(toShare);
   };
@@ -80,9 +80,9 @@ export const useTerritoryActionShare = (props: ITerritoryActionsShareProps): IUs
     const toShare = {
       title: `DESIGNAÇÃO DE TERRITÓRIO\nTerritório para trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')}`,
       url: `${origin}/home?${query.toString()}`,
-      text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${dayjs(
-        territory.signature.expirationDate
-      ).format('DD/MM/YYYY')} \n\n\r`,
+      text: `DESIGNAÇÃO DE TERRITÓRIO\nPrezado irmão *_${territory.overseer}_*\nsegue o link para o território *${
+        territory.name
+      }* que você irá trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')} \n\n\r`,
     };
     await navigatorShare(toShare);
   };

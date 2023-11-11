@@ -26,7 +26,7 @@ export const HeaderButtons = ({ territoryCard, actions }: HeaderButtonsProps) =>
             message={{
               title: `DESIGNAÇÃO DE TERRITÓRIO\nTerritório para trabalhar até ${dayjs(territoryCard.signature.expirationDate).format('DD/MM/YYYY')}`,
               url: `${origin}/home?p=territorio/${territoryCard.territoryId}&s=${territoryCard?.signature?.key}`,
-              text: `Prezado irmão *_${territoryCard.overseer}_*\nsegue o link para o território *${territoryCard.name}* que você irá trabalhar até ${dayjs(territoryCard.signature.expirationDate).format('DD/MM/YYYY')} \n\n\r`,
+              text: `DESIGNAÇÃO DE TERRITÓRIO\nPrezado irmão *_${territoryCard.overseer}_*\nsegue o link para o território *${territoryCard.name}* que você irá trabalhar até ${dayjs(territoryCard.signature.expirationDate).format('DD/MM/YYYY')} \n\n\r`,
             }}
             signatureKey={territoryCard?.signature?.key as string}
             key={territoryCard.territoryId}
