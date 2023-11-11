@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { Eye, Share2 } from "react-feather";
 import toast from "react-hot-toast";
 
@@ -23,11 +24,9 @@ export const HeaderButtons = ({ territoryCard, actions }: HeaderButtonsProps) =>
             actions={actions}
             id={territoryCard.territoryId}
             message={{
-              title: `Território para trabalhar até ${new Date(territoryCard.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
+              title: `DESIGNAÇÃO DE TERRITÓRIO\nTerritório para trabalhar até ${dayjs(territoryCard.signature.expirationDate).format('DD/MM/YYYY')}`,
               url: `${origin}/home?p=territorio/${territoryCard.territoryId}&s=${territoryCard?.signature?.key}`,
-              text: `Prezado irmão *_${territoryCard.overseer}_*\nsegue o link para o território *${territoryCard.name}* que você irá trabalhar até ${new Date(
-                territoryCard.signature.expirationDate + ' GMT-3'
-              ).toLocaleDateString()} \n\n\r`,
+              text: `Prezado irmão *_${territoryCard.overseer}_*\nsegue o link para o território *${territoryCard.name}* que você irá trabalhar até ${dayjs(territoryCard.signature.expirationDate).format('DD/MM/YYYY')} \n\n\r`,
             }}
             signatureKey={territoryCard?.signature?.key as string}
             key={territoryCard.territoryId}

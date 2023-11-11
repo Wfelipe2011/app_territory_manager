@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Dispatch, SetStateAction } from 'react';
 import toast from 'react-hot-toast';
 
@@ -51,11 +52,11 @@ export const useTerritoryActionShare = (props: ITerritoryActionsShareProps): IUs
     const query = new URLSearchParams({ p: `territorio/${territoryId}?${queryRound.toString()}`, s: signature });
     const origin = window.location.origin;
     const toShare = {
-      title: `Território para trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
+      title: `DESIGNAÇÃO DE TERRITÓRIO\nTerritório para trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')}`,
       url: `${origin}/home?${query.toString()}`,
-      text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${new Date(
-        territory.signature.expirationDate + ' GMT-3'
-      ).toLocaleDateString()} \n\n\r`,
+      text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${dayjs(
+        territory.signature.expirationDate
+      ).format('DD/MM/YYYY')} \n\n\r`,
     };
     await navigatorShare(toShare);
   };
@@ -77,11 +78,11 @@ export const useTerritoryActionShare = (props: ITerritoryActionsShareProps): IUs
     const query = new URLSearchParams({ p: `territorio/${territoryId}?${queryRound.toString()}`, s: territory.signature.key });
     const origin = window.location.origin;
     const toShare = {
-      title: `Território para trabalhar até ${new Date(territory.signature.expirationDate + ' GMT-3').toLocaleDateString()}`,
+      title: `DESIGNAÇÃO DE TERRITÓRIO\nTerritório para trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')}`,
       url: `${origin}/home?${query.toString()}`,
-      text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${new Date(
-        territory.signature.expirationDate + ' GMT-3'
-      ).toLocaleDateString()} \n\n\r`,
+      text: `Prezado irmão *_${territory.overseer}_*\nsegue o link para o território *${territory.name}* que você irá trabalhar até ${dayjs(
+        territory.signature.expirationDate
+      ).format('DD/MM/YYYY')} \n\n\r`,
     };
     await navigatorShare(toShare);
   };
