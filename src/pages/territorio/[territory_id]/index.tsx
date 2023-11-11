@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import clsx from 'clsx';
@@ -10,6 +11,7 @@ import "driver.js/dist/driver.css";
 
 import { RootModeScreen } from '@/common/loading';
 import { BlockCard, useTerritory } from '@/common/territory';
+import { DialogMap } from '@/common/territory/components/DialogMap';
 import { Body, Header } from '@/ui';
 
 export default function Territory() {
@@ -32,6 +34,7 @@ export default function Territory() {
     const driverObj = driver({
       showProgress: true,
       steps: [
+        { element: '#overseer-image', popover: { title: 'Imagem', description: 'Aqui você encontra a imagem do território.' } },
         { element: '#overseer-chart', popover: { title: 'Gráfico', description: 'Acompanhe no gráfico os detalhes deste território, incluindo a porcentagem de conclusão.' } },
         { element: '#overseer-sugestion', popover: { title: 'Sugestão', description: 'Aqui você encontra uma sugestão de quantos pares podem ser colocados nesta quadra.' } },
         { element: '#overseer-share', popover: { title: 'Compartilhar', description: 'Aqui você encontra o link para compartilhar este território com os publicadores.' } },
@@ -50,6 +53,15 @@ export default function Territory() {
     <RootModeScreen mode={isLoading}>
       <HelpCircle onClick={driverAction} size={50} fill="rgb(121 173 87 / 1)" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4' />
       <div className={clsx('relative')}>
+        {territory.imageUrl && (
+          <DialogMap title={territory.territoryName}>
+            <img
+              className="h-full w-full object-cover object-center"
+              src={territory.imageUrl}
+              alt="Imagem do Território"
+            />
+          </DialogMap>
+        )}
         <Header>
           <div className='flex flex-col gap-2'>
             <h1 className='flex items-center text-xl font-semibold'>Olá Dirigente,</h1>
@@ -69,3 +81,4 @@ export default function Territory() {
     </RootModeScreen>
   );
 }
+

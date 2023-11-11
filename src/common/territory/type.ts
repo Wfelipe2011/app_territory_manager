@@ -11,6 +11,7 @@ export type IActions = {
 export type ITerritory = {
   territoryId: string;
   territoryName: string;
+  imageUrl?: string;
   hasRound: boolean;
   history: IHistory[];
   blocks: IBlock[];

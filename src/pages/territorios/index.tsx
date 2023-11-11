@@ -107,7 +107,7 @@ export default function Territorios() {
                   )
                 })}
                 <button
-                  className="flex items-center gap-2 text-lg  p-2 px-3 border rounded-lg"
+                  className="flex items-center gap-2 text-lg p-2 px-3 border rounded-lg"
                 >
                   <BuildIcon />
                 </button>

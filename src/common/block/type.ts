@@ -10,6 +10,7 @@ export type IActions = {
 export type IBlock = {
   territoryId: string;
   territoryName: string;
+  imageUrl?: string;
   blockId: string;
   blockName: string;
   addresses: IAddress[];

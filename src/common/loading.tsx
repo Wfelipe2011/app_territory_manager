@@ -42,9 +42,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
         openOnClick={true}
         place="top"
       >
-        A versão Beta representa um estágio avançado de desenvolvimento do software.
-        <br />
-        Pode conter alguns problemas menores.
+        A versão Beta pode conter alguns problemas menores.
       </Tooltip>
     </>
   );
