@@ -28,8 +28,8 @@ export const useTerritoryActions = (props: ITerritoryActionsProps): ITerritoryAc
     const queryRound = new URLSearchParams({ round });
     const query = new URLSearchParams({ p: `territorio/${territory.territoryId}/quadra/${block.id}?${queryRound.toString()}`, s: signature });
     return {
-      title: 'DESIGNAÇÃO DE TERRITÓRIO\nPrezado(a) publicador(a)',
-      text: `DESIGNAÇÃO DE TERRITÓRIO\nSegue o link para a *${block.name}* que você está designado(a) para pregar:`,
+      title: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nPrezado(a) publicador(a)',
+      text: `*DESIGNAÇÃO DE TERRITÓRIO*\n\nSegue o link para a *${block.name}* que você está designado(a) para pregar:`,
       url: `${window.location.origin}/home?${query.toString()}`,
     };
   }

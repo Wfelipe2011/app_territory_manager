@@ -52,9 +52,9 @@ export const useTerritoryActionShare = (props: ITerritoryActionsShareProps): IUs
     const query = new URLSearchParams({ p: `territorio/${territoryId}?${queryRound.toString()}`, s: signature });
     const origin = window.location.origin;
     const toShare = {
-      title: `DESIGNAÇÃO DE TERRITÓRIO\nTerritório para trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')}`,
+      title: `*DESIGNAÇÃO DE TERRITÓRIO*`,
       url: `${origin}/home?${query.toString()}`,
-      text: `DESIGNAÇÃO DE TERRITÓRIO\nPrezado irmão *_${territory.overseer}_*\nsegue o link para o território *${
+      text: `*DESIGNAÇÃO DE TERRITÓRIO*\n\nPrezado irmão *_${territory.overseer}_*\nsegue o link para o território *${
         territory.name
       }* que você irá trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')} \n\n\r`,
     };
@@ -78,9 +78,9 @@ export const useTerritoryActionShare = (props: ITerritoryActionsShareProps): IUs
     const query = new URLSearchParams({ p: `territorio/${territoryId}?${queryRound.toString()}`, s: territory.signature.key });
     const origin = window.location.origin;
     const toShare = {
-      title: `DESIGNAÇÃO DE TERRITÓRIO\nTerritório para trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')}`,
+      title: `*DESIGNAÇÃO DE TERRITÓRIO*`,
       url: `${origin}/home?${query.toString()}`,
-      text: `DESIGNAÇÃO DE TERRITÓRIO\nPrezado irmão *_${territory.overseer}_*\nsegue o link para o território *${
+      text: `*DESIGNAÇÃO DE TERRITÓRIO*\n\nPrezado irmão *_${territory.overseer}_*\nsegue o link para o território *${
         territory.name
       }* que você irá trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')} \n\n\r`,
     };
