@@ -23,7 +23,7 @@ export function HouseComponent({ house, actions }: HouseProps) {
         {
           'bg-red-400': notHit
         },
-        'relative flex cursor-pointer flex-col items-center justify-center rounded-sm border-2 py-3 px-2  border-gray-50 shadow-mg transition-all duration-300'
+        'relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 py-3 px-2 border-gray-50 shadow-mg transition-all duration-300'
       )}
 
       onClick={() => {
@@ -57,18 +57,17 @@ export function HouseComponent({ house, actions }: HouseProps) {
     >
       <div className="text-gray-600 font-semibold">
         <span
-
           className={clsx(
             { 'text-gray-50': notHit || house.status, },
-            'text-lg'
+            'mini:text-lg text-base'
           )}
         >{numberHouse}</span>
         <span
           className={clsx(
             { 'text-gray-50': notHit || house.status, },
-            'text-sm'
+            'mini:text-base text-sm'
           )}
-        >{rest ? " " + rest.join('/') : ""}</span>
+        >{rest ? "/" + rest.join('/') : ""}</span>
       </div>
     </div >
   );

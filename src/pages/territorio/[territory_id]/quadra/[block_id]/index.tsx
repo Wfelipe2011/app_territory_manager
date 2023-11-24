@@ -60,7 +60,7 @@ export default function Block() {
         </Header>
         <Body>
           <div className='h-6 w-full'></div>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 pb-20'>
             {block?.addresses?.map((address) => {
               const { addresses, ...blockWithoutAddress } = block;
               return (

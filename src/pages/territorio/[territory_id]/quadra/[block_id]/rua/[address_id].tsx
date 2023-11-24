@@ -134,16 +134,16 @@ export default function StreetData() {
         onClick={driverAction}
         size={50}
         fill='rgb(121 173 87 / 1)'
-        className='fixed bottom-0 right-0 z-10 m-4 cursor-pointer text-gray-50'
+        className='fixed bottom-0 right-0 p-1 mini:p-0 z-10 m-2 mini:m-4 cursor-pointer text-gray-50'
       />
       <div className={clsx('relative')}>
         <Header size='small'>
           <Button.Root id='publisher-return' className='absolute left-2 !w-fit !p-2 !shadow-none' variant='ghost' onClick={back}>
             <ArrowLeft />
           </Button.Root>
-          <div className='flex flex-col items-start p-4'>
-            <h2>{street.territoryName}</h2>
-            <h1 className='text-xl font-semibold text-gray-700'>{street.streetName}</h1>
+          <div className='w-full flex flex-col items-center p-4'>
+            <h2 className='text-xl '>{street.territoryName}</h2>
+            <h1 className='text-xl font-semibold text-gray-700 max-w-[220px] mini:max-w-[250px] truncate'>{street.streetName}</h1>
           </div>
         </Header>
         <Body className='p-3'>
@@ -168,7 +168,7 @@ export default function StreetData() {
           <div className='flex h-screen flex-col gap-4'>
             <div
               id='publisher-mark'
-              className='mt-4 grid'
+              className='mt-4 grid gap-0.5'
               style={{
                 gridTemplateColumns: `repeat(${columnsByWidth}, minmax(0, 1fr))`,
               }}
