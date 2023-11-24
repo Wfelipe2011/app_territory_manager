@@ -18,6 +18,9 @@ export default withMT({
         negative: '#EE3D3D80',
         dark: '#222222',
       },
+      screens: {
+        mini: '350px',
+      },
     },
   },
 });

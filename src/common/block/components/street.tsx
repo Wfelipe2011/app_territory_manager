@@ -70,7 +70,7 @@ export function Street({ address, actions, block }: AddressProps) {
   return (
     <div
       className={clsx(
-        'flex h-24 w-full items-center justify-center gap-3 rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none bg-white p-2 pl-4 shadow-sm drop-shadow-xl '
+        'flex h-20 mini:h-24 w-full items-center justify-center gap-3 rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none bg-white p-2 pl-4 shadow-sm drop-shadow-xl '
       )}
     >
       {url ? (<a className='flex cursor-pointer flex-col items-center rounded-full bg-[#DDF5CE] p-2' href={url} target='_blank'>
@@ -79,7 +79,7 @@ export function Street({ address, actions, block }: AddressProps) {
         </div>
       </a>) : (<div className='p-2' />)}
       <div onClick={() => void actions.goToStreet(address.id)} className={clsx('flex w-11/12 cursor-pointer flex-col items-start')}>
-        <h6 className='inline-block w-full max-w-[250px] truncate text-xl font-semibold text-gray-900'>{address.name}</h6>
+        <h6 className='inline-block w-full max-w-[220px] mini:max-w-[250px] truncate text-xl font-semibold text-gray-900'>{address.name}</h6>
         <p className='text-lg text-gray-600'>
           N° de {FIRST_HOUSE} à {LAST_HOUSE}
         </p>
@@ -87,7 +87,11 @@ export function Street({ address, actions, block }: AddressProps) {
       <Button.Root
         id="publisher-details"
         variant='ghost'
-        className={clsx('!shadow-non text-primary flex h-8 w-1/12 items-center justify-center shadow-none !p-0 mr-2 font-bold')}
+        className="
+          hidden 
+          h-8 w-1/12 !p-0 mr-2 font-bold text-primary !shadow-non  shadow-none  
+          mini:flex  mini:justify-center mini:items-center
+        "
         onClick={() => void actions.goToStreet(address.id)}
       >
         <Button.Icon icon={NavigateNext} size={24} />
