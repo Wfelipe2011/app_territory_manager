@@ -67,7 +67,7 @@ export function HouseComponent({ house, actions }: HouseProps) {
             { 'text-gray-50': notHit || house.status, },
             'mini:text-base text-sm'
           )}
-        >{rest ? "/" + rest.join('/') : ""}</span>
+        >{rest ? " " + rest.join('/') : ""}</span>
       </div>
     </div >
   );
