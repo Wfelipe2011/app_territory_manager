@@ -2,6 +2,8 @@ import { Option, Select } from '@material-tailwind/react';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 
+import TerritoryCards from '@/components/Templates/TerritoryCards';
+
 import { BuildIcon } from '@/assets/icons/BuildIcon';
 import { HouseIcon } from '@/assets/icons/HouseIcon';
 import { StoreIcon } from '@/assets/icons/StoreIcon';
@@ -133,16 +135,10 @@ export default function Territorios() {
 
         </div>
         <Body>
-          <div className='flex h-full w-full flex-col p-2 gap-4'>
-            {territoryCards?.map((territoryCard, index) => (
-              <TerritoryCard
-                key={territoryCard.territoryId}
-                territoryCard={territoryCard}
-                index={index}
-                actions={actions}
-              />
-            ))}
-          </div>
+          <TerritoryCards
+            data={territoryCards}
+            actions={actions}
+          />
         </Body>
       </div>
     </RootModeScreen>

@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { Clock, Eye, User, Users } from 'react-feather';
 
-import { ShareCopy } from '@/common/territory/ShareCopy';
 import { ITerritoryActions } from '@/common/territory/useTerritoryActions';
 import { DoughnutChart } from '@/ui/doughnutChart';
 
@@ -62,7 +61,7 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
       <div className='flex w-1/2 flex-col items-end justify-between'>
         <div className='flex w-full justify-end items-center gap-2'>
           {block?.signature?.key && (<Eye className='cursor-pointer' onClick={() => actions.blockNavigation(territoryId, block.id, round)} />)}
-          <ShareCopy
+          {/* <ShareCopy
             actions={actions}
             id={block.id}
             message={{
@@ -72,7 +71,7 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
             }}
             signatureKey={block?.signature?.key}
             key={block.id}
-          />
+          /> */}
         </div>
 
         <div className='flex w-full flex-col gap-2 p-2'>

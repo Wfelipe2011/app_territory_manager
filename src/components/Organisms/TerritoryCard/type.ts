@@ -1,3 +1,5 @@
+import { ShareMessageProps, ShareProps } from '@/components/Atoms/ShareCopy';
+
 import { Period } from '@/enum/Period';
 
 export type IUseHome = {
@@ -22,6 +24,8 @@ export type ITerritoryCard = {
     period: Period;
   }[];
   negativeCompleted: number;
+  shareData: ShareMessageProps;
+  round: number;
 };
 
 export type IActions = {

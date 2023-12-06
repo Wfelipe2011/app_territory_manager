@@ -1,9 +1,11 @@
+import dayjs from 'dayjs';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 
+import { ITerritoryCard } from '@/components/Organisms/TerritoryCard/type';
+
 import { Mode } from '@/common/loading';
-import { ITerritoryCard } from '@/common/territories/type';
 import { TerritoryTypes } from '@/common/territories/useTerritories';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
 import AxiosAdapter from '@/infra/http/AxiosAdapter';
@@ -88,7 +90,32 @@ export const useTerritoryData = () => {
       setIsLoading('not-found');
       return;
     }
-    setTerritoryCards(data);
+
+    const territoryCards = data.map((territory: ITerritoryCard) => {
+      const queryRound = new URLSearchParams({ round: selectedRoundNumber });
+      const p = `territorio/${territory.territoryId}?${queryRound.toString()}`;
+      const s = territory?.signature.key;
+      const query = new URLSearchParams(s ? { p, s } : { p });
+      const origin = window.location.origin;
+
+      const shareData = {
+        title: `*DESIGNAÇÃO DE TERRITÓRIO*`,
+        url: `${origin}/home?${query.toString()}`,
+        text: `*DESIGNAÇÃO DE TERRITÓRIO*\n\nPrezado irmão *_${territory.overseer}_*\nsegue o link para o território *${
+          territory.name
+        }* que você irá trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')} \n\n\r`,
+      };
+
+      console.log(shareData);
+
+      return {
+        ...territory,
+        round: territoryRound.selected,
+        shareData,
+      };
+    });
+
+    setTerritoryCards(territoryCards);
     setIsLoading('screen');
   };
 
