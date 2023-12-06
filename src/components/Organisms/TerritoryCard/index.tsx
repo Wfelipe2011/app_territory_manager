@@ -2,9 +2,10 @@
 import { Input } from '@material-tailwind/react';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { Actions } from '@/components/Atoms/Actions';
+import { GenericDialog } from '@/components/Atoms/GenericDialog';
 import HeaderTerritoryCard from '@/components/Molecules/HeaderTerritoryCard';
 
 import { ITerritoryActions } from '@/common/territories/useTerritories';
@@ -39,8 +40,8 @@ export function TerritoryCard({ data, actions, onShareClick }: TerritoryCardProp
   return (
     <div
       className={clsx(
-        'flex min-h-[260px] max-w-[450px] w-full flex-col rounded-lg border p-4 shadow-md',
-        data.signature.key && 'shadow-primary border-primary shadow-sm'
+        'flex min-h-[260px] max-w-[450px] w-full h-full flex-col rounded-lg border border-gray-500 p-4 shadow-md ',
+        data.signature.key && 'shadow-primary border-primary shadow-md'
       )}
     >
       <HeaderTerritoryCard
@@ -49,51 +50,10 @@ export function TerritoryCard({ data, actions, onShareClick }: TerritoryCardProp
         onShareClick={onShareClick}
       />
 
-      <div className='flex h-4/5 w-full gap-3'>
-        <div className='relative flex w-[45%] flex-col items-center justify-start gap-4 text-lg'>
-          {data.positiveCompleted.length || data.negativeCompleted ? (
-            <>
+      <div className='flex flex-col mini:flex-row h-full w-full items-center justify-between'>
 
-              <div id='admin-chart' className='flex h-[210px] w-full max-w-[150px] flex-col py-4'>
-                <DoughnutChart
-                  labels={[PeriodBR.MORNING, PeriodBR.AFTERNOON, PeriodBR.EVENING, PeriodBR.WEEKEND, 'A fazer']}
-                  values={[...calculatePeriodCounts(data.positiveCompleted), data.negativeCompleted]}
-                  backgroundColor={[...getColors().map((item) => item.bg)]}
-                  borderColor={[...getColors().map((item) => item.border)]}
-                />
-              </div>
-              <div className='absolute -bottom-2 left-0 flex w-[150%] flex-wrap gap-2'>
-                {calculatePeriodCounts(data.positiveCompleted).map((item, index) => {
-                  if (item === 0) return null;
-                  const color = getColors()[index].bg;
-                  const border = getColors()[index].border;
-                  return (
-                    <div className='flex items-center gap-2' key={index}>
-                      <div
-                        className='flex h-4 w-4 items-center justify-center rounded-full'
-                        style={{ backgroundColor: color, border: `1px solid ${border}` }}
-                      ></div>
-                      <p className='text-xs text-gray-400'>{PeriodBR[Object.keys(Period)[index]]}</p>
-                    </div>
-                  );
-                })}
-                <div className='flex items-center gap-2'>
-                  <div
-                    className='flex h-4 w-4 items-center justify-center rounded-full'
-                    style={{ backgroundColor: getColors()[4].bg, border: `1px solid ${getColors()[4].border}` }}
-                  ></div>
-                  <p className='text-xs text-gray-400'>A fazer</p>
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className='flex h-full w-full items-center justify-center'>
-              <p className='text-xs text-gray-400'>Sem dados</p>
-            </div>
-          )}
-        </div>
-
-        <div className='flex flex-col gap-2 p-2 py-5 w-44'>
+        <DoughnutChartCard data={data} />
+        <div className='flex flex-col w-full gap-2 p-2 py-5'>
           <Input
             id='admin-overseer'
             name='overseer'
@@ -187,3 +147,73 @@ function getColors() {
     },
   ];
 };
+
+
+const DoughnutChartCard = memo(({ data }: { data: ITerritoryCard }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const toggleDialog = () => setIsDialogOpen(!isDialogOpen);
+
+  const Container = ({ children }: { children: React.ReactNode }) => (
+    <div className='relative w-full h-full min-h-[150px] flex flex-col items-center justify-center gap-4 text-lg'>
+      {children}
+    </div>
+  );
+
+  if (!data.positiveCompleted.length && !data.negativeCompleted) {
+    return (
+      <Container>
+        <div className='flex h-full w-full items-center justify-center'>
+          <p className='text-xs text-gray-400'>Sem dados</p>
+        </div>
+      </Container>
+    )
+  }
+
+  return (
+    <Container>
+
+      <div
+        id='admin-chart'
+        className='flex w-full h-full max-w-[150px] min-h-[170px] flex-col justify-center p-0.5'
+        onClick={toggleDialog}
+      >
+        <DoughnutChart
+          labels={[PeriodBR.MORNING, PeriodBR.AFTERNOON, PeriodBR.EVENING, PeriodBR.WEEKEND, 'A fazer']}
+          values={[...calculatePeriodCounts(data.positiveCompleted), data.negativeCompleted]}
+          backgroundColor={[...getColors().map((item) => item.bg)]}
+          borderColor={[...getColors().map((item) => item.border)]}
+        />
+      </div>
+      <GenericDialog
+        className='absolute top-0 right-0 z-20 w-full h-full'
+        title={<span className='p-1 pb-2 font-semibold'>Legenda</span>}
+        isOpen={isDialogOpen}
+        onToggle={toggleDialog}
+      >
+        <div className='flex w-full flex-wrap gap-1'>
+          {calculatePeriodCounts(data.positiveCompleted).map((item, index) => {
+            if (item === 0) return null;
+            const color = getColors()[index].bg;
+            const border = getColors()[index].border;
+            return (
+              <div className='flex items-center gap-1 p-1' key={index}>
+                <div
+                  className='flex h-4 w-4 items-center justify-center rounded-full'
+                  style={{ backgroundColor: color, border: `1px solid ${border}` }}
+                ></div>
+                <p className='text-xs text-gray-800'>{PeriodBR[Object.keys(Period)[index]]}</p>
+              </div>
+            );
+          })}
+          <div className='flex items-center gap-1 p-1'>
+            <div
+              className='flex h-4 w-4 items-center justify-center rounded-full'
+              style={{ backgroundColor: getColors()[4].bg, border: `1px solid ${getColors()[4].border}` }}
+            ></div>
+            <p className='text-xs text-gray-800'>A fazer</p>
+          </div>
+        </div>
+      </GenericDialog>
+    </Container>
+  )
+})

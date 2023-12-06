@@ -140,7 +140,7 @@ export const useTerritories = () => {
     clearTimeout(timeout);
     timeout = setTimeout(async () => {
       void getTerritoryCards(search);
-    }, 300);
+    }, 800);
   };
 
   return {

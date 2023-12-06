@@ -1,5 +1,6 @@
 import withMT from '@material-tailwind/react/utils/withMT';
 import defaultTheme from 'tailwindcss/defaultTheme';
+/** @type {import('tailwindcss').Config} */
 
 export default withMT({
   content: [
@@ -16,11 +17,17 @@ export default withMT({
         primary: '#79AD57',
         secondary: '#CBE6BA',
         negative: '#EE3D3D80',
-        dark: '#222222',
+        ...defaultTheme.colors,
       },
       screens: {
         mini: '350px',
+        tablet: '640px',
+        laptop: '1024px',
+        desktop: '1280px',
+        ...defaultTheme.screens,
       },
+      ...defaultTheme.extend,
     },
   },
+  plugins: [],
 });

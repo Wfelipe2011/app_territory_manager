@@ -49,15 +49,15 @@ export function HeaderHome({
             <Image src={image} alt='logo' className='w-full' />
           </div>
 
-          <div className="w-60">
+          <div className="w-40 mini:w-60 md:96">
             <Input
               id="admin-filter-search"
               label='Pesquise o território'
-              className='shadow-md'
+              className='shadow-md w-full'
               value={search}
               onChange={handleChangeSearch}
-              onKeyDown={submitSearch}
               icon={<Search size={16} />}
+              autoFocus
             />
           </div>
 

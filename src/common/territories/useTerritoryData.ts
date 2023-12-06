@@ -106,11 +106,9 @@ export const useTerritoryData = () => {
         }* que você irá trabalhar até ${dayjs(territory.signature.expirationDate).format('DD/MM/YYYY')} \n\n\r`,
       };
 
-      console.log(shareData);
-
       return {
         ...territory,
-        round: territoryRound.selected,
+        round: selectedRoundNumber,
         shareData,
       };
     });
