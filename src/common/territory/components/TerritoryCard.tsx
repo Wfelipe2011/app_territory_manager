@@ -7,6 +7,7 @@ import { ITerritoryActions } from '@/common/territory/useTerritoryActions';
 import { DoughnutChart } from '@/ui/doughnutChart';
 
 import { IBlock } from '../type';
+import { ShareCopy } from '@/components/Atoms/ShareCopy';
 
 interface BlockCardProps {
   block: IBlock;
@@ -35,6 +36,12 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
     return sugestion;
   }
 
+  const shareData = {
+    title: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nPrezado(a) publicador(a)',
+    text: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nSegue o link para a quadra que você está designado(a) para pregar:',
+    url: `${window.location.origin}/home?p=territorio/${territoryId}/quadra/${block.id}&s=${block.signature?.key}`,
+  }
+
   return (
     <div className={clsx('flex min-h-[260px] w-full rounded-b-[40px] rounded-l-[40px] gap-2 rounded-t-[40px] rounded-br-none rounded-tr-none border p-3 shadow-lg')}>
       <div className='flex h-full w-1/2 flex-col items-baseline justify-start'>
@@ -61,17 +68,14 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
       <div className='flex w-1/2 flex-col items-end justify-between'>
         <div className='flex w-full justify-end items-center gap-2'>
           {block?.signature?.key && (<Eye className='cursor-pointer' onClick={() => actions.blockNavigation(territoryId, block.id, round)} />)}
-          {/* <ShareCopy
-            actions={actions}
-            id={block.id}
-            message={{
-              title: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nPrezado(a) publicador(a)',
-              text: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nSegue o link para a quadra que você está designado(a) para pregar:',
-              url: `${window.location.origin}/home?p=territorio/${territoryId}/quadra/${block.id}&s=${block.signature?.key}`,
+          <ShareCopy
+            data={{
+              message: shareData,
+              signatureKey: block?.signature?.key,
             }}
-            signatureKey={block?.signature?.key}
             key={block.id}
-          /> */}
+            onShareClick={() => actions.share(block.id)}
+          />
         </div>
 
         <div className='flex w-full flex-col gap-2 p-2'>
