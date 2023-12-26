@@ -6,7 +6,7 @@ interface IconContainerCopyProps extends React.ComponentPropsWithoutRef<'div'> {
 
 export const IconContainer = ({ icon, className, ...rest }: IconContainerCopyProps) => {
   return (
-    <div className={clsx(['p-2 cursor-pointer', className])} {...rest}>
+    <div className={clsx(['p-1 cursor-pointer', className])} {...rest}>
       {icon}
     </div>
   )

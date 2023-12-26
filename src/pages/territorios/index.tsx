@@ -14,10 +14,33 @@ import {
   useTerritories,
 } from '@/common/territories';
 import { Body } from '@/ui';
+import { driver } from 'driver.js';
+import { Info } from 'react-feather';
 
 const Icon = {
   'Residencial': <HouseIcon />,
   'Comercial': <StoreIcon />,
+}
+
+const driverAction = () => {
+  const driverObj = driver({
+    showProgress: true,
+    steps: [
+      { element: '#admin-filter-search', popover: { title: 'Pesquisar Território', description: 'Encontre o território por nome ou número.' } },
+      { element: '#admin-filter-type', popover: { title: 'Filtrar por Tipo', description: 'Filtre os territórios de acordo com o tipo.' } },
+      { element: '#admin-filter-round', popover: { title: 'Filtrar por Rodada', description: 'Filtre os territórios de acordo com a rodada.' } },
+      { element: '#admin-chart', popover: { title: 'Gráfico', description: 'Visualize no gráfico os detalhes deste território, incluindo a porcentagem de conclusão e o período de trabalho.' } },
+      { element: '#admin-overseer', popover: { title: 'Dirigente', description: 'Adicione o nome do dirigente que utilizará este território.' } },
+      { element: '#admin-expirationTime', popover: { title: 'Expiração', description: 'Adicione a data de expiração do acesso do dirigente a este território.' } },
+      { element: '#overseer-share', popover: { title: 'Compartilhar', description: 'Compartilhe o território com o dirigente.' } },
+      { element: '#admin-revoke-access', popover: { title: 'Revogar acesso', description: 'Revogue o acesso do dirigente a este território se necessário.' } },
+    ],
+    nextBtnText: 'Próximo',
+    prevBtnText: 'Anterior',
+    doneBtnText: 'Finalizar',
+    progressText: '{{current}} de {{total}}',
+  });
+  driverObj.drive()
 }
 
 export default function Territorios() {
@@ -75,8 +98,9 @@ export default function Territorios() {
       <HeaderHome
         search={search}
         handleChangeSearch={handleChangeSearch}
-        submitSearch={submitSearch}
-      />
+      >
+        <Info onClick={driverAction} size={35} fill="rgb(121 173 87 / var(--tw-text-opacity))" className='text-gray-50 cursor-pointer' />
+      </HeaderHome>
       <div className='flex w-full h-full items-center gap-2 justify-between px-2'>
         <div
           id="admin-filter-type"

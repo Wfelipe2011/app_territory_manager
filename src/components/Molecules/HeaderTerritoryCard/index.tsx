@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { Eye, Share2 } from 'react-feather';
+import { Edit, Edit2, Edit3, Eye, Share2 } from 'react-feather';
 import toast from 'react-hot-toast';
 
 import { IconContainer } from '@/components/Atoms/IconContainer';
@@ -25,18 +25,26 @@ export default function HeaderTerritoryCard({ className, data, onShareClick, ...
     navigation.push(`/territorio/${territoryId}?round=${data.round}`);
   }
 
+  const territoryEditNavigate = (territoryId: string) => {
+    navigation.push(`/territorio/${territoryId}/editar`);
+  }
+
   return (
     <div className={clsx(['flex h-full w-full items-center justify-between', className])} {...rest}>
       <h6 className='ml-2 block text-xl font-medium'>{data.name}</h6>
-      <div className='flex items-center justify-end gap-2'>
-        <EyeComponent
+      <div className='flex items-center justify-end gap-1'>
+        <IconContainer icon={<EyeComponent
           data={data.signature.key}
           onClick={() => blockNavigation(data.territoryId)}
+        />}
         />
-        <ShareComponent
+        <IconContainer icon={<ShareComponent
           condition={Boolean(data.overseer && data.signature.expirationDate)}
           data={shareData}
           onShareClick={onShareClick}
+        />}
+        />
+        <IconContainer icon={<Edit id="overseer-edit" onClick={() => territoryEditNavigate(data.territoryId)} />}
         />
       </div>
     </div>
