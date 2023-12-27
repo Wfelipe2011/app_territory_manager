@@ -26,6 +26,8 @@ import { Search, Table } from "react-feather";
 import { TabTerritoryTypes } from "@/components/Molecules";
 
 import image from '@/assets/territory_green_1.jpg';
+import { SimpleRegistrationForm } from "@/components/Organisms/SimpleRegistrationForm";
+import { DialogForm } from "@/common/territory/components/DialogForm";
 
 const TABS = [
   {
@@ -123,6 +125,7 @@ export function SortableTable({
 }: IHeaderHomeProps) {
   const [selectedType, setSelectedType] = useState<string>("1");
   const [showComponent, setShowComponent] = useState(true);
+  const [open, setOpen] = useState(false);
   const router = useRouter()
 
   const changeSelectType = (id: number) => {
@@ -134,11 +137,15 @@ export function SortableTable({
   }
 
   const navigate = () => {
-    router.push(`${window.location.href}/1`)
+    setOpen(true)
   }
   return (
     // container
     <div className='p-4 px-10'>
+      <DialogForm
+        open={open}
+        setOpen={setOpen}
+      />
 
       {/* titulo + image */}
       <div className='flex items-center gap-4 py-3'>
@@ -188,7 +195,7 @@ export function SortableTable({
             ))}
           </Select >
         </div>
-        <Button variant="filled" className="bg-primary flex items-center gap-2" size="sm">
+        <Button variant="filled" className="bg-primary flex items-center gap-2" size="sm" onClick={navigate}>
           <Typography variant="small" color="white">
             Novo
           </Typography>
