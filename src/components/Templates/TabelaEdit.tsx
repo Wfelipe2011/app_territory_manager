@@ -19,11 +19,13 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Search, Table } from "react-feather";
 
-import image from '@/assets/territory_green_1.jpg';
 import { TabTerritoryTypes } from "@/components/Molecules";
-import { useState } from "react";
+
+import image from '@/assets/territory_green_1.jpg';
 
 const TABS = [
   {
@@ -121,6 +123,7 @@ export function SortableTable({
 }: IHeaderHomeProps) {
   const [selectedType, setSelectedType] = useState<string>("1");
   const [showComponent, setShowComponent] = useState(true);
+  const router = useRouter()
 
   const changeSelectType = (id: number) => {
     setShowComponent(false); // Inicia a animação de saída
@@ -129,9 +132,13 @@ export function SortableTable({
       setShowComponent(true); // Inicia a animação de entrada
     }, 300);
   }
+
+  const navigate = () => {
+    router.push(`${window.location.href}/1`)
+  }
   return (
     // container
-    <div className='p-4'>
+    <div className='p-4 px-10'>
 
       {/* titulo + image */}
       <div className='flex items-center gap-4 py-3'>
@@ -265,7 +272,7 @@ export function SortableTable({
                       </td>
 
                       {/* Editar */}
-                      <td className={classes}>
+                      <td className={classes} onClick={navigate}>
                         <Tooltip content="Edit User">
                           <IconButton variant="text">
                             <PencilIcon className="h-4 w-4" />
