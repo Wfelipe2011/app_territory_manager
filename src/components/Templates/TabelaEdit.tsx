@@ -13,26 +13,26 @@ import {
   Chip,
   IconButton,
   Input,
+  Option,
+  Select,
   Tooltip,
   Typography,
 } from "@material-tailwind/react";
 import Image from "next/image";
-import { Search } from "react-feather";
+import { Search, Table } from "react-feather";
 
 import image from '@/assets/territory_green_1.jpg';
+import { TabTerritoryTypes } from "@/components/Molecules";
+import { useState } from "react";
 
 const TABS = [
   {
-    label: "Todos",
-    value: "all",
+    name: "Residencial",
+    id: 1,
   },
   {
-    label: "Quadra 1",
-    value: "monitored",
-  },
-  {
-    label: "Quadra 2",
-    value: "unmonitored",
+    name: "Comercial",
+    id: 2,
   },
 ];
 
@@ -40,65 +40,74 @@ const TABLE_HEAD = ["Nome da Rua", "Nº da casa", "Complemento", "Não Bater", "
 
 const TABLE_ROWS = [
   {
-    street: "Rua 1",
+    street: "Rua Francisco de Prestes Mais",
     numberHouse: "1",
     notHit: true,
     legend: "L1",
   },
   {
-    street: "Rua 2",
+    street: "Rua Barão de Cotegipe 2",
     numberHouse: "2",
     notHit: false,
     legend: "L2",
   },
   {
-    street: "Rua 3",
+    street: "Rua Barão de Cotegipe 3",
     numberHouse: "3",
     notHit: true,
     legend: "L3",
   },
   {
-    street: "Rua 4",
+    street: "Rua Barão de Cotegipe 4",
     numberHouse: "4",
     notHit: false,
     legend: "L4",
   },
   {
-    street: "Rua 5",
+    street: "Rua Barão de Cotegipe 5",
     numberHouse: "5",
     notHit: true,
     legend: "L5",
   },
   {
-    street: "Rua 6",
+    street: "Rua Barão de Cotegipe 6",
     numberHouse: "6",
     notHit: false,
     legend: "L6",
   },
   {
-    street: "Rua 7",
+    street: "Rua Barão de Cotegipe 7",
     numberHouse: "7",
     notHit: true,
     legend: "L7",
   },
   {
-    street: "Rua 8",
+    street: "Rua Barão de Cotegipe 8",
     numberHouse: "8",
     notHit: false,
     legend: "L8",
   },
   {
-    street: "Rua 9",
+    street: "Rua Barão de Cotegipe 9",
     numberHouse: "9",
     notHit: true,
     legend: "L9",
   },
   {
-    street: "Rua 10",
+    street: "Rua Barão de Cotegipe 10",
     numberHouse: "10",
     notHit: false,
     legend: "L10",
   }
+];
+
+const rounds = [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
 ];
 
 interface IHeaderHomeProps {
@@ -110,12 +119,22 @@ export function SortableTable({
   search,
   handleChangeSearch,
 }: IHeaderHomeProps) {
+  const [selectedType, setSelectedType] = useState<string>("1");
+  const [showComponent, setShowComponent] = useState(true);
+
+  const changeSelectType = (id: number) => {
+    setShowComponent(false); // Inicia a animação de saída
+    setTimeout(() => {
+      setSelectedType(String(id)); // Atualiza o tipo após a animação de saída
+      setShowComponent(true); // Inicia a animação de entrada
+    }, 300);
+  }
   return (
     // container
-    <div className='p-8'>
+    <div className='p-4'>
 
       {/* titulo + image */}
-      <div className='flex items-center gap-4 py-2'>
+      <div className='flex items-center gap-4 py-3'>
         <div className='w-[50px] overflow-hidden rounded-full '>
           <Image src={image} alt='logo' className='w-full' />
         </div>
@@ -128,7 +147,7 @@ export function SortableTable({
       </div>
 
       {/* search */}
-      <div className="w-[400px] laptop:w-[600px] mini:w-60 py-2">
+      <div className="w-[400px] laptop:w-[600px] mini:w-60 py-3">
         <Input
           id="admin-filter-search"
           label='Pesquise o território'
@@ -141,7 +160,27 @@ export function SortableTable({
       </div>
 
       {/* Filtros */}
-      <div className='py-2'>
+      <div className='py-3 flex justify-between'>
+        <div className="flex gap-2">
+          <TabTerritoryTypes
+            options={TABS}
+            changeSelectType={changeSelectType}
+            selectedType={selectedType}
+            showComponent={showComponent}
+          />
+          <Select
+            label="Quadras"
+            onChange={(value) => console.log(value)}
+            value={rounds[0]}
+            containerProps={{ className: "!min-w-[85px]" }}
+          >
+            {rounds.map((round, index) => (
+              <Option key={index} value={String(round)}>
+                {round}
+              </Option>
+            ))}
+          </Select >
+        </div>
         <Button variant="filled" className="bg-primary flex items-center gap-2" size="sm">
           <Typography variant="small" color="white">
             Novo
@@ -156,31 +195,7 @@ export function SortableTable({
         <CardBody className="overflow-scroll p-0">
           <table className=" w-full table-auto text-left">
 
-            <thead>
-              <tr>
-                {TABLE_HEAD.map((head, index) => {
-
-                  return (
-                    <th
-                      key={head}
-                      className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-3 transition-colors hover:bg-blue-gray-50"
-                    >
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
-                      >
-                        {head}{" "}
-                        {index !== TABLE_HEAD.length - 1 && (
-                          <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
-                        )}
-                      </Typography>
-                    </th>
-
-                  )
-                })}
-              </tr>
-            </thead>
+            <TableHead />
 
             <tbody>
               {TABLE_ROWS.map(
@@ -291,5 +306,87 @@ export function SortableTable({
 
     </div>
 
+  );
+}
+
+function TableHead() {
+  return (
+    <thead>
+      <tr>
+        <th
+          className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-3 transition-colors hover:bg-blue-gray-50"
+        >
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
+          >
+            Nome da Rua
+            <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
+          </Typography>
+        </th>
+        <th
+          className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-3 transition-colors hover:bg-blue-gray-50"
+        >
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
+          >
+            N° da Casa
+            <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
+          </Typography>
+        </th>
+        <th
+          className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-3 transition-colors hover:bg-blue-gray-50"
+        >
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
+          >
+            Complemento
+            <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
+          </Typography>
+        </th>
+        <th
+          className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-3 transition-colors hover:bg-blue-gray-50"
+        >
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
+          >
+            Não Bater
+            <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
+          </Typography>
+        </th>
+        <th
+          className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-3 transition-colors hover:bg-blue-gray-50"
+        >
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
+          >
+            Editar
+            <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
+          </Typography>
+        </th>
+
+        <th
+          className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-3 transition-colors hover:bg-blue-gray-50"
+        >
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
+          >
+            Excluir
+            <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
+          </Typography>
+        </th>
+      </tr>
+    </thead>
   );
 }
