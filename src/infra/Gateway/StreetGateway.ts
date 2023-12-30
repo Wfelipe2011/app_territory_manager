@@ -30,6 +30,10 @@ class StreetGateway {
   markHouse({ addressId, territoryId, blockId, houseId, status, round }: StreetGatewayParamsMarkHouse): Promise<ResponseHttp> {
     return this.httpClient.patch(`territories/${territoryId}/blocks/${blockId}/address/${addressId}/houses/${houseId}`, { status, round });
   }
+
+  getHouseById(houseId) {
+    return this.httpClient.get(`houses/${houseId}`);
+  }
 }
 
 export const streetGateway = new StreetGateway(new AxiosAdapter());

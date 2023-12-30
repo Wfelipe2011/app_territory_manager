@@ -1,34 +1,59 @@
-import { Button, Card, Input, Typography } from "@material-tailwind/react";
+import { Button, Card, Input, Option, Select, Typography } from "@material-tailwind/react";
+import { useState } from "react";
 
-export function SimpleRegistrationForm() {
+const legendas = [
+  { name: "Fundo" },
+  { name: "Terreno" },
+  { name: "Comércio" },
+  { name: "Testemunha de Jeová" },
+  { name: "Igreja" },
+  { name: "Hospital" },
+  { name: "Escola" },
+  { name: "Residência" },
+  { name: "Prédio" },
+]
+
+const dontVisitList = ["SIM", "NÃO"]
+// form {
+//   street: '',
+//   number: '',
+//   legend: '',
+//   dontVisit: '',
+//   block: '',
+// }
+
+export function SimpleRegistrationForm({ blockOptions, form }) {
+  const [blockSelected, setBlockSelected] = useState(blockOptions.find(b => b.name === form.block)?.name)
+  const [legendSelected, setLegendSelected] = useState(form.legend)
+  const [dontVisitSelected, setDontVisitSelected] = useState(form.dontVisit ? "SIM" : "NÃO")
+
+  const changeBlock = (value) => {
+    setBlockSelected(value)
+  }
+  const changeLegend = (value) => {
+    setLegendSelected(value)
+  }
+  const changeDontVisit = (value) => {
+    setDontVisitSelected(value)
+  }
+
   return (
     <Card color="transparent" shadow={false} className="w-full">
       {/* adicionar botão de fechar */}
-      <form className="m-2 w-full flex flex-col items-end">
-        <div className="mb-1 flex flex-col gap-6 w-full">
+      <form className="w-full flex flex-col items-end">
+        <div className="p-2 mb-1 flex w-full flex-col gap-6">
           {/* Linha 1 */}
-          <Typography variant="h6" color="blue-gray" className="-mb-3">
-            Rua
-          </Typography>
-          <Input
-            size="lg"
-            placeholder="João Pessoa"
-            className=" !border-t-blue-gray-200 focus:!border-t-gray-900 w-full"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-          />
 
-          {/* Linha 2 */}
-          <div className="flex gap-6">
-            <div className="mb-1 flex flex-col gap-6">
+          <div className="flex gap-2">
+            <div className="mb-1 flex flex-col gap-6 w-2/3 pr-4">
               <Typography variant="h6" color="blue-gray" className="-mb-3">
-                CEP
+                Rua
               </Typography>
               <Input
                 size="lg"
-                placeholder="180044-50"
-                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                placeholder="João Pessoa"
+                value={form.street}
+                className=" !border-t-blue-gray-200 focus:!border-t-gray-900 w-full"
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -36,11 +61,12 @@ export function SimpleRegistrationForm() {
             </div>
             <div className="mb-1 flex flex-col gap-6">
               <Typography variant="h6" color="blue-gray" className="-mb-3">
-                Quadra
+                N° Casa
               </Typography>
               <Input
                 size="lg"
-                placeholder="1"
+                placeholder="50"
+                value={form.number}
                 className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
                 labelProps={{
                   className: "before:content-none after:content-none",
@@ -49,49 +75,79 @@ export function SimpleRegistrationForm() {
             </div>
 
           </div>
+          {/* Linha 2 */}
+          <div className="flex gap-6 w-full">
 
-          {/* Linha 3 */}
-          <div className="flex gap-6">
-            <div className="mb-1 flex flex-col gap-6">
-              <Typography variant="h6" color="blue-gray" className="-mb-3">
-                Case
-              </Typography>
-              <Input
-                size="lg"
-                placeholder="50"
-                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-                labelProps={{
-                  className: "before:content-none after:content-none",
-                }}
-              />
-            </div>
             <div className="mb-1 flex flex-col gap-6">
               <Typography variant="h6" color="blue-gray" className="-mb-3">
                 Legenda
               </Typography>
-              <Input
+              <Select
                 size="lg"
-                placeholder="Fundo"
+                onChange={changeLegend}
+                value={legendSelected}
                 className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
-              />
+
+              >
+                {legendas?.map((b, index) => (
+                  // eslint-disable-next-line react/jsx-no-undef
+                  <Option key={b.name} value={String(b.name)}>
+                    {b.name}
+                  </Option>
+                ))}
+              </Select >
             </div>
+
+
             <div className="mb-1 flex flex-col gap-6">
               <Typography variant="h6" color="blue-gray" className="-mb-3">
                 Não Bater
               </Typography>
-              <Input
+              <Select
                 size="lg"
-                placeholder="1"
-                type="date"
+                onChange={changeDontVisit}
+                value={dontVisitSelected}
                 className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
-              />
+
+              >
+                {dontVisitList?.map((b, index) => (
+                  // eslint-disable-next-line react/jsx-no-undef
+                  <Option key={b} value={String(b)}>
+                    {b}
+                  </Option>
+                ))}
+              </Select >
             </div>
+            <div className="mb-1 flex flex-col gap-6">
+              <Typography variant="h6" color="blue-gray" className="-mb-3">
+                Quadra
+              </Typography>
+              <Select
+                size="lg"
+                onChange={changeBlock}
+                value={blockSelected}
+                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+
+              >
+                {blockOptions?.map((b, index) => (
+                  // eslint-disable-next-line react/jsx-no-undef
+                  <Option key={b.id} value={String(b.name)}>
+                    {b.name}
+                  </Option>
+                ))}
+              </Select >
+            </div>
+
+
 
           </div>
 
