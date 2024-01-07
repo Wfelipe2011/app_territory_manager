@@ -41,10 +41,14 @@ export function BlockCard({ block, actions, territoryId, round, reload }: BlockC
     return sugestion;
   }
 
-  const shareData = {
-    title: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nPrezado(a) publicador(a)',
-    text: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nSegue o link para a quadra que você está designado(a) para pregar:',
-    url: `${window.location.origin}/home?p=territorio/${territoryId}/quadra/${block.id}&s=${block.signature?.key}`,
+  function geParamsNavigateShare(territoryId: string, blockId: string, signature: string): { title: string; text: string; url: string } {
+    const queryRound = new URLSearchParams({ round });
+    const query = new URLSearchParams({ p: `territorio/${territoryId}/quadra/${blockId}?${queryRound.toString()}`, s: signature });
+    return {
+      title: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nPrezado(a) publicador(a)',
+      text: `*DESIGNAÇÃO DE TERRITÓRIO*\n\nSegue o link para a *${block.name}* que você está designado(a) para pregar:`,
+      url: `${window.location.origin}/home?${query.toString()}`,
+    };
   }
 
   const revokeAccess = async () => {
@@ -80,7 +84,7 @@ export function BlockCard({ block, actions, territoryId, round, reload }: BlockC
           {block?.signature?.key && (<Eye className='cursor-pointer' onClick={() => actions.blockNavigation(territoryId, block.id, round)} />)}
           <ShareCopy
             data={{
-              message: shareData,
+              message: geParamsNavigateShare(territoryId, block.id, block?.signature?.key || ''),
               signatureKey: block?.signature?.key,
             }}
             key={block.id}
