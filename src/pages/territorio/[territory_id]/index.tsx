@@ -30,6 +30,10 @@ export default function Territory() {
     }
   }, [getTerritories, query, round, territory, territoryId]);
 
+  const reload = () => {
+    getTerritories(territoryId, round);
+  }
+
   const driverAction = () => {
     const driverObj = driver({
       showProgress: true,
@@ -73,7 +77,7 @@ export default function Territory() {
         <Body>
           <div className='flex h-full w-full flex-col  gap-4'>
             {territory.blocks?.map((block, index) => (
-              <BlockCard key={block.id} block={block} index={index} actions={actions} territoryId={territory.territoryId} round={round} />
+              <BlockCard key={block.id} block={block} index={index} actions={actions} territoryId={territory.territoryId} round={round} reload={reload} />
             ))}
           </div>
         </Body>

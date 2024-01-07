@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+import { Button } from '@material-tailwind/react';
 import clsx from 'clsx';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { Clock, Eye, User, Users } from 'react-feather';
+import { Clock, Eye, StopCircle, Trash, Trash2, User, Users } from 'react-feather';
+
+import { IconContainer } from '@/components/Atoms/IconContainer';
+import { ShareCopy } from '@/components/Atoms/ShareCopy';
 
 import { ITerritoryActions } from '@/common/territory/useTerritoryActions';
+import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { DoughnutChart } from '@/ui/doughnutChart';
 
 import { IBlock } from '../type';
-import { ShareCopy } from '@/components/Atoms/ShareCopy';
 
 interface BlockCardProps {
   block: IBlock;
@@ -15,9 +19,10 @@ interface BlockCardProps {
   actions: ITerritoryActions;
   territoryId: string;
   round: string;
+  reload: () => void;
 }
 
-export function BlockCard({ block, actions, territoryId, round }: BlockCardProps) {
+export function BlockCard({ block, actions, territoryId, round, reload }: BlockCardProps) {
 
   function sugestion(): string {
     let sugestion = '';
@@ -41,6 +46,11 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
     text: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nSegue o link para a quadra que você está designado(a) para pregar:',
     url: `${window.location.origin}/home?p=territorio/${territoryId}/quadra/${block.id}&s=${block.signature?.key}`,
   }
+
+  const revokeAccess = async () => {
+    await streetGateway.revokeAccess(+territoryId, +block.id);
+    reload();
+  };
 
   return (
     <div className={clsx('flex min-h-[260px] w-full rounded-b-[40px] rounded-l-[40px] gap-2 rounded-t-[40px] rounded-br-none rounded-tr-none border p-3 shadow-lg')}>
@@ -89,6 +99,17 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
             <span>Concluído: {block.positiveCompleted}</span>
           </div>
           <div id="overseer-sugestion" className='text-sm'>Sugestão: {sugestion()}</div>
+          {block?.signature?.key && (
+            <IconContainer
+              className='w-full mt-1'
+              onClick={revokeAccess}
+              icon={
+                <Button variant='outlined' className="flex justify-center p-1.5 w-full text-center text-primary border-primary" >
+                  Revogar acesso
+                </Button>
+              }
+            />
+          )}
         </div>
 
         <div className='flex w-full '>
