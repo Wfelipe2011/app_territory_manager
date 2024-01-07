@@ -19,6 +19,15 @@ interface StreetGatewayParamsGetStreetHouses {
   round: string;
 }
 
+export type CreateHouseInput = {
+  streetId: number;
+  number: string;
+  legend: string;
+  dontVisit: boolean;
+  territoryId: number;
+  blockId: number;
+};
+
 class StreetGateway {
   constructor(private readonly httpClient: HttpClient) {}
 
@@ -33,6 +42,22 @@ class StreetGateway {
 
   getHouseById(houseId) {
     return this.httpClient.get(`houses/${houseId}`);
+  }
+
+  getAll(territoryId: number) {
+    return this.httpClient.get(`territories/${territoryId}/addresses`);
+  }
+
+  createHouse(house: CreateHouseInput) {
+    return this.httpClient.post(`houses`, house);
+  }
+
+  deleteHouse(houseId: number) {
+    return this.httpClient.delete(`houses/${houseId}`);
+  }
+
+  updateHouse(house: CreateHouseInput, houseId: number) {
+    return this.httpClient.put(`houses/${houseId}`, house);
   }
 }
 

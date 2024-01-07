@@ -26,6 +26,7 @@ import image from '@/assets/territory_green_1.jpg';
 import { Mode, RootModeScreen } from "@/common/loading";
 import { DialogForm } from "@/common/territory/components/DialogForm";
 import { TerritoryGateway } from "@/infra/Gateway/TerritoryGateway";
+import { streetGateway } from "@/infra/Gateway/StreetGateway";
 
 export interface Territory {
   name: string;
@@ -75,7 +76,7 @@ export function SortableTable() {
   const [isLoading, setIsLoading] = useState<Mode>('loading');
   const [open, setOpen] = useState<number | boolean>(false);
   const [search, setSearch] = useState<string>('');
-  const [territory, serTerritory] = useState<Omit<Territory, 'house' | 'pagination'>>()
+  const [territory, serTerritory] = useState<Omit<Territory, 'house' | 'pagination'> & { id: number }>()
   const [blockSelected, setBlockSelected] = useState("");
   const [blockOptions, setBlock] = useState<{ id: number, name: string }[]>([]);
   const [house, setHouse] = useState<{ data: House[], pagination: Pagination }>({ data: [], pagination: { currentPage: 1, pageSize: 10, totalHouses: 0, totalPages: 1 } })
@@ -117,6 +118,7 @@ export function SortableTable() {
     if (!data) return;
 
     serTerritory({
+      id: +territoryId,
       name: data.name,
       imageURL: data.imageURL,
       historyOverseer: data.historyOverseer,
@@ -129,7 +131,6 @@ export function SortableTable() {
   }
 
   async function getData() {
-    setIsLoading('loading')
     await TerritoryGateway.in().getTerritoryBlocks<{ id: number; name: string; }[]>(+territoryId).then(async (result) => {
       if (result.status !== 200) return;
       if (!result.data?.length) return;
@@ -146,6 +147,7 @@ export function SortableTable() {
   }
 
   useEffect(() => {
+    setIsLoading('loading')
     getData()
     return () => {
       setBlock([])
@@ -186,13 +188,21 @@ export function SortableTable() {
     setOpen(houseId)
   }
 
+  const deleteHouse = async (houseId: number) => {
+    await streetGateway.deleteHouse(houseId)
+    setSearch("")
+    await getData()
+  }
+
   return (
     // container
     <RootModeScreen mode={isLoading}>
       <DialogForm
+        territory={territory}
         open={open}
         setOpen={setOpen}
         blockOptions={blockOptions}
+        getData={getData}
       />
       <div className='p-4 px-10'>
         {/* titulo + image */}
@@ -331,7 +341,7 @@ export function SortableTable() {
                           </Tooltip>
                         </td>
                         {/* Excluir */}
-                        <td className={classes}>
+                        <td className={classes} onClick={() => deleteHouse(id)} >
                           <Tooltip content="Delete User">
                             <IconButton variant="text">
                               <TrashIcon className="h-4 w-4" />
