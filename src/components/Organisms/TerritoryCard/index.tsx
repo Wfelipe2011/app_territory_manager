@@ -3,9 +3,11 @@ import { Input } from '@material-tailwind/react';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { memo, useEffect, useState } from 'react';
+import { Info } from 'react-feather';
 
 import { Actions } from '@/components/Atoms/Actions';
 import { GenericDialog } from '@/components/Atoms/GenericDialog';
+import { IconContainer } from '@/components/Atoms/IconContainer';
 import HeaderTerritoryCard from '@/components/Molecules/HeaderTerritoryCard';
 
 import { ITerritoryActions } from '@/common/territories/useTerritories';
@@ -171,11 +173,9 @@ const DoughnutChartCard = memo(({ data }: { data: ITerritoryCard }) => {
 
   return (
     <Container>
-
       <div
         id='admin-chart'
-        className='flex w-full h-full max-w-[150px] min-h-[170px] flex-col justify-center p-0.5'
-        onClick={toggleDialog}
+        className='flex w-full h-full max-w-[150px] min-h-[170px] flex-col justify-center p-0.5 relative'
       >
         <DoughnutChart
           labels={[PeriodBR.MORNING, PeriodBR.AFTERNOON, PeriodBR.EVENING, PeriodBR.WEEKEND, 'A fazer']}
@@ -183,6 +183,10 @@ const DoughnutChartCard = memo(({ data }: { data: ITerritoryCard }) => {
           backgroundColor={[...getColors().map((item) => item.bg)]}
           borderColor={[...getColors().map((item) => item.border)]}
         />
+        <IconContainer
+          icon={<Info size={20} />}
+          className='absolute -bottom-2 -left-3' onClick={toggleDialog}>
+        </IconContainer>
       </div>
       <GenericDialog
         className='absolute top-0 right-0 z-20 w-full h-full'
