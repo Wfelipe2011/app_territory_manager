@@ -7,7 +7,8 @@ import { parseCookies } from 'nookies';
 import { env } from '@/constant';
 
 import type HttpClient from './HttpClient';
-export const URL_API = 'https://territory-manager.com.br/v1';
+export const URL_API = 'http://localhost:3000/v1';
+// export const URL_API = 'https://territory-manager.com.br/v1';
 
 type AxiosResponse<T> =
   | {

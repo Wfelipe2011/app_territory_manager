@@ -21,6 +21,7 @@ export type House = {
   order: string;
   legend: string;
   status: boolean;
+  dontVisit: boolean;
 };
 
 export type IMessage = {

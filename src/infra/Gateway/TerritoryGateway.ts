@@ -48,6 +48,14 @@ class TerritoryGatewayHttp {
   getTerritoryTypes<T>(): Promise<ResponseHttp<T>> {
     return this.http.get(`territories/types`);
   }
+
+  getTerritoryBlocks<T>(id: number): Promise<ResponseHttp<T>> {
+    return this.http.get(`territories/${id}/blocks`);
+  }
+
+  getTerritoryEditById<T>(id: number, query: string): Promise<ResponseHttp<T>> {
+    return this.http.get(`territories/${id}/edit?${query}`);
+  }
 }
 
 const territoryGatewayHttp = new TerritoryGatewayHttp(new AxiosAdapter());
