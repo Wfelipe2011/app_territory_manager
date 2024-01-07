@@ -9,9 +9,7 @@ type HouseProps = {
 };
 
 export function HouseComponent({ house, actions }: HouseProps) {
-  const [numberHouse, ...rest] = house.number.split('/')
-  const complement = house.number.split('/')
-  const notHit = house.legend === "Não Bater"
+  const notHit = house.dontVisit
 
   return (
     <div
@@ -32,11 +30,11 @@ export function HouseComponent({ house, actions }: HouseProps) {
             actions.mark(house.id),
             {
               loading: 'Salvando...',
-              success: <b>Casa {numberHouse} {house.status ? "marcada" : "desmarcada"} com sucesso!</b>,
+              success: <b>Casa {house.number} {house.status ? "marcada" : "desmarcada"} com sucesso!</b>,
               error: (value) => {
                 return (
                   <div>
-                    <b>Erro ao {!house.status ? "marcar" : "desmarcar"} casa {numberHouse}!</b>
+                    <b>Erro ao {!house.status ? "marcar" : "desmarcar"} casa {house.number}!</b>
                     <br />
                     <span>{value.message}</span>
                   </div>
@@ -61,13 +59,13 @@ export function HouseComponent({ house, actions }: HouseProps) {
             { 'text-gray-50': notHit || house.status, },
             'mini:text-lg text-base'
           )}
-        >{numberHouse}</span>
+        >{house.number}</span>
         <span
           className={clsx(
             { 'text-gray-50': notHit || house.status, },
             'mini:text-base text-sm'
           )}
-        >{rest ? " " + rest.join('/') : ""}</span>
+        >{house.legend ? `/${house.legend}` : ''}</span>
       </div>
     </div >
   );

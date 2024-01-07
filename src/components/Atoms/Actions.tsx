@@ -1,6 +1,7 @@
 import { Button } from "@material-tailwind/react";
 
-import { IActions, ITerritoryCard } from "@/common/territories/type";
+import { IActions, ITerritoryCard } from "@/components/Organisms/TerritoryCard/type";
+
 
 interface ActionsProps {
   territoryCard: ITerritoryCard;

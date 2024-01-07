@@ -2,7 +2,8 @@ import dayjs from 'dayjs';
 import { Dispatch, SetStateAction } from 'react';
 import toast from 'react-hot-toast';
 
-import { ITerritoryCard } from '@/common/territories/type';
+import { ITerritoryCard } from '@/components/Organisms/TerritoryCard/type';
+
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
 import { navigatorShare } from '@/utils/share';
 

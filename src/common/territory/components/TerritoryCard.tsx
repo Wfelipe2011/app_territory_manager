@@ -3,11 +3,11 @@ import clsx from 'clsx';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { Clock, Eye, User, Users } from 'react-feather';
 
-import { ShareCopy } from '@/common/territory/ShareCopy';
 import { ITerritoryActions } from '@/common/territory/useTerritoryActions';
 import { DoughnutChart } from '@/ui/doughnutChart';
 
 import { IBlock } from '../type';
+import { ShareCopy } from '@/components/Atoms/ShareCopy';
 
 interface BlockCardProps {
   block: IBlock;
@@ -34,6 +34,12 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
       sugestion = '4 pares ou mais.';
     }
     return sugestion;
+  }
+
+  const shareData = {
+    title: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nPrezado(a) publicador(a)',
+    text: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nSegue o link para a quadra que você está designado(a) para pregar:',
+    url: `${window.location.origin}/home?p=territorio/${territoryId}/quadra/${block.id}&s=${block.signature?.key}`,
   }
 
   return (
@@ -63,15 +69,12 @@ export function BlockCard({ block, actions, territoryId, round }: BlockCardProps
         <div className='flex w-full justify-end items-center gap-2'>
           {block?.signature?.key && (<Eye className='cursor-pointer' onClick={() => actions.blockNavigation(territoryId, block.id, round)} />)}
           <ShareCopy
-            actions={actions}
-            id={block.id}
-            message={{
-              title: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nPrezado(a) publicador(a)',
-              text: '*DESIGNAÇÃO DE TERRITÓRIO*\n\nSegue o link para a quadra que você está designado(a) para pregar:',
-              url: `${window.location.origin}/home?p=territorio/${territoryId}/quadra/${block.id}&s=${block.signature?.key}`,
+            data={{
+              message: shareData,
+              signatureKey: block?.signature?.key,
             }}
-            signatureKey={block?.signature?.key}
             key={block.id}
+            onShareClick={() => actions.share(block.id)}
           />
         </div>
 

@@ -24,7 +24,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
 }) => {
   const projectVersion = 'v1.1.0';
   return (
-    <>
+    <div className='m-auto max-w-[1880px] '>
       <Toaster />
       {mode === 'loading' && <Loading />}
       {mode === 'screen' && children}
@@ -44,6 +44,6 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
       >
         Versão 1.1.0
       </Tooltip>
-    </>
+    </div>
   );
 };

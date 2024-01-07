@@ -13,18 +13,21 @@ interface AddressProps {
   actions: IActions;
 }
 
+// regex para remover todas as letras do house e manter apenas os numeros
+
+const regex = /\D/g;
+
 export function Street({ address, actions, block }: AddressProps) {
-  const FIRST_HOUSE = address?.houses[0];
-  const LAST_HOUSE = address?.houses[address?.houses.length - 1];
+  const houses = address.houses.filter((house) => !regex.test(house));
+  const FIRST_HOUSE = houses[0];
+  const LAST_HOUSE = houses[houses.length - 1];
   const [url, setUrl] = useState<string>('');
 
   const addressTo = useCallback(() => {
-    const [_, territoryNameRaw] = block.territoryName.split('-');
-    const territoryName = territoryNameRaw.trim().replace(/\d/g, '');
-    const middleHouse = Math.round(address?.houses.length / 2);
-    const loc = `${territoryName} ${address.name} ${address?.houses[middleHouse]}`;
+    const middleHouse = Math.round(houses.length / 2);
+    const loc = `${address.name} ${houses[middleHouse]} - Sorocaba - SP`;
     return loc;
-  }, [address, block.territoryName]);
+  }, [address]);
 
   const toMapsWithNavigator = useCallback(() => {
     if ('geolocation' in navigator) {
