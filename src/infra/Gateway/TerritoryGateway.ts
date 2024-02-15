@@ -28,8 +28,8 @@ class TerritoryGatewayHttp {
     return this.http.post(`territories/${id}/rounds/finish`);
   }
 
-  startRound(id: string): Promise<ResponseHttp> {
-    return this.http.post(`territories/${id}/rounds/start`);
+  startRound(): Promise<ResponseHttp> {
+    return this.http.post(`rounds/start`);
   }
 
   signInTerritory(data: { overseer: string; expirationTime: string; round: string }, id: string): Promise<ResponseHttp> {

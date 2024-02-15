@@ -1,6 +1,8 @@
 import { Option, Select } from '@material-tailwind/react';
 import clsx from 'clsx';
+import { driver } from 'driver.js';
 import { useEffect, useState } from 'react';
+import { Info } from 'react-feather';
 
 import TerritoryCards from '@/components/Templates/TerritoryCards';
 
@@ -10,12 +12,9 @@ import { StoreIcon } from '@/assets/icons/StoreIcon';
 import { RootModeScreen } from '@/common/loading';
 import {
   HeaderHome,
-  TerritoryCard,
   useTerritories,
 } from '@/common/territories';
-import { Body } from '@/ui';
-import { driver } from 'driver.js';
-import { Info } from 'react-feather';
+import { Body, Button } from '@/ui';
 
 const Icon = {
   'Residencial': <HouseIcon />,
@@ -54,7 +53,8 @@ export default function Territorios() {
     setTypes,
     setRound,
     handleChangeSearch,
-    submitSearch
+    submitSearch,
+    newRound
   } = useTerritories();
 
   const [selectedType, setSelectedType] = useState<string>();
@@ -71,6 +71,9 @@ export default function Territorios() {
       }
     )
   }
+
+
+
 
   const changeSelectType = (id: number) => {
     setShowComponent(false); // Inicia a animação de saída
@@ -105,6 +108,7 @@ export default function Territorios() {
         <div
           id="admin-filter-type"
           className="my-2 flex items-center">
+
           <div className="flex">
             {types.options.map((type, index) => {
               const isSelected = selectedType == String(type.id);
@@ -137,7 +141,7 @@ export default function Territorios() {
           </div>
         </div>
 
-        {isLoading !== 'loading' ? (<div id="admin-filter-round">
+        {isLoading !== 'loading' ? (<div className='flex gap-2 justify-center items-center' id="admin-filter-round">
           <Select
             label="Rodada"
             onChange={(value) => handleSelectRound(value)}
@@ -150,6 +154,15 @@ export default function Territorios() {
               </Option>
             ))}
           </Select >
+          <Button.Root
+            type='button'
+            variant='primary'
+            className='hidden md:block h-10 w-[250px] text-gray-50'
+            onClick={newRound}
+          >
+            Nova Rodada
+          </Button.Root>
+
         </div>) :
           (
             <div className="flex items-center gap-2">

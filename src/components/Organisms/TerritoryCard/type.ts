@@ -29,7 +29,6 @@ export type ITerritoryCard = {
 };
 
 export type IActions = {
-  changeRound: (id: string) => Promise<void>;
   share: (territoryId: string) => Promise<void>;
   copyShare: (territoryId: string) => void;
   updateData: (event: React.ChangeEvent<HTMLInputElement>, territoryId: string) => void;

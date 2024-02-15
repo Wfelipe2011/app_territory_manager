@@ -15,7 +15,6 @@ export interface TerritoryTypes {
 export type ITerritoryActions = {
   share: (territoryId: string) => Promise<void>;
   copyShare: (territoryId: string) => Promise<void>;
-  changeRound: (id: string) => Promise<void>;
   updateData: (event: any, territoryId: string) => void;
   revoke: (territoryId: string) => Promise<any>;
   updateDateTime: (event: any, territoryId: string) => void;
@@ -25,7 +24,7 @@ export type ITerritoryActions = {
 let timeout: NodeJS.Timeout;
 
 export const useTerritories = () => {
-  const { search, setSearch, round, setRound, types, setTypes, isLoading, territoryCards, setTerritoryCards, getTerritoryCards } = useTerritoryData();
+  const { search, setSearch, round, setRound, types, setTypes, isLoading, territoryCards, setTerritoryCards, getTerritoryCards, newRound } = useTerritoryData();
   const navigation = useNavigation();
 
   const blockNavigation = (territoryId: string) => {
@@ -35,40 +34,6 @@ export const useTerritories = () => {
   useEffect(() => {
     void getTerritoryCards();
   }, [round.selected, types.selected]);
-
-  // actions round
-  const changeRound = async (id: string): Promise<void> => {
-    const territory = territoryCards.find((territory) => territory.territoryId === id);
-    if (!territory) {
-      toast.error('Território não encontrado');
-      return;
-    }
-    if (territory.hasRounds) {
-      void (await finishRound(id));
-    } else {
-      void (await startRound(id));
-    }
-
-    void getTerritoryCards();
-  };
-
-  // actions round
-  const finishRound = async (id: string): Promise<void> => {
-    const { status } = await TerritoryGateway.in().finishRound(id);
-    if (status > 299) {
-      toast.error('Erro ao fechar rodada do território');
-      return;
-    }
-  };
-
-  // actions round
-  const startRound = async (id: string): Promise<void> => {
-    const { status } = await TerritoryGateway.in().startRound(id);
-    if (status > 299) {
-      toast.error('Erro ao abrir rodada do território');
-      return;
-    }
-  };
 
   const updateData = (event: React.ChangeEvent<HTMLInputElement>, territoryId: string): void => {
     const { name, value } = event.target;
@@ -147,7 +112,6 @@ export const useTerritories = () => {
     search,
     territoryCards,
     actions: {
-      changeRound,
       updateData,
       revoke,
       updateDateTime,
@@ -165,5 +129,6 @@ export const useTerritories = () => {
     handleChangeSearch,
     submitSearch: () => void submitSearch(),
     isLoading,
+    newRound,
   };
 };
