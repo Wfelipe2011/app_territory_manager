@@ -14,8 +14,8 @@ export default withMT({
         primary: ['Quicksand', ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        primary: '#79AD57',
-        secondary: '#CBE6BA',
+        primary: '#5B98AB',
+        secondary: '#CEE1E6',
         negative: '#EE3D3D80',
         ...defaultTheme.colors,
       },
