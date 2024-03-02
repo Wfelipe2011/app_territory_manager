@@ -18,6 +18,7 @@ import { env } from '@/constant';
 import { URL_API } from '@/infra/http/AxiosAdapter';
 import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { Body, Button, Header } from '@/ui';
+import { PostAddIcon } from '@/assets/icons/PostAddIcon';
 
 const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
 const { token, signatureId } = env.storage;
@@ -143,7 +144,7 @@ export default function StreetData() {
       <HelpCircle
         onClick={driverAction}
         size={50}
-        fill='rgb(121 173 87 / 1)'
+        fill='#5B98AB'
         className='fixed bottom-0 right-0 p-1 mini:p-0 z-10 m-2 mini:m-4 cursor-pointer text-gray-50'
       />
       <div className={clsx('relative')}>
@@ -162,11 +163,12 @@ export default function StreetData() {
               <h6 className='pt-4 text-lg font-semibold'>CASAS</h6>
             </div>
             <div className='flex items-center gap-3'>
-              {phone && (<Image src={post} onClick={report} id="publisher-report" className='cursor-pointer' alt="Reportar mudanças" />)}
+              {phone && (<PostAddIcon id='publisher-report' className='cursor-pointer' onClick={report} />)}
+
               {connections ? (
                 <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
                   {connections}
-                  <Users id='publisher-connections' size={24} fill='#9EE073' color='#9EE073' />
+                  <Users id='publisher-connections' size={24} fill='#5B98AB' color='#5B98AB' />
                 </div>
               ) : (
                 <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
