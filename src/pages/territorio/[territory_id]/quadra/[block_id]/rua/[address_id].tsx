@@ -163,7 +163,7 @@ export default function StreetData() {
               <h6 className='pt-4 text-lg font-semibold'>CASAS</h6>
             </div>
             <div className='flex items-center gap-3'>
-              {phone && (<PostAddIcon id='publisher-report' className='cursor-pointer' onClick={report} />)}
+              {phone && (<div id='publisher-report' className='cursor-pointer' onClick={report}><PostAddIcon /></div>)}
 
               {connections ? (
                 <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
