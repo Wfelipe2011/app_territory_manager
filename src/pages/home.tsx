@@ -66,10 +66,10 @@ export default function Home() {
 
   return (
     <RootModeScreen mode={isLoading}>
-      <div className='flex h-screen flex-col items-center justify-center p-4 pb-12 bg-[#CEE1E6]'>
+      <div className='flex h-screen flex-col items-center justify-center p-4 pb-12 bg-[#DDF5CE]'>
 
         <div className='flex flex-col justify-center items-center bg-gray-50 rounded-xl w-full p-4 mini:p-6 pb-8 gap-4 shadow-xl'>
-          <div className='max-w-[250px] overflow-hidden rounded-full bg-[#5B98AB]'>
+          <div className='max-w-[250px] overflow-hidden rounded-full bg-[#9EE073]'>
             <Image src={logo} alt='Logo Território Digital' className='w-[200px]' />
           </div>
 

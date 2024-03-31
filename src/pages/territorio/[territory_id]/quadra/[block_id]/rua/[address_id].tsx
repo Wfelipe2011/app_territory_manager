@@ -144,7 +144,7 @@ export default function StreetData() {
       <HelpCircle
         onClick={driverAction}
         size={50}
-        fill='#5B98AB'
+        fill='#9EE073'
         className='fixed bottom-0 right-0 p-1 mini:p-0 z-10 m-2 mini:m-4 cursor-pointer text-gray-50'
       />
       <div className={clsx('relative')}>
@@ -168,7 +168,7 @@ export default function StreetData() {
               {connections ? (
                 <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
                   {connections}
-                  <Users id='publisher-connections' size={24} fill='#5B98AB' color='#5B98AB' />
+                  <Users id='publisher-connections' size={24} fill='#9EE073' color='#9EE073' />
                 </div>
               ) : (
                 <div className='flex items-center justify-center gap-2 text-lg font-semibold'>

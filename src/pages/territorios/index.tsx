@@ -102,7 +102,7 @@ export default function Territorios() {
         search={search}
         handleChangeSearch={handleChangeSearch}
       >
-        <Info onClick={driverAction} size={35} fill="#5B98AB" className='text-gray-50 cursor-pointer' />
+        <Info onClick={driverAction} size={35} fill="#9EE073" className='text-gray-50 cursor-pointer' />
       </HeaderHome>
       <div className='flex w-full h-full items-center gap-2 justify-between px-2'>
         <div
