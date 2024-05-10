@@ -36,7 +36,7 @@ export default function Block() {
 
   return (
     <RootModeScreen mode={isLoading}>
-      <HelpCircle onClick={driverAction} size={50} fill="rgb(121 173 87 / 1)" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4' />
+      <HelpCircle onClick={driverAction} size={50} fill="#9EE073" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4' />
       <div className={clsx('relative')}>
         {block.imageUrl && (
           <DialogMap title={block.territoryName}>

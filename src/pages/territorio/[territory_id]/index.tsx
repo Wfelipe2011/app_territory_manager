@@ -30,6 +30,10 @@ export default function Territory() {
     }
   }, [getTerritories, query, round, territory, territoryId]);
 
+  const reload = () => {
+    getTerritories(territoryId, round);
+  }
+
   const driverAction = () => {
     const driverObj = driver({
       showProgress: true,
@@ -51,7 +55,7 @@ export default function Territory() {
 
   return (
     <RootModeScreen mode={isLoading}>
-      <HelpCircle onClick={driverAction} size={50} fill="rgb(121 173 87 / 1)" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4' />
+      <HelpCircle onClick={driverAction} size={50} fill="#9EE073" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4' />
       <div className={clsx('relative')}>
         {territory.imageUrl && (
           <DialogMap title={territory.territoryName}>
@@ -73,7 +77,7 @@ export default function Territory() {
         <Body>
           <div className='flex h-full w-full flex-col  gap-4'>
             {territory.blocks?.map((block, index) => (
-              <BlockCard key={block.id} block={block} index={index} actions={actions} territoryId={territory.territoryId} round={round} />
+              <BlockCard key={block.id} block={block} index={index} actions={actions} territoryId={territory.territoryId} round={round} reload={reload} />
             ))}
           </div>
         </Body>

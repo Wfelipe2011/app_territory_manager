@@ -88,9 +88,9 @@ export function SortableTable() {
       getHouse({
         block: blockSelected,
         search: e.target.value,
-        page: String(house.pagination.currentPage)
+        page: String(1)
       })
-    }, 800)
+    }, 1500)
   }
 
   const navigate = () => {
@@ -204,7 +204,7 @@ export function SortableTable() {
         blockOptions={blockOptions}
         getData={getData}
       />
-      <div className='p-4 px-10'>
+      <div className='m-auto p-4 px-10 max-w-[1480px]'>
         {/* titulo + image */}
         <div className='flex items-center gap-4 py-3'>
           <div className='w-[50px] overflow-hidden rounded-full '>

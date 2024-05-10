@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import toast from 'react-hot-toast';
 
 const legendas = [
-  { name: "Fundo" },
+  { name: "Fundos" },
   { name: "Terreno" },
   { name: "Comércio" },
   { name: "Testemunha de Jeová" },

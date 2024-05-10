@@ -117,6 +117,15 @@ export const useTerritoryData = () => {
     setIsLoading('screen');
   };
 
+  const newRound = async () => {
+    setIsLoading('loading');
+    await TerritoryGateway.in().startRound();
+    setTerritoryRound({ options: [], selected: '' });
+    await getTerritoryRound();
+    await getTerritoryCards();
+    setIsLoading('screen');
+  };
+
   return {
     search: searchQuery,
     setSearch: setSearchQuery,
@@ -128,5 +137,6 @@ export const useTerritoryData = () => {
     territoryCards,
     setTerritoryCards,
     getTerritoryCards,
+    newRound,
   };
 };

@@ -16,7 +16,9 @@ import { RootModeScreen } from '@/common/loading';
 import { HouseComponent, IMessage, Subtitle, useStreet } from '@/common/street';
 import { env } from '@/constant';
 import { URL_API } from '@/infra/http/AxiosAdapter';
+import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { Body, Button, Header } from '@/ui';
+import { PostAddIcon } from '@/assets/icons/PostAddIcon';
 
 const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
 const { token, signatureId } = env.storage;
@@ -31,6 +33,7 @@ export default function StreetData() {
   const [connections, setConnections] = useState<number>(0);
   const { street, actions, getStreet, isLoading } = useStreet(address_id, block_id, territory_id, round);
   const [columnsByWidth, setColumnsByWidth] = useState<number>(3);
+  const [phone, setPhone] = useState<string>('');
 
   const back = () => {
     navigate.back();
@@ -123,17 +126,25 @@ export default function StreetData() {
 
   const report = () => {
     const mensagem = encodeURIComponent(`REPORTAR MUDANÇA\nOlá, gostaria de reportar uma mudança no território.\nTerritório: ${street.territoryName}\nQuadra: ${street.blockName}\nRua:  ${street.streetName}\nAlteração:`);
-    const numeroTelefone = '5515981464391';
+    const numeroTelefone = '55' + phone;
     const link = `https://api.whatsapp.com/send?phone=${numeroTelefone}&text=${mensagem}`;
     window.open(link);
   };
+
+  useEffect(() => {
+    streetGateway.getPhoneReport().then((response) => {
+      if (response.status === 200) {
+        setPhone(response.data.phone);
+      }
+    });
+  }, []);
 
   return (
     <RootModeScreen mode={isLoading}>
       <HelpCircle
         onClick={driverAction}
         size={50}
-        fill='rgb(121 173 87 / 1)'
+        fill='#9EE073'
         className='fixed bottom-0 right-0 p-1 mini:p-0 z-10 m-2 mini:m-4 cursor-pointer text-gray-50'
       />
       <div className={clsx('relative')}>
@@ -152,7 +163,8 @@ export default function StreetData() {
               <h6 className='pt-4 text-lg font-semibold'>CASAS</h6>
             </div>
             <div className='flex items-center gap-3'>
-              <Image src={post} onClick={report} id="publisher-report" className='cursor-pointer' alt="Reportar mudanças" />
+              {phone && (<div id='publisher-report' className='cursor-pointer' onClick={report}><PostAddIcon /></div>)}
+
               {connections ? (
                 <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
                   {connections}

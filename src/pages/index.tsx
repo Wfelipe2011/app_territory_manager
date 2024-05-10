@@ -107,8 +107,8 @@ export default function HomePage() {
       <RootModeScreen mode={isLoading}>
         <div className={clsx('relative h-screen m-auto max-w-[500px] flex flex-col justify-center py-10')}>
           <div className='flex h-2/4 items-center justify-center'>
-            <div className='max-w-[250px] overflow-hidden rounded-full bg-[#7AAD58] p-4'>
-              <Image src={image} alt='logo' className='w-full' />
+            <div className='max-w-[250px] overflow-hidden rounded-full bg-[#9EE073]'>
+              <Image src={image} alt='logo' className='w-[200px]' />
             </div>
           </div>
           <Body className='h-[calc(100vh-50%)]'>

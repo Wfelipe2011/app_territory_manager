@@ -59,6 +59,14 @@ class StreetGateway {
   updateHouse(house: CreateHouseInput, houseId: number) {
     return this.httpClient.put(`houses/${houseId}`, house);
   }
+
+  revokeAccess(territoryId: number, blockId: number) {
+    return this.httpClient.delete(`territories/${territoryId}/blocks/${blockId}/signature`);
+  }
+
+  getPhoneReport() {
+    return this.httpClient.get(`tenancy/info`);
+  }
 }
 
 export const streetGateway = new StreetGateway(new AxiosAdapter());
