@@ -73,7 +73,7 @@ export const useTerritoryData = () => {
 
     const typesSorted = data
       .sort((a, b) => b.name.localeCompare(a.name))
-      .filter((type) => type.name.includes('Residencial') || type.name.includes('Comercial'));
+      .filter((type) => type.name.includes('Residencial') || type.name.includes('Comercial') || type.name.includes('Prédios'));
     setTerritoryTypes({
       options: typesSorted,
       selected: territoryTypes.selected || typesSorted[0].id.toString(),

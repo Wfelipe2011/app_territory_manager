@@ -19,6 +19,7 @@ import { Body, Button } from '@/ui';
 const Icon = {
   'Residencial': <HouseIcon />,
   'Comercial': <StoreIcon />,
+  'Prédios': <BuildIcon />,
 }
 
 const driverAction = () => {
@@ -133,11 +134,6 @@ export default function Territorios() {
                 </button>
               )
             })}
-            <button
-              className="flex items-center gap-2 text-lg p-2 px-3 border rounded-lg"
-            >
-              <BuildIcon />
-            </button>
           </div>
         </div>
 
