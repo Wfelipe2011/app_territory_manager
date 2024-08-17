@@ -81,7 +81,7 @@ export function BlockCard({ block, actions, territoryId, round, reload }: BlockC
 
       <div className='flex w-1/2 flex-col items-end justify-between'>
         <div className='flex w-full justify-end items-center gap-2'>
-          {block?.signature?.key && (<Eye className='cursor-pointer' onClick={() => actions.blockNavigation(territoryId, block.id, round)} />)}
+          {block?.signature?.key && (<Eye className='cursor-pointer text-primary' onClick={() => actions.blockNavigation(territoryId, block.id, round)} />)}
           <ShareCopy
             data={{
               message: geParamsNavigateShare(territoryId, block.id, block?.signature?.key || ''),

@@ -4,6 +4,8 @@ import { driver } from 'driver.js';
 import { useEffect, useState } from 'react';
 import { Info } from 'react-feather';
 
+import { changeTheme, ThemeMode } from '@/lib/changeTheme';
+
 import TerritoryCards from '@/components/Templates/TerritoryCards';
 
 import { BuildIcon } from '@/assets/icons/BuildIcon';
@@ -15,10 +17,12 @@ import {
   useTerritories,
 } from '@/common/territories';
 import { Body, Button } from '@/ui';
+import AxiosAdapter from '@/infra/http/AxiosAdapter';
 
 const Icon = {
   'Residencial': <HouseIcon />,
   'Comercial': <StoreIcon />,
+  'Prédios': <BuildIcon />,
 }
 
 const driverAction = () => {
@@ -41,6 +45,8 @@ const driverAction = () => {
   });
   driverObj.drive()
 }
+
+const axios = new AxiosAdapter()
 
 export default function Territorios() {
   const {
@@ -95,6 +101,12 @@ export default function Territorios() {
     setSelectedType(String(types.selected))
   }, [types.selected]);
 
+  useEffect(() => {
+    axios.get<ThemeMode>(`rounds/theme/${round.selected}`).then((response) => {
+      changeTheme(response.data);
+    })
+  }, [round.selected]);
+
   return (
 
     <div className={clsx('relative pb-12')}>
@@ -102,7 +114,7 @@ export default function Territorios() {
         search={search}
         handleChangeSearch={handleChangeSearch}
       >
-        <Info onClick={driverAction} size={35} fill="#9EE073" className='text-gray-50 cursor-pointer' />
+        <Info onClick={driverAction} size={35} fill="current" className='text-gray-50 cursor-pointer fill-primary' />
       </HeaderHome>
       <div className='flex w-full h-full items-center gap-2 justify-between px-2'>
         <div
@@ -117,7 +129,7 @@ export default function Territorios() {
                   key={index}
                   onClick={() => changeSelectType(type.id)}
                   className={clsx(
-                    'flex items-center gap-2 text-lg  p-2 px-3',
+                    'flex items-center gap-2 text-lg  p-2 px-3 fill-primary',
                     isSelected ? 'border-b' : 'border rounded-lg'
                   )}
                   value={type.id}
@@ -133,11 +145,6 @@ export default function Territorios() {
                 </button>
               )
             })}
-            <button
-              className="flex items-center gap-2 text-lg p-2 px-3 border rounded-lg"
-            >
-              <BuildIcon />
-            </button>
           </div>
         </div>
 

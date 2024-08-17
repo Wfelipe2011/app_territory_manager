@@ -10,6 +10,8 @@ import { Street, useBlock } from '@/common/block';
 import { RootModeScreen } from '@/common/loading';
 import { DialogMap } from '@/common/territory/components/DialogMap';
 import { Body, Header } from '@/ui';
+import { useEffect } from 'react';
+import { changeTheme } from '@/lib/changeTheme';
 
 export default function Block() {
   const { query } = useRouter()
@@ -34,9 +36,14 @@ export default function Block() {
     driverObj.drive()
   }
 
+  useEffect(() => {
+    changeTheme();
+  }, []);
+
+
   return (
     <RootModeScreen mode={isLoading}>
-      <HelpCircle onClick={driverAction} size={50} fill="#9EE073" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4' />
+      <HelpCircle onClick={driverAction} size={50} fill="current" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4 fill-primary' />
       <div className={clsx('relative')}>
         {block.imageUrl && (
           <DialogMap title={block.territoryName}>

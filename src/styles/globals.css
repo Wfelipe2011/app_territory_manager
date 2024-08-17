@@ -83,3 +83,9 @@
     background-size: 0 2px, 100% 2px;
   }
 }
+
+:root {
+  --color-primary: #9ee073;
+  --color-secondary: #ddf5ce;
+  --color-negative: #ee3d3d80;
+}
