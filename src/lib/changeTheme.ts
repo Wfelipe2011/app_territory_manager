@@ -1,6 +1,6 @@
 import { parseCookies, setCookie } from 'nookies';
 
-type ThemeMode = 'default' | 'campaign' | 'letters';
+export type ThemeMode = 'default' | 'campaign' | 'letters';
 
 export const theme = {
   default: {
