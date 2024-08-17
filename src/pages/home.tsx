@@ -5,9 +5,10 @@ import { setCookie } from 'nookies';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
+import { changeTheme } from '@/lib/changeTheme';
 import { openToken } from '@/lib/openToken';
 
-import logo from '@/assets/territory_green_1.jpg';
+import logo from '@/assets/logo.png';
 import { Mode, RootModeScreen } from '@/common/loading';
 import { env } from '@/constant';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
@@ -24,8 +25,13 @@ export default function Home() {
   const path = query.p as string;
 
   useEffect(() => {
+    if (signature) {
+      TerritoryGateway.in()
+        .getSignature(signature)
+        .then(({ data }) => changeTheme(data.mode));
+    }
     setIsLoading('screen');
-  }, []);
+  }, [signature]);
 
   const saveSignature = async (signatureId: string) => {
     setIsLoading('loading');
@@ -66,31 +72,22 @@ export default function Home() {
 
   return (
     <RootModeScreen mode={isLoading}>
-      <div className='flex h-screen flex-col items-center justify-center p-4 pb-12 bg-[#DDF5CE]'>
-
-        <div className='flex flex-col justify-center items-center bg-gray-50 rounded-xl w-full p-4 mini:p-6 pb-8 gap-4 shadow-xl'>
-          <div className='max-w-[250px] overflow-hidden rounded-full bg-[#9EE073]'>
-            <Image src={logo} alt='Logo Território Digital' className='w-[200px]' />
+      <div className='flex h-screen flex-col items-center justify-center bg-secondary p-4 pb-12'>
+        <div className='mini:p-6 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-gray-50 p-4 pb-8 shadow-xl'>
+          <div className='bg-primary max-w-[250px] overflow-hidden rounded-full'>
+            <Image src={logo} alt='Logo Território Digital' className='w-[200px] scale-125' />
           </div>
 
           <div className='my-4'>
-            <p className='text-gray-800  text-lg text-center'>Bem-vindo ao Território Digital</p>
-            <p className='text-gray-800 text-md text-center'>Clique no botão abaixo para acessar a área o território designado.</p>
+            <p className='text-center text-lg text-gray-800'>Bem-vindo ao Território Digital</p>
+            <p className='text-md text-center text-gray-800'>Clique no botão abaixo para acessar a área o território designado.</p>
           </div>
 
-          <Button.Root
-            type='button'
-            variant='primary'
-            className='flex h-12 w-full !flex-row text-gray-50'
-            onClick={() => void saveSignature(signature)}
-          >
+          <Button.Root type='button' variant='primary' className='flex h-12 w-full !flex-row text-gray-50' onClick={() => void saveSignature(signature)}>
             Entrar
           </Button.Root>
         </div>
       </div>
     </RootModeScreen>
-
   );
 }
-
-

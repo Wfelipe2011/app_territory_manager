@@ -19,6 +19,7 @@ import { URL_API } from '@/infra/http/AxiosAdapter';
 import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { Body, Button, Header } from '@/ui';
 import { PostAddIcon } from '@/assets/icons/PostAddIcon';
+import { changeTheme } from '@/lib/changeTheme';
 
 const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
 const { token, signatureId } = env.storage;
@@ -139,13 +140,16 @@ export default function StreetData() {
     });
   }, []);
 
+  useEffect(() => {
+    changeTheme();
+  }, []);
+
   return (
     <RootModeScreen mode={isLoading}>
       <HelpCircle
         onClick={driverAction}
         size={50}
-        fill='#9EE073'
-        className='fixed bottom-0 right-0 p-1 mini:p-0 z-10 m-2 mini:m-4 cursor-pointer text-gray-50'
+        className='fixed bottom-0 right-0 p-1 mini:p-0 z-10 m-2 mini:m-4 cursor-pointer text-gray-50 fill-primary'
       />
       <div className={clsx('relative')}>
         <Header size='small'>
@@ -168,7 +172,7 @@ export default function StreetData() {
               {connections ? (
                 <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
                   {connections}
-                  <Users id='publisher-connections' size={24} fill='#9EE073' color='#9EE073' />
+                  <Users id='publisher-connections' size={24} className='fill-primary text-primary' />
                 </div>
               ) : (
                 <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
