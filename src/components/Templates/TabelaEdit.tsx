@@ -22,7 +22,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Search } from "react-feather";
 
-import image from '@/assets/territory_green_1.jpg';
+import image from '@/assets/logo.png';
 import { Mode, RootModeScreen } from "@/common/loading";
 import { DialogForm } from "@/common/territory/components/DialogForm";
 import { TerritoryGateway } from "@/infra/Gateway/TerritoryGateway";
@@ -207,8 +207,8 @@ export function SortableTable() {
       <div className='m-auto p-4 px-10 max-w-[1480px]'>
         {/* titulo + image */}
         <div className='flex items-center gap-4 py-3'>
-          <div className='w-[50px] overflow-hidden rounded-full '>
-            <Image src={image} alt='logo' className='w-full' />
+          <div className='w-[50px] h-[50px] overflow-hidden rounded-full bg-primary'>
+            <Image src={image} alt='logo' className='w-full scale-105' />
           </div>
           <Typography
             variant="h3"

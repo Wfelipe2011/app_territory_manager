@@ -5,7 +5,7 @@ import { Info, Search } from 'react-feather';
 
 import "driver.js/dist/driver.css";
 
-import image from '@/assets/territory_green_1.jpg';
+import image from '@/assets/logo.png';
 interface IHeaderHomeProps {
   search: string;
   handleChangeSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -24,8 +24,8 @@ export function HeaderHome({
     <div className='p-2 py-4'>
       <div className='flex justify-between items-center'>
         <div className='flex gap-2 items-center'>
-          <div className='w-[50px] overflow-hidden rounded-full '>
-            <Image src={image} alt='logo' className='w-full' />
+          <div className='w-[50px] h-[50px] overflow-hidden rounded-full bg-primary'>
+            <Image src={image} alt='logo' className='w-full scale-110' />
           </div>
 
           <div className="w-40 mini:w-60 md:96">
