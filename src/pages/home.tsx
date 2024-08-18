@@ -25,11 +25,11 @@ export default function Home() {
   const path = query.p as string;
 
   useEffect(() => {
-    if (signature) {
-      TerritoryGateway.in()
-        .getSignature(signature)
-        .then(({ data }) => changeTheme(data.mode));
-    }
+    // if (signature) {
+    //   TerritoryGateway.in()
+    //     .getSignature(signature)
+    //     .then(({ data }) => changeTheme(data.mode));
+    // }
     setIsLoading('screen');
   }, [signature]);
 
