@@ -57,9 +57,9 @@ export const useTerritoryData = () => {
     const roundsSort = rounds.sort((a, b) => b.roundNumber - a.roundNumber);
     setTerritoryRound({
       options: roundsSort.map((round) => round.roundNumber),
-      selected: territoryRound.selected ? roundsSort[0].roundNumber.toString() : roundSelected,
+      selected: territoryRound.selected ? roundsSort[0].roundNumber.toString() : roundSelected || roundsSort[0].roundNumber.toString(),
     });
-    return territoryRound.selected ? roundsSort[0].roundNumber.toString() : roundSelected;
+    return territoryRound.selected ? roundsSort[0].roundNumber.toString() : roundSelected || roundsSort[0].roundNumber.toString();
   };
 
   const getTerritoryType = async (): Promise<string> => {
