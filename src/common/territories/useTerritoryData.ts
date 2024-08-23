@@ -10,6 +10,7 @@ import { TerritoryTypes } from '@/common/territories/useTerritories';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
 import AxiosAdapter from '@/infra/http/AxiosAdapter';
 import { authState } from '@/states/auth';
+import { parseCookies } from 'nookies';
 
 export interface Round {
   id: number;
@@ -27,6 +28,7 @@ export interface Round {
 const axios = new AxiosAdapter();
 
 export const useTerritoryData = () => {
+  const { roundSelected } = parseCookies() as { roundSelected: string };
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [territoryTypes, setTerritoryTypes] = useState({
     options: [] as TerritoryTypes[],
@@ -55,9 +57,9 @@ export const useTerritoryData = () => {
     const roundsSort = rounds.sort((a, b) => b.roundNumber - a.roundNumber);
     setTerritoryRound({
       options: roundsSort.map((round) => round.roundNumber),
-      selected: territoryRound.selected || roundsSort[0].roundNumber.toString(),
+      selected: territoryRound.selected ? roundsSort[0].roundNumber.toString() : roundSelected,
     });
-    return roundsSort[0].roundNumber.toString();
+    return territoryRound.selected ? roundsSort[0].roundNumber.toString() : roundSelected;
   };
 
   const getTerritoryType = async (): Promise<string> => {

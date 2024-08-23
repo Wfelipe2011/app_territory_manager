@@ -18,6 +18,7 @@ import {
 } from '@/common/territories';
 import { Body, Button } from '@/ui';
 import AxiosAdapter from '@/infra/http/AxiosAdapter';
+import { setCookie } from 'nookies';
 
 const Icon = {
   'Residencial': <HouseIcon />,
@@ -76,6 +77,7 @@ export default function Territorios() {
         }
       }
     )
+    setCookie(null, 'roundSelected', value);
   }
 
 
