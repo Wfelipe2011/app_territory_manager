@@ -4,8 +4,8 @@ import HttpClient, { ResponseHttp } from '../http/HttpClient';
 class BlockGateway {
   constructor(private readonly httpClient: HttpClient) {}
 
-  signInBlock(data: { blockId: string; territoryId: string }): Promise<ResponseHttp> {
-    return this.httpClient.post(`territories/${data.territoryId}/blocks/${data.blockId}/signature`, {});
+  signInBlock(data: { blockId: string; territoryId: string; round: string }): Promise<ResponseHttp> {
+    return this.httpClient.post(`territories/${data.territoryId}/blocks/${data.blockId}/signature/${data.round}`, {});
   }
 
   getBlock(blockId: string, territoryId: string, round: string): Promise<ResponseHttp> {

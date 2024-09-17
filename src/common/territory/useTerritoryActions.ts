@@ -44,6 +44,7 @@ export const useTerritoryActions = (props: ITerritoryActionsProps): ITerritoryAc
     const input = {
       blockId,
       territoryId: territory.territoryId,
+      round,
     };
     const { status, data } = await blockGateway.signInBlock(input);
     if (status > 299) {
