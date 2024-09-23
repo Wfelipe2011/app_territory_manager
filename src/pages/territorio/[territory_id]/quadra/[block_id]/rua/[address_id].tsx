@@ -11,20 +11,20 @@ import { v4 as uuid } from 'uuid';
 
 import 'driver.js/dist/driver.css';
 
-import post from '@/assets/post_add.png'
+import { changeTheme } from '@/lib/changeTheme';
+
+import { PostAddIcon } from '@/assets/icons/PostAddIcon';
+import post from '@/assets/post_add.png';
 import { RootModeScreen } from '@/common/loading';
 import { HouseComponent, IMessage, Subtitle, useStreet } from '@/common/street';
 import { env } from '@/constant';
-import { URL_API } from '@/infra/http/AxiosAdapter';
 import { streetGateway } from '@/infra/Gateway/StreetGateway';
+import { URL_API } from '@/infra/http/AxiosAdapter';
 import { Body, Button, Header } from '@/ui';
-import { PostAddIcon } from '@/assets/icons/PostAddIcon';
-import { changeTheme } from '@/lib/changeTheme';
 
 const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
 const { token, signatureId } = env.storage;
 const { [token]: tokenCookies, [signatureId]: signature } = parseCookies();
-
 
 export default function StreetData() {
   const navigate = useNavigate();
@@ -115,18 +115,20 @@ export default function StreetData() {
           popover: { title: 'Legenda', description: 'Consulte a legenda do seu território para entender o significado de cada sigla e cor das casas.' },
         },
         { element: '#publisher-not-hit', popover: { title: 'Não bater', description: 'As casas que não devem ser visitadas serão destacadas com essa cor.' } },
-        { element: "#publisher-report", popover: { title: 'Reportar', description: 'Clique aqui para reportar alguma mudança no território.' } },
+        { element: '#publisher-report', popover: { title: 'Reportar', description: 'Clique aqui para reportar alguma mudança no território.' } },
       ],
       nextBtnText: 'Próximo',
       prevBtnText: 'Anterior',
       doneBtnText: 'Finalizar',
       progressText: '{{current}} de {{total}}',
     });
-    driverObj.drive()
-  }
+    driverObj.drive();
+  };
 
   const report = () => {
-    const mensagem = encodeURIComponent(`REPORTAR MUDANÇA\nOlá, gostaria de reportar uma mudança no território.\nTerritório: ${street.territoryName}\nQuadra: ${street.blockName}\nRua:  ${street.streetName}\nAlteração:`);
+    const mensagem = encodeURIComponent(
+      `REPORTAR MUDANÇA\nOlá, gostaria de reportar uma mudança no território.\nTerritório: ${street.territoryName}\nQuadra: ${street.blockName}\nRua:  ${street.streetName}\nAlteração:`
+    );
     const numeroTelefone = '55' + phone;
     const link = `https://api.whatsapp.com/send?phone=${numeroTelefone}&text=${mensagem}`;
     window.open(link);
@@ -146,19 +148,15 @@ export default function StreetData() {
 
   return (
     <RootModeScreen mode={isLoading}>
-      <HelpCircle
-        onClick={driverAction}
-        size={50}
-        className='fixed bottom-0 right-0 p-1 mini:p-0 z-10 m-2 mini:m-4 cursor-pointer text-gray-50 fill-primary'
-      />
+      <HelpCircle onClick={driverAction} size={50} className='mini:p-0 mini:m-4 fill-primary fixed bottom-0 right-0 z-10 m-2 cursor-pointer p-1 text-gray-50' />
       <div className={clsx('relative')}>
         <Header size='small'>
           <Button.Root id='publisher-return' className='absolute left-2 !w-fit !p-2 !shadow-none' variant='ghost' onClick={back}>
             <ArrowLeft />
           </Button.Root>
-          <div className='w-full flex flex-col items-center p-4'>
+          <div className='flex w-full flex-col items-center p-4'>
             <h2 className='text-xl '>{street.territoryName}</h2>
-            <h1 className='text-xl font-semibold text-gray-700 max-w-[220px] mini:max-w-[250px] truncate'>{street.streetName}</h1>
+            <h1 className='mini:max-w-[250px] max-w-[220px] truncate text-xl font-semibold text-gray-700'>{street.streetName}</h1>
           </div>
         </Header>
         <Body className='p-3'>
@@ -167,7 +165,11 @@ export default function StreetData() {
               <h6 className='pt-4 text-lg font-semibold'>CASAS</h6>
             </div>
             <div className='flex items-center gap-3'>
-              {phone && (<div id='publisher-report' className='cursor-pointer' onClick={report}><PostAddIcon /></div>)}
+              {phone && (
+                <div id='publisher-report' className='cursor-pointer' onClick={report}>
+                  <PostAddIcon />
+                </div>
+              )}
 
               {connections ? (
                 <div className='flex items-center justify-center gap-2 text-lg font-semibold'>
@@ -191,6 +193,19 @@ export default function StreetData() {
             >
               {street.houses &&
                 street.houses.sort((a, b) => +a.order - +b.order).map((house) => <HouseComponent house={house} actions={actions} key={house.id} />)}
+              <HouseComponent house={{
+                number: "+",
+                status: false,
+                dontVisit: false,
+                complement: "",
+                id: "0",
+                legend: "",
+                order: "0",
+              }}
+                mode='edit'
+                actions={{
+                  mark: async () => alert("Casa marcada com sucesso!"),
+                }} />
             </div>
             <div id='publisher-legend'>{street.houses?.length ? <Subtitle /> : null}</div>
           </div>
