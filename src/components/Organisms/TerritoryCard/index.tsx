@@ -25,7 +25,6 @@ interface TerritoryCardProps extends React.ComponentPropsWithoutRef<'div'> {
 export function TerritoryCard({ data, actions, onShareClick }: TerritoryCardProps) {
   const [overseer, setOverseer] = useState<string>();
   const [date, setDate] = useState<string>();
-
   useEffect(() => {
 
     if (!data.overseer) setOverseer('');
@@ -38,6 +37,12 @@ export function TerritoryCard({ data, actions, onShareClick }: TerritoryCardProp
       setDate('');
     }
   }, [data]);
+
+  function getMostRecentDate(dates: Array<{ date: Date }>) {
+    if (!dates.length) return ""
+    const sortedDates = dates.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return `${dayjs(sortedDates[0].date).format('DD/MM/YYYY')}`
+  }
 
   return (
     <div
@@ -55,7 +60,7 @@ export function TerritoryCard({ data, actions, onShareClick }: TerritoryCardProp
       <div className='flex flex-col mini:flex-row h-full w-full items-center justify-between'>
 
         <DoughnutChartCard data={data} />
-        <div className='flex flex-col w-full gap-2 p-2 py-5'>
+        <div className='flex flex-col w-full gap-2 p-2 py-5 relative'>
           <Input
             id='admin-overseer'
             name='overseer'
@@ -83,6 +88,7 @@ export function TerritoryCard({ data, actions, onShareClick }: TerritoryCardProp
             containerProps={{ className: "!min-w-[100px]" }}
           />
           <Actions changeOverseer={setOverseer} key={data.territoryId} territoryCard={data} actions={actions} />
+          <span className='absolute -bottom-8 -right-3 p-4 text-gray-500'>{getMostRecentDate(data.positiveCompleted)}</span>
         </div>
       </div>
     </div>
