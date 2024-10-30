@@ -8,7 +8,7 @@ import { env } from '@/constant';
 
 import type HttpClient from './HttpClient';
 // export const URL_API = 'http://localhost:3001/v1';
-export const URL_API = `https://${process.env.NEXT_PUBLIC_API_URL}/v1`;
+export const URL_API = `https://api-hmg.territory-manager.com.br/v1`;
 
 type AxiosResponse<T> =
   | {
