@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { driver } from 'driver.js';
-import { BellIcon, PenIcon, PlusIcon, TrashIcon } from 'lucide-react';
+import { PenIcon, PlusIcon, TrashIcon } from 'lucide-react';
 import { useRouter as useNavigate } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
@@ -13,8 +13,9 @@ import { v4 as uuid } from 'uuid';
 import 'driver.js/dist/driver.css';
 
 import { changeTheme } from '@/lib/changeTheme';
+import { cn } from '@/lib/utils';
 
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
@@ -37,7 +38,12 @@ const { [token]: tokenCookies, [signatureId]: signature } = parseCookies();
 export default function StreetData() {
   const navigate = useNavigate();
   const { query } = useRouter();
-  const { address_id, block_id, round, territory_id } = query as { territory_id: string; block_id: string; address_id: string; round: string };
+  const { address_id, block_id, round, territory_id } = query as {
+    territory_id: string;
+    block_id: string;
+    address_id: string;
+    round: string;
+  };
 
   const [connections, setConnections] = useState<number>(0);
   const { street, actions, getStreet, isLoading } = useStreet(address_id, block_id, territory_id, round);
@@ -118,13 +124,25 @@ export default function StreetData() {
           element: '#publisher-connections',
           popover: { title: 'Conexões', description: 'Visualize em tempo real quantos publicadores estão trabalhando nesta rua.' },
         },
-        { element: '#publisher-mark', popover: { title: 'Marcar ou Desmarcar', description: 'Utilize esta opção para marcar ou desmarcar as casas.' } },
+        {
+          element: '#publisher-mark',
+          popover: { title: 'Marcar ou Desmarcar', description: 'Utilize esta opção para marcar ou desmarcar as casas.' },
+        },
         {
           element: '#publisher-legend',
-          popover: { title: 'Legenda', description: 'Consulte a legenda do seu território para entender o significado de cada sigla e cor das casas.' },
+          popover: {
+            title: 'Legenda',
+            description: 'Consulte a legenda do seu território para entender o significado de cada sigla e cor das casas.',
+          },
         },
-        { element: '#publisher-not-hit', popover: { title: 'Não bater', description: 'As casas que não devem ser visitadas serão destacadas com essa cor.' } },
-        { element: '#publisher-report', popover: { title: 'Reportar', description: 'Clique aqui para reportar alguma mudança no território.' } },
+        {
+          element: '#publisher-not-hit',
+          popover: { title: 'Não bater', description: 'As casas que não devem ser visitadas serão destacadas com essa cor.' },
+        },
+        {
+          element: '#publisher-report',
+          popover: { title: 'Reportar', description: 'Clique aqui para reportar alguma mudança no território.' },
+        },
       ],
       nextBtnText: 'Próximo',
       prevBtnText: 'Anterior',
@@ -132,15 +150,6 @@ export default function StreetData() {
       progressText: '{{current}} de {{total}}',
     });
     driverObj.drive();
-  };
-
-  const report = () => {
-    const mensagem = encodeURIComponent(
-      `REPORTAR MUDANÇA\nOlá, gostaria de reportar uma mudança no território.\nTerritório: ${street.territoryName}\nQuadra: ${street.blockName}\nRua:  ${street.streetName}\nAlteração:`
-    );
-    const numeroTelefone = '55' + phone;
-    const link = `https://api.whatsapp.com/send?phone=${numeroTelefone}&text=${mensagem}`;
-    window.open(link);
   };
 
   useEffect(() => {
@@ -157,7 +166,11 @@ export default function StreetData() {
 
   return (
     <RootModeScreen mode={isLoading}>
-      <HelpCircle onClick={driverAction} size={50} className='mini:p-0 mini:m-4 fill-primary fixed bottom-0 right-0 z-10 m-2 cursor-pointer p-1 text-gray-50' />
+      <HelpCircle
+        onClick={driverAction}
+        size={50}
+        className='mini:p-0 mini:m-4 fill-primary fixed bottom-0 right-0 z-10 m-2 cursor-pointer p-1 text-gray-50'
+      />
       <div className={clsx('relative')}>
         <Header size='small'>
           <Button.Root id='publisher-return' className='absolute left-2 !w-fit !p-2 !shadow-none' variant='ghost' onClick={back}>
@@ -216,7 +229,9 @@ export default function StreetData() {
               }}
             >
               {street.houses &&
-                street.houses.sort((a, b) => +a.order - +b.order).map((house) => <HouseComponent house={house} actions={actions} key={house.id} />)}
+                street.houses
+                  .sort((a, b) => +a.order - +b.order)
+                  .map((house) => <HouseComponent house={house} actions={actions} key={house.id} />)}
             </div>
             <div id='publisher-legend'>{street.houses?.length ? <Subtitle /> : null}</div>
           </div>
@@ -226,27 +241,47 @@ export default function StreetData() {
   );
 }
 
+// LEVAR ESSES CARAS ABAIXO PARA OUTRO ARQUIVO
 interface ReportTabsProps {
   closeDrawer: () => void;
   houses: House[];
 }
 function ReportTabs({ closeDrawer, houses }: ReportTabsProps) {
+  const [tab, setTab] = useState<'insert' | 'update' | 'delete'>('insert');
   const { query } = useRouter();
   const { address_id, block_id, territory_id } = query as { territory_id: string; block_id: string; address_id: string };
   return (
-    <Tabs defaultValue='insert' className='w-full'>
-      <TabsList className='grid w-full grid-cols-3'>
-        <TabsTrigger value='insert'>
+    <Tabs defaultValue='insert' className='w-full' value={tab} onValueChange={(value) => setTab(value as any)}>
+      <TabsList className='grid w-full grid-cols-3 gap-5'>
+        <TabsTrigger
+          value='insert'
+          className={cn(
+            'transition-all duration-300 ease-in-out hover:border hover:border-green-400',
+            tab === 'insert' ? 'border border-green-400' : ''
+          )}
+        >
           <div className='flex items-center gap-2'>
             Adicionar <PlusIcon size={18} className='text-green-400' />
           </div>
         </TabsTrigger>
-        <TabsTrigger value='update'>
+        <TabsTrigger
+          value='update'
+          className={cn(
+            'transition-all duration-300 ease-in-out hover:border hover:border-blue-400',
+            tab === 'update' ? 'border border-blue-400' : ''
+          )}
+        >
           <div className='flex items-center gap-2'>
             Atualizar <PenIcon size={18} className='text-blue-400' />
           </div>
         </TabsTrigger>
-        <TabsTrigger value='delete'>
+        <TabsTrigger
+          value='delete'
+          className={cn(
+            'transition-all duration-300 ease-in-out hover:border hover:border-red-400',
+            tab === 'delete' ? 'border border-red-400' : ''
+          )}
+        >
           <div className='flex items-center gap-2'>
             Remover <TrashIcon size={18} className='text-red-400' />
           </div>
@@ -260,16 +295,24 @@ function ReportTabs({ closeDrawer, houses }: ReportTabsProps) {
   );
 }
 
-const subtitles = [
-  { value: 'NB', label: 'Não Bater' },
-  { value: 'FD', label: 'Fundo' },
-  { value: 'IG', label: 'Igreja' },
-  { value: 'TR', label: 'Terreno' },
-  { value: 'ES', label: 'Escola' },
-  { value: 'CM', label: 'Comércio' },
-  { value: 'HP', label: 'Hospital' },
-  { value: 'TJ', label: 'Testemunha de Jeová' },
-];
+const subtitles = ['Residência', 'Comércio', 'Terreno', 'Fundos', 'Testemunha de Jeová', 'Igreja', 'Escola', 'Hospital', 'Não Bater'];
+const mapperSubtitle = (value: string) => {
+  const options = {
+    CM: 'Comércio',
+    TR: 'Terreno',
+    FD: 'Fundos',
+    TJ: 'Testemunha de Jeová',
+    IG: 'Igreja',
+    ES: 'Escola',
+    HP: 'Hospital',
+  };
+  return options[value] ?? value;
+};
+const mapperErrosFields = {
+  number: 'Número',
+  legend: 'Legenda',
+  observations: 'Observações',
+};
 
 interface ReportInsertProps {
   addressId: string;
@@ -280,7 +323,7 @@ interface ReportInsertProps {
 
 function ReportInsert({ addressId, blockId, territoryId, closeDrawer }: ReportInsertProps) {
   const [number, setNumber] = useState<string>('');
-  const [subtitle, setSubtitle] = useState<string>('');
+  const [subtitle, setSubtitle] = useState<string>('Residência');
   const [observations, setObservations] = useState<string>('');
 
   const onChangeNumber = (value: string) => {
@@ -292,17 +335,17 @@ function ReportInsert({ addressId, blockId, territoryId, closeDrawer }: ReportIn
   const onSubmit = async () => {
     const { status, data, message } = await reportsGateway.sendInsertReport({
       number,
-      dontVisit: subtitle === 'NB',
+      dontVisit: subtitle === 'Não Bater',
       blockId: Number(blockId),
       addressId: Number(addressId),
       territoryId: Number(territoryId),
-      legend: subtitle !== 'NB' ? subtitle : '',
+      legend: subtitle,
       observations,
       reportType: 'add',
     });
 
     if (status > 299) {
-      toast.error(message ?? 'Erro ao fazer report');
+      errorHandler(data, message);
       return;
     }
     closeDrawer();
@@ -313,22 +356,30 @@ function ReportInsert({ addressId, blockId, territoryId, closeDrawer }: ReportIn
         <Input placeholder='Número' value={number} onChange={(e) => onChangeNumber(e.target.value)} />
         <Select value={subtitle} onValueChange={setSubtitle}>
           <SelectTrigger>
-            <SelectValue placeholder='Legenda' />
+            <SelectValue placeholder='Residência' />
           </SelectTrigger>
           <SelectContent className='bg-white'>
             {subtitles.map((subtitle) => (
               <SelectItem
-                key={subtitle.value}
-                value={subtitle.value}
-                className='cursor-pointer rounded-md transition-all duration-300 ease-in-out hover:bg-blue-300'
+                key={subtitle}
+                value={subtitle}
+                className={cn(
+                  'cursor-pointer rounded-md transition-all duration-300 ease-in-out',
+                  subtitle === 'Não Bater' ? 'bg-red-100 hover:bg-red-300' : 'hover:bg-blue-300'
+                )}
               >
-                {subtitle.label}
+                {subtitle}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        <Textarea placeholder='Observação' className='col-span-2 h-24 resize-none' value={observations} onChange={(e) => setObservations(e.target.value)} />
+        <Textarea
+          placeholder='Observação'
+          className='col-span-2 h-24 resize-none'
+          value={observations}
+          onChange={(e) => setObservations(e.target.value)}
+        />
 
         <Button.Root className='col-span-2 w-full rounded-md text-white' type='button' onClick={onSubmit}>
           Enviar
@@ -343,7 +394,7 @@ interface ReportUpdateProps extends ReportInsertProps {
 }
 function ReportUpdate({ addressId, blockId, territoryId, houses, closeDrawer }: ReportUpdateProps) {
   const [house, setHouse] = useState<House | null>(null);
-  const [subtitle, setSubtitle] = useState<string>('');
+  const [subtitle, setSubtitle] = useState<string>('Residência');
   const [observations, setObservations] = useState<string>('');
 
   const onSubmit = async () => {
@@ -354,32 +405,52 @@ function ReportUpdate({ addressId, blockId, territoryId, houses, closeDrawer }: 
     const { status, data, message } = await reportsGateway.sendUpdateReport({
       number: house.number,
       id: Number(house.id),
-      dontVisit: subtitle === 'NB',
+      dontVisit: subtitle === 'Não Bater',
       blockId: Number(blockId),
       addressId: Number(addressId),
       territoryId: Number(territoryId),
-      legend: subtitle !== 'NB' ? subtitle : '',
+      legend: subtitle,
       observations,
       reportType: 'update',
     });
 
     if (status > 299) {
-      toast.error(message ?? 'Erro ao fazer report');
+      errorHandler(data, message);
       return;
     }
     closeDrawer();
   };
+
+  const updateHouse = (value: string) => {
+    const houseSelected = houses.find((house) => house.id === value) ?? null;
+    setHouse(houseSelected);
+
+    if (!houseSelected || (!houseSelected.legend && !houseSelected.dontVisit)) {
+      setSubtitle('Residência');
+    } else {
+      const dontVisit = houseSelected.dontVisit ? 'Não Bater' : '';
+      const subtitleMapped = mapperSubtitle(houseSelected.legend);
+      const subtitle = dontVisit || subtitleMapped;
+      setSubtitle(subtitle || 'Residência');
+    }
+  };
+
   return (
     <TabsContent value='update'>
       <div className='mb-8 grid h-full w-full grid-cols-2 gap-8'>
-        <Select value={house?.id} onValueChange={(value) => setHouse(houses.find((house) => house.id === value) ?? null)}>
+        <Select value={house?.id} onValueChange={updateHouse}>
           <SelectTrigger>
             <SelectValue placeholder='Número' />
           </SelectTrigger>
           <SelectContent className='bg-white'>
             {houses.map((house) => (
-              <SelectItem key={house.id} value={house.id} className='cursor-pointer rounded-md transition-all duration-300 ease-in-out hover:bg-blue-300'>
+              <SelectItem
+                key={house.id}
+                value={house.id}
+                className='cursor-pointer rounded-md transition-all duration-300 ease-in-out hover:bg-blue-300'
+              >
                 {house.number}
+                {house.legend ? `/${house.legend}` : ''}
               </SelectItem>
             ))}
           </SelectContent>
@@ -387,22 +458,30 @@ function ReportUpdate({ addressId, blockId, territoryId, houses, closeDrawer }: 
 
         <Select value={subtitle} onValueChange={setSubtitle}>
           <SelectTrigger>
-            <SelectValue placeholder='Legenda' />
+            <SelectValue placeholder='Residência' />
           </SelectTrigger>
           <SelectContent className='bg-white'>
             {subtitles.map((subtitle) => (
               <SelectItem
-                key={subtitle.value}
-                value={subtitle.value}
-                className='cursor-pointer rounded-md transition-all duration-300 ease-in-out hover:bg-blue-300'
+                key={subtitle}
+                value={subtitle}
+                className={cn(
+                  'cursor-pointer rounded-md transition-all duration-300 ease-in-out',
+                  subtitle === 'Não Bater' ? 'bg-red-100 hover:bg-red-300' : 'hover:bg-blue-300'
+                )}
               >
-                {subtitle.label}
+                {subtitle}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        <Textarea placeholder='Observação' className='col-span-2 h-24 resize-none' value={observations} onChange={(e) => setObservations(e.target.value)} />
+        <Textarea
+          placeholder='Observação'
+          className='col-span-2 h-24 resize-none'
+          value={observations}
+          onChange={(e) => setObservations(e.target.value)}
+        />
 
         <Button.Root className='col-span-2 w-full rounded-md text-white' type='button' onClick={onSubmit}>
           Enviar
@@ -431,13 +510,19 @@ function ReportDelete({ addressId, blockId, territoryId, houses, closeDrawer }: 
       blockId: Number(blockId),
       addressId: Number(addressId),
       territoryId: Number(territoryId),
-      legend: '',
+      legend: house.legend,
       observations,
       reportType: 'remove',
     });
 
+    console.log({
+      status,
+      data,
+      message,
+    });
+
     if (status > 299) {
-      toast.error(message ?? 'Erro ao fazer report');
+      errorHandler(data, message);
       return;
     }
     closeDrawer();
@@ -451,14 +536,23 @@ function ReportDelete({ addressId, blockId, territoryId, houses, closeDrawer }: 
           </SelectTrigger>
           <SelectContent className='bg-white'>
             {houses.map((house) => (
-              <SelectItem key={house.id} value={house.id} className='cursor-pointer rounded-md transition-all duration-300 ease-in-out hover:bg-blue-300'>
+              <SelectItem
+                key={house.id}
+                value={house.id}
+                className='cursor-pointer rounded-md transition-all duration-300 ease-in-out hover:bg-blue-300'
+              >
                 {house.number}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        <Textarea placeholder='Observação' className='col-span-2 h-24 resize-none' value={observations} onChange={(e) => setObservations(e.target.value)} />
+        <Textarea
+          placeholder='Observação'
+          className='col-span-2 h-24 resize-none'
+          value={observations}
+          onChange={(e) => setObservations(e.target.value)}
+        />
 
         <Button.Root className='col-span-2 w-full rounded-md text-white' type='button' onClick={onSubmit}>
           Enviar
@@ -466,4 +560,20 @@ function ReportDelete({ addressId, blockId, territoryId, houses, closeDrawer }: 
       </div>
     </TabsContent>
   );
+}
+
+function errorHandler(data: any, message: any) {
+  const rgxToGetBetweenQuotes = /"([^"]*)"/;
+  if (!data?.length) {
+    toast.error(message ?? 'Erro ao fazer report');
+    return;
+  }
+  const errorsMessages: string[] = [];
+  for (const field of data) {
+    const fieldError = field.replace(rgxToGetBetweenQuotes, (match, p1) => {
+      return `"${mapperErrosFields[p1]}"`;
+    });
+    errorsMessages.push(fieldError);
+  }
+  toast.error(errorsMessages.join('\n'));
 }
