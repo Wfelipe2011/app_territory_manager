@@ -19,7 +19,7 @@ type AxiosResponse<T> =
   | {
       status: any;
       message: any;
-      data?: undefined;
+      data?: any;
     };
 
 export default class AxiosAdapter implements HttpClient {
@@ -80,6 +80,7 @@ export default class AxiosAdapter implements HttpClient {
       return {
         status: error?.response?.status,
         message: error?.response?.data?.error,
+        data: error?.response?.data?.message,
       };
     }
   }
