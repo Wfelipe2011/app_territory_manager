@@ -42,7 +42,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
         openOnClick={true}
         place="top"
       >
-        Versão 1.1.0
+        Versão 1.2.0
       </Tooltip>
     </div>
   );
