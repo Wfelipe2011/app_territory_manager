@@ -1,17 +1,15 @@
 import clsx from 'clsx';
 import { driver } from 'driver.js';
-import Image from 'next/image';
 import { useRouter as useNavigate } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, HelpCircle, MessageCircle, Users } from 'react-feather';
+import { ArrowLeft, HelpCircle, Users } from 'react-feather';
 import { io, Socket } from 'socket.io-client';
 import { v4 as uuid } from 'uuid';
 
 import 'driver.js/dist/driver.css';
 
-import post from '@/assets/post_add.png'
 import { RootModeScreen } from '@/common/loading';
 import { HouseComponent, IMessage, Subtitle, useStreet } from '@/common/street';
 import { env } from '@/constant';
@@ -20,6 +18,11 @@ import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { Body, Button, Header } from '@/ui';
 import { PostAddIcon } from '@/assets/icons/PostAddIcon';
 import { changeTheme } from '@/lib/changeTheme';
+import { useBlock } from '@/common/block';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
 
 const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
 const { token, signatureId } = env.storage;
@@ -33,11 +36,12 @@ export default function StreetData() {
 
   const [connections, setConnections] = useState<number>(0);
   const { street, actions, getStreet, isLoading } = useStreet(address_id, block_id, territory_id, round);
+  const { block } = useBlock(block_id, territory_id, round);
   const [columnsByWidth, setColumnsByWidth] = useState<number>(3);
   const [phone, setPhone] = useState<string>('');
 
   const back = () => {
-    navigate.back();
+    navigate.push(`/territorio/${territory_id}/quadra/${block_id}?round=${round}`);
   };
 
   useEffect(() => {
@@ -144,13 +148,56 @@ export default function StreetData() {
     changeTheme();
   }, []);
 
+  const getPreviousAddress = () => {
+    const index = block.addresses.findIndex((address) => address.id === +address_id);
+    const previousAddress = block.addresses[index - 1];
+    return previousAddress;
+  }
+
+  const getToNextAddress = () => {
+    const index = block.addresses.findIndex((address) => address.id === +address_id);
+    const nextAddress = block.addresses[index + 1];
+    return nextAddress;
+  }
+
+  const goToNextPage = () => {
+    const nextAddress = getToNextAddress()
+    if (nextAddress) {
+      const query = new URLSearchParams({ round });
+      void navigate.push(`/territorio/${territory_id}/quadra/${block_id}/rua/${nextAddress.id}?${query.toString()}`);
+    }
+  }
+
+  const goToPreviousPage = () => {
+    const previousAddress = getPreviousAddress();
+    if (getPreviousAddress()) {
+      const query = new URLSearchParams({ round });
+      void navigate.push(`/territorio/${territory_id}/quadra/${block_id}/rua/${previousAddress.id}?${query.toString()}`);
+    }
+  }
+
   return (
     <RootModeScreen mode={isLoading}>
       <HelpCircle
         onClick={driverAction}
         size={50}
-        className='fixed bottom-0 right-0 p-1 mini:p-0 z-10 m-2 mini:m-4 cursor-pointer text-gray-50 fill-primary'
+        className='fixed bottom-0 right-0 p-1 mini:p-0 z-10 m-2 mini:m-4 cursor-pointer text-gray-50 fill-primary z-20'
       />
+      <div
+        className="fixed top-3/4 left-0 w-full h-full pointer-events-auto z-10"
+      >
+        <Swiper
+          onSlidePrevTransitionStart={goToPreviousPage}
+          onSlideNextTransitionStart={goToNextPage}
+          className='w-full h-full'
+        >
+          {block.addresses.map((address) => (
+            <SwiperSlide key={address.id}>
+
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
       <div className={clsx('relative')}>
         <Header size='small'>
           <Button.Root id='publisher-return' className='absolute left-2 !w-fit !p-2 !shadow-none' variant='ghost' onClick={back}>
