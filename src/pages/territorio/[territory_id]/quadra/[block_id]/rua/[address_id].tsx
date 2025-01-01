@@ -204,31 +204,31 @@ export default function StreetData() {
 
   const getPreviousAddress = () => {
     const index = block.addresses.findIndex((address) => address.id === +address_id);
-    const previousAddress = block.addresses[index - 1];
+    const previousAddress = block.addresses[index - 1] || block.addresses[block.addresses.length - 1];
     return previousAddress;
-  }
+  };
 
   const getToNextAddress = () => {
     const index = block.addresses.findIndex((address) => address.id === +address_id);
-    const nextAddress = block.addresses[index + 1];
+    const nextAddress = block.addresses[index + 1] || block.addresses[0];
     return nextAddress;
-  }
+  };
 
   const goToNextPage = () => {
-    const nextAddress = getToNextAddress()
+    const nextAddress = getToNextAddress();
     if (nextAddress) {
       const query = new URLSearchParams({ round });
       void navigate.push(`/territorio/${territory_id}/quadra/${block_id}/rua/${nextAddress.id}?${query.toString()}`);
     }
-  }
+  };
 
   const goToPreviousPage = () => {
     const previousAddress = getPreviousAddress();
-    if (getPreviousAddress()) {
+    if (previousAddress) {
       const query = new URLSearchParams({ round });
       void navigate.push(`/territorio/${territory_id}/quadra/${block_id}/rua/${previousAddress.id}?${query.toString()}`);
     }
-  }
+  };
 
   return (
     <RootModeScreen mode={isLoading}>
@@ -244,6 +244,7 @@ export default function StreetData() {
         className="fixed top-3/4 left-0 w-full h-full pointer-events-auto z-10"
       >
         <Swiper
+          loop={true}
           onSlidePrevTransitionStart={goToPreviousPage}
           onSlideNextTransitionStart={goToNextPage}
           className='w-full h-full'
