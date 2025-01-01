@@ -9,6 +9,7 @@ import { io, Socket } from 'socket.io-client';
 import { v4 as uuid } from 'uuid';
 
 import 'driver.js/dist/driver.css';
+import 'swiper/css';
 
 import { RootModeScreen } from '@/common/loading';
 import { HouseComponent, IMessage, Subtitle, useStreet } from '@/common/street';
@@ -21,14 +22,55 @@ import { changeTheme } from '@/lib/changeTheme';
 import { useBlock } from '@/common/block';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-// Import Swiper styles
-import 'swiper/css';
 
 const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
 const { token, signatureId } = env.storage;
 const { [token]: tokenCookies, [signatureId]: signature } = parseCookies();
 
 
+const stepsNovidades = [
+  {
+    popover: {
+      title: 'Arraste para Navegar',
+      description: 'Agora você pode arrastar as laterais para navegar entre as páginas de forma intuitiva!'
+    }
+  },
+  {
+    element: '#new-feature-bar-left',
+    popover: {
+      title: 'Indicador Lateral Esquerdo',
+      description: 'Veja esta barra na lateral esquerda? Ela indica que você pode arrastar para o lado esquerdo.'
+    }
+  },
+  {
+    element: '#new-feature-bar-right',
+    popover: {
+      title: 'Indicador Lateral Direito',
+      description: 'A barra na lateral direita indica que você pode arrastar para o lado direito.'
+    }
+  },
+  {
+    element: '#help-button',
+    popover: {
+      title: 'Ajuda',
+      description: 'Se precisar de mais informações, clique no botão de ajuda no topo da página.'
+    }
+  },
+];
+const stepsHelp = [
+  { element: '#publisher-return', popover: { title: 'Voltar', description: 'Clique aqui para retornar à página anterior.' } },
+  {
+    element: '#publisher-connections',
+    popover: { title: 'Conexões', description: 'Visualize em tempo real quantos publicadores estão trabalhando nesta rua.' },
+  },
+  { element: '#publisher-mark', popover: { title: 'Marcar ou Desmarcar', description: 'Utilize esta opção para marcar ou desmarcar as casas.' } },
+  {
+    element: '#publisher-legend',
+    popover: { title: 'Legenda', description: 'Consulte a legenda do seu território para entender o significado de cada sigla e cor das casas.' },
+  },
+  { element: '#publisher-not-hit', popover: { title: 'Não bater', description: 'As casas que não devem ser visitadas serão destacadas com essa cor.' } },
+  { element: "#publisher-report", popover: { title: 'Reportar', description: 'Clique aqui para reportar alguma mudança no território.' } },
+];
 export default function StreetData() {
   const navigate = useNavigate();
   const { query } = useRouter();
@@ -107,20 +149,7 @@ export default function StreetData() {
   const driverAction = () => {
     const driverObj = driver({
       showProgress: true,
-      steps: [
-        { element: '#publisher-return', popover: { title: 'Voltar', description: 'Clique aqui para retornar à página anterior.' } },
-        {
-          element: '#publisher-connections',
-          popover: { title: 'Conexões', description: 'Visualize em tempo real quantos publicadores estão trabalhando nesta rua.' },
-        },
-        { element: '#publisher-mark', popover: { title: 'Marcar ou Desmarcar', description: 'Utilize esta opção para marcar ou desmarcar as casas.' } },
-        {
-          element: '#publisher-legend',
-          popover: { title: 'Legenda', description: 'Consulte a legenda do seu território para entender o significado de cada sigla e cor das casas.' },
-        },
-        { element: '#publisher-not-hit', popover: { title: 'Não bater', description: 'As casas que não devem ser visitadas serão destacadas com essa cor.' } },
-        { element: "#publisher-report", popover: { title: 'Reportar', description: 'Clique aqui para reportar alguma mudança no território.' } },
-      ],
+      steps: [...stepsHelp, ...stepsNovidades],
       nextBtnText: 'Próximo',
       prevBtnText: 'Anterior',
       doneBtnText: 'Finalizar',
@@ -128,6 +157,31 @@ export default function StreetData() {
     });
     driverObj.drive()
   }
+
+  const tourNovidades = () => {
+    const driverObj = driver({
+      showProgress: true,
+      steps: stepsNovidades,
+      nextBtnText: 'Próximo',
+      prevBtnText: 'Anterior',
+      doneBtnText: 'Finalizar',
+      progressText: '{{current}} de {{total}}',
+    });
+
+    driverObj.drive();
+  };
+
+  useEffect(() => {
+    const hasSeenTour = localStorage.getItem('seenTourNovidades');
+
+    if (!hasSeenTour) {
+      // Disparar o tour pela primeira vez
+      tourNovidades();
+
+      // Salvar no localStorage para não exibir novamente
+      localStorage.setItem('seenTourNovidades', 'true');
+    }
+  }, []);
 
   const report = () => {
     const mensagem = encodeURIComponent(`REPORTAR MUDANÇA\nOlá, gostaria de reportar uma mudança no território.\nTerritório: ${street.territoryName}\nQuadra: ${street.blockName}\nRua:  ${street.streetName}\nAlteração:`);
@@ -179,10 +233,13 @@ export default function StreetData() {
   return (
     <RootModeScreen mode={isLoading}>
       <HelpCircle
+        id="help-button"
         onClick={driverAction}
         size={50}
-        className='fixed bottom-0 right-0 p-1 mini:p-0 z-10 m-2 mini:m-4 cursor-pointer text-gray-50 fill-primary z-20'
+        className='fixed bottom-0 right-0 p-1 mini:p-0 m-2 mini:m-4 cursor-pointer text-gray-50 fill-primary z-20'
       />
+      <div id="new-feature-bar-left" className="absolute top-3/4 left-0 -mt-6 rounded-md h-[200px] w-2 bg-gray-500/30 hover:bg-gray-500/50 transition-opacity z-10 pointer-events-none"></div>
+      <div id="new-feature-bar-right" className="absolute top-3/4 right-0 -mt-6 rounded-md h-[200px] w-2 bg-gray-500/30 hover:bg-gray-500/50 transition-opacity z-10 pointer-events-none"></div>
       <div
         className="fixed top-3/4 left-0 w-full h-full pointer-events-auto z-10"
       >
