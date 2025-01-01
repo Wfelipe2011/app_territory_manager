@@ -238,8 +238,8 @@ export default function StreetData() {
         size={50}
         className='fixed bottom-0 right-0 p-1 mini:p-0 m-2 mini:m-4 cursor-pointer text-gray-50 fill-primary z-20'
       />
-      <div id="new-feature-bar-left" className="absolute top-3/4 left-0 -mt-6 rounded-md h-[200px] w-2 bg-gray-500/30 hover:bg-gray-500/50 transition-opacity z-10 pointer-events-none"></div>
-      <div id="new-feature-bar-right" className="absolute top-3/4 right-0 -mt-6 rounded-md h-[200px] w-2 bg-gray-500/30 hover:bg-gray-500/50 transition-opacity z-10 pointer-events-none"></div>
+      <div id="new-feature-bar-left" className="fixed top-3/4 left-0 -mt-6 rounded-md h-[200px] w-2 bg-gray-500/30 hover:bg-gray-500/50 transition-opacity z-10 pointer-events-none"></div>
+      <div id="new-feature-bar-right" className="fixed top-3/4 right-0 -mt-6 rounded-md h-[200px] w-2 bg-gray-500/30 hover:bg-gray-500/50 transition-opacity z-10 pointer-events-none"></div>
       <div
         className="fixed top-3/4 left-0 w-full h-full pointer-events-auto z-10"
       >
