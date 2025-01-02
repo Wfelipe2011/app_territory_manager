@@ -104,8 +104,8 @@ export default function Territorios() {
   }, [types.selected]);
 
   useEffect(() => {
-    axios.get<ThemeMode>(`rounds/theme/${round.selected}`).then((response) => {
-      changeTheme(response.data);
+    if (round.selected) axios.get<ThemeMode>(`rounds/theme/${round.selected}`).then((response) => {
+      response && changeTheme(response.data);
     })
   }, [round.selected]);
 

@@ -4,22 +4,27 @@ import * as React from 'react';
 import { useRecoilState } from 'recoil';
 
 import { authState } from '@/states/auth';
+import { useRouter } from 'next/router';
 
 export const metadata: Metadata = {
   title: 'Not Found',
 };
 
 export default function NotFound() {
-  const [message, setMessage] = React.useState({
-    title: 'Não encontramos o link que está procurando',
-    message: 'Por favor verifique com o responsável que forneceu o link!',
-    icon: <Link2Off size={30} className='drop-shadow-glow animate-flicker text-zinc-800' />
-  })
+  const [message, setMessage] = React.useState<any>()
   const [values, setValues] = useRecoilState(authState);
+  const router = useRouter();
+  const { codeError } = router.query; // Pegando a query da rota
 
   React.useEffect(() => {
-    if (values.notFoundStatusCode) {
-      switch (values.notFoundStatusCode) {
+    if (!codeError && values.notFoundStatusCode) {
+      router.push(`/not-found?codeError=${values.notFoundStatusCode}`);
+      return;
+    }
+
+    if (codeError) {
+      const errorCode = parseInt(codeError as string, 10); // Converte `codeError` para número
+      switch (errorCode) {
         case 400:
           setMessage({
             title: 'Solicitação inválida',
@@ -72,20 +77,18 @@ export default function NotFound() {
       }
     }
   }
-    , [values.notFoundStatusCode])
-  return (
-    <main>
-      <section className='bg-gray-50'>
-        <div className='layout flex min-h-screen flex-col items-center justify-center text-center text-black'>
-          {message.icon}
-          <h1 className='mt-8 text-2xl md:text-4xl'>
-            {message.title}
-          </h1>
-          <p className='mt-4 text-lg'>
-            {message.message}
-          </p>
-        </div>
-      </section>
-    </main>
-  );
+    , [codeError, router, values])
+  return message ? (<main>
+    <section className='bg-gray-50'>
+      <div className='layout flex min-h-screen flex-col items-center justify-center text-center text-black'>
+        {message.icon}
+        <h1 className='mt-8 text-2xl md:text-4xl'>
+          {message.title}
+        </h1>
+        <p className='mt-4 text-lg'>
+          {message.message}
+        </p>
+      </div>
+    </section>
+  </main>) : null
 }

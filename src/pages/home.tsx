@@ -28,7 +28,7 @@ export default function Home() {
     if (signature) {
       TerritoryGateway.in()
         .getSignature(signature)
-        .then(({ data }) => changeTheme(data.mode));
+        .then(({ data }) => data && changeTheme(data.mode));
     }
     setIsLoading('screen');
   }, [signature]);
