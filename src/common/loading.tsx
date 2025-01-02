@@ -22,7 +22,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
   children: React.ReactNode;
   mode: Mode;
 }) => {
-  const projectVersion = 'v1.10.0';
+  const projectVersion = 'v1.2.1';
   return (
     <div className='m-auto max-w-[1880px] '>
       <Toaster />
