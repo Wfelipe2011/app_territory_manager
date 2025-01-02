@@ -22,7 +22,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
   children: React.ReactNode;
   mode: Mode;
 }) => {
-  const projectVersion = 'v1.1.0';
+  const projectVersion = 'v1.2.1';
   return (
     <div className='m-auto max-w-[1880px] '>
       <Toaster />
@@ -42,7 +42,7 @@ export const RootModeScreen = ({ children, mode = 'loading' }: {
         openOnClick={true}
         place="top"
       >
-        Versão 1.1.0
+        Versão 1.2.0
       </Tooltip>
     </div>
   );

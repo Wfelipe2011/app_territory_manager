@@ -11,6 +11,7 @@ import { io, Socket } from 'socket.io-client';
 import { v4 as uuid } from 'uuid';
 
 import 'driver.js/dist/driver.css';
+import 'swiper/css';
 
 import { changeTheme } from '@/lib/changeTheme';
 import { cn } from '@/lib/utils';
@@ -31,10 +32,57 @@ import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { URL_API } from '@/infra/http/AxiosAdapter';
 import { Body, Button, Header } from '@/ui';
 
+import { useBlock } from '@/common/block';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+
 const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
 const { token, signatureId } = env.storage;
 const { [token]: tokenCookies, [signatureId]: signature } = parseCookies();
 
+const stepsNovidades = [
+  {
+    popover: {
+      title: 'Arraste para Navegar',
+      description: 'Agora você pode arrastar as laterais para navegar entre as páginas de forma intuitiva!'
+    }
+  },
+  {
+    element: '#new-feature-bar-left',
+    popover: {
+      title: 'Indicador Lateral Esquerdo',
+      description: 'Veja esta barra na lateral esquerda? Ela indica que você pode arrastar para o lado esquerdo.'
+    }
+  },
+  {
+    element: '#new-feature-bar-right',
+    popover: {
+      title: 'Indicador Lateral Direito',
+      description: 'A barra na lateral direita indica que você pode arrastar para o lado direito.'
+    }
+  },
+  {
+    element: '#help-button',
+    popover: {
+      title: 'Ajuda',
+      description: 'Se precisar de mais informações, clique no botão de ajuda no topo da página.'
+    }
+  },
+];
+const stepsHelp = [
+  { element: '#publisher-return', popover: { title: 'Voltar', description: 'Clique aqui para retornar à página anterior.' } },
+  {
+    element: '#publisher-connections',
+    popover: { title: 'Conexões', description: 'Visualize em tempo real quantos publicadores estão trabalhando nesta rua.' },
+  },
+  { element: '#publisher-mark', popover: { title: 'Marcar ou Desmarcar', description: 'Utilize esta opção para marcar ou desmarcar as casas.' } },
+  {
+    element: '#publisher-legend',
+    popover: { title: 'Legenda', description: 'Consulte a legenda do seu território para entender o significado de cada sigla e cor das casas.' },
+  },
+  { element: '#publisher-not-hit', popover: { title: 'Não bater', description: 'As casas que não devem ser visitadas serão destacadas com essa cor.' } },
+  { element: "#publisher-report", popover: { title: 'Reportar', description: 'Clique aqui para reportar alguma mudança no território.' } },
+];
 export default function StreetData() {
   const navigate = useNavigate();
   const { query } = useRouter();
@@ -47,12 +95,13 @@ export default function StreetData() {
 
   const [connections, setConnections] = useState<number>(0);
   const { street, actions, getStreet, isLoading } = useStreet(address_id, block_id, territory_id, round);
+  const { block } = useBlock(block_id, territory_id, round);
   const [columnsByWidth, setColumnsByWidth] = useState<number>(3);
   const [phone, setPhone] = useState<string>('');
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const back = () => {
-    navigate.back();
+    navigate.push(`/territorio/${territory_id}/quadra/${block_id}?round=${round}`);
   };
 
   useEffect(() => {
@@ -118,38 +167,45 @@ export default function StreetData() {
   const driverAction = () => {
     const driverObj = driver({
       showProgress: true,
-      steps: [
-        { element: '#publisher-return', popover: { title: 'Voltar', description: 'Clique aqui para retornar à página anterior.' } },
-        {
-          element: '#publisher-connections',
-          popover: { title: 'Conexões', description: 'Visualize em tempo real quantos publicadores estão trabalhando nesta rua.' },
-        },
-        {
-          element: '#publisher-mark',
-          popover: { title: 'Marcar ou Desmarcar', description: 'Utilize esta opção para marcar ou desmarcar as casas.' },
-        },
-        {
-          element: '#publisher-legend',
-          popover: {
-            title: 'Legenda',
-            description: 'Consulte a legenda do seu território para entender o significado de cada sigla e cor das casas.',
-          },
-        },
-        {
-          element: '#publisher-not-hit',
-          popover: { title: 'Não bater', description: 'As casas que não devem ser visitadas serão destacadas com essa cor.' },
-        },
-        {
-          element: '#publisher-report',
-          popover: { title: 'Reportar', description: 'Clique aqui para reportar alguma mudança no território.' },
-        },
-      ],
+      steps: [...stepsHelp, ...stepsNovidades],
       nextBtnText: 'Próximo',
       prevBtnText: 'Anterior',
       doneBtnText: 'Finalizar',
       progressText: '{{current}} de {{total}}',
     });
     driverObj.drive();
+  }
+
+  const tourNovidades = () => {
+    const driverObj = driver({
+      showProgress: true,
+      steps: stepsNovidades,
+      nextBtnText: 'Próximo',
+      prevBtnText: 'Anterior',
+      doneBtnText: 'Finalizar',
+      progressText: '{{current}} de {{total}}',
+    });
+
+    driverObj.drive();
+  };
+
+  useEffect(() => {
+    const hasSeenTour = localStorage.getItem('seenTourNovidades');
+
+    if (!hasSeenTour) {
+      // Disparar o tour pela primeira vez
+      tourNovidades();
+
+      // Salvar no localStorage para não exibir novamente
+      localStorage.setItem('seenTourNovidades', 'true');
+    }
+  }, []);
+
+  const report = () => {
+    const mensagem = encodeURIComponent(`REPORTAR MUDANÇA\nOlá, gostaria de reportar uma mudança no território.\nTerritório: ${street.territoryName}\nQuadra: ${street.blockName}\nRua:  ${street.streetName}\nAlteração:`);
+    const numeroTelefone = '55' + phone;
+    const link = `https://api.whatsapp.com/send?phone=${numeroTelefone}&text=${mensagem}`;
+    window.open(link);
   };
 
   useEffect(() => {
@@ -164,13 +220,60 @@ export default function StreetData() {
     changeTheme();
   }, []);
 
+  const getPreviousAddress = () => {
+    const index = block.addresses.findIndex((address) => address.id === +address_id);
+    const previousAddress = block.addresses[index - 1] || block.addresses[block.addresses.length - 1];
+    return previousAddress;
+  };
+
+  const getToNextAddress = () => {
+    const index = block.addresses.findIndex((address) => address.id === +address_id);
+    const nextAddress = block.addresses[index + 1] || block.addresses[0];
+    return nextAddress;
+  };
+
+  const goToNextPage = () => {
+    const nextAddress = getToNextAddress();
+    if (nextAddress) {
+      const query = new URLSearchParams({ round });
+      void navigate.push(`/territorio/${territory_id}/quadra/${block_id}/rua/${nextAddress.id}?${query.toString()}`);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    const previousAddress = getPreviousAddress();
+    if (previousAddress) {
+      const query = new URLSearchParams({ round });
+      void navigate.push(`/territorio/${territory_id}/quadra/${block_id}/rua/${previousAddress.id}?${query.toString()}`);
+    }
+  };
+
   return (
     <RootModeScreen mode={isLoading}>
       <HelpCircle
+        id="help-button"
         onClick={driverAction}
         size={50}
-        className='mini:p-0 mini:m-4 fill-primary fixed bottom-0 right-0 z-10 m-2 cursor-pointer p-1 text-gray-50'
+        className='fixed bottom-0 right-0 p-1 mini:p-0 m-2 mini:m-4 cursor-pointer text-gray-50 fill-primary z-20'
       />
+      <div id="new-feature-bar-left" className="fixed top-3/4 left-0 -mt-6 rounded-md h-[150px] w-2 bg-gray-500/30 hover:bg-gray-500/50 transition-opacity z-10 pointer-events-none"></div>
+      <div id="new-feature-bar-right" className="fixed top-3/4 right-0 -mt-6 rounded-md h-[150px] w-2 bg-gray-500/30 hover:bg-gray-500/50 transition-opacity z-10 pointer-events-none"></div>
+      <div
+        className="fixed top-2/4 left-0 w-full h-full pointer-events-auto z-10"
+      >
+        <Swiper
+          loop={true}
+          onSlidePrevTransitionStart={goToPreviousPage}
+          onSlideNextTransitionStart={goToNextPage}
+          className='w-full h-full'
+        >
+          {block.addresses.map((address) => (
+            <SwiperSlide key={address.id}>
+
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
       <div className={clsx('relative')}>
         <Header size='small'>
           <Button.Root id='publisher-return' className='absolute left-2 !w-fit !p-2 !shadow-none' variant='ghost' onClick={back}>
@@ -223,7 +326,7 @@ export default function StreetData() {
           <div className='flex h-screen flex-col gap-4'>
             <div
               id='publisher-mark'
-              className='mt-4 grid gap-0.5'
+              className='mt-4 grid gap-0.5 z-20 m-1'
               style={{
                 gridTemplateColumns: `repeat(${columnsByWidth}, minmax(0, 1fr))`,
               }}
