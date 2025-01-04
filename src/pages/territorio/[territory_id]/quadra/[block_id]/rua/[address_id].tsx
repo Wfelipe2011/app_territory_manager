@@ -191,7 +191,7 @@ export default function StreetData() {
   };
 
   useEffect(() => {
-    streetGateway.getPhoneReport().then((response) => {
+    streetGateway.getTenancyInfo().then((response) => {
       if (response.status === 200) {
         setPhone(response.data.phone);
       }

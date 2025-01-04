@@ -6,6 +6,7 @@ import { Button } from '@/ui';
 import { CarIcon } from './';
 import { NavigateNext } from './navigate_next';
 import { IActions, IAddress, IBlock } from '../type';
+import { streetGateway } from '@/infra/Gateway/StreetGateway';
 
 interface AddressProps {
   block: Omit<IBlock, 'addresses'>;
@@ -23,19 +24,21 @@ export function Street({ address, actions, block }: AddressProps) {
   const LAST_HOUSE = houses[houses.length - 1];
   const [url, setUrl] = useState<string>('');
 
-  const addressTo = useCallback(() => {
+  const addressTo = useCallback(async () => {
+    const response = await streetGateway.getTenancyInfo()
+    const city = response?.data?.id === 10 ? 'Tatui' : 'Sorocaba';
     const middleHouse = Math.round(houses.length / 2);
-    const loc = `${address.name} ${houses[middleHouse]} - Sorocaba - SP`;
+    const loc = `${address.name} ${houses[middleHouse]} - ${city} - SP`;
     return loc;
   }, [address]);
 
   const toMapsWithNavigator = useCallback(() => {
     if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(function (position) {
+      navigator.geolocation.getCurrentPosition(async function (position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
-        const to = addressTo();
+        const to = await addressTo();
         const so = discoverSO();
         const urlMaps = so === 'android' ? androidMaps(latitude, longitude, to) : iosMaps(latitude, longitude, to);
         setUrl(urlMaps);

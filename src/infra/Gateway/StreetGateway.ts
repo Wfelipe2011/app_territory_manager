@@ -29,7 +29,7 @@ export type CreateHouseInput = {
 };
 
 class StreetGateway {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: HttpClient) { }
 
   getStreetHouses({ addressId, territoryId, blockId, round }: StreetGatewayParamsGetStreetHouses): Promise<ResponseHttp> {
     const query = new URLSearchParams({ round });
@@ -64,7 +64,7 @@ class StreetGateway {
     return this.httpClient.delete(`territories/${territoryId}/blocks/${blockId}/signature`);
   }
 
-  getPhoneReport() {
+  getTenancyInfo() {
     return this.httpClient.get(`tenancy/info`);
   }
 }
