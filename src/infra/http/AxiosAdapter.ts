@@ -8,19 +8,19 @@ import { env } from '@/constant';
 
 import type HttpClient from './HttpClient';
 // export const URL_API = 'http://localhost:3001/v1';
-export const URL_API = `https://api-hmg.territory-manager.com.br/v1`;
+export const URL_API = `https://${process.env.NEXT_PUBLIC_API_URL}/v1`;
 
 type AxiosResponse<T> =
   | {
-      status: number;
-      data: T;
-      message?: undefined;
-    }
+    status: number;
+    data: T;
+    message?: undefined;
+  }
   | {
-      status: any;
-      message: any;
-      data?: any;
-    };
+    status: any;
+    message: any;
+    data?: any;
+  };
 
 export default class AxiosAdapter implements HttpClient {
   constructor() {
