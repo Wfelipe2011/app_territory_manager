@@ -8,10 +8,11 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, HelpCircle, Users } from 'react-feather';
 import { toast } from 'react-hot-toast';
 import { io, Socket } from 'socket.io-client';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import { v4 as uuid } from 'uuid';
+import 'swiper/css';
 
 import 'driver.js/dist/driver.css';
-import 'swiper/css';
 
 import { changeTheme } from '@/lib/changeTheme';
 import { cn } from '@/lib/utils';
@@ -24,6 +25,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 
 import { PostAddIcon } from '@/assets/icons/PostAddIcon';
+import { useBlock } from '@/common/block';
 import { RootModeScreen } from '@/common/loading';
 import { House, HouseComponent, IMessage, Subtitle, useStreet } from '@/common/street';
 import { env } from '@/constant';
@@ -31,9 +33,6 @@ import { reportsGateway } from '@/infra/Gateway/ReportsGateway';
 import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { URL_API } from '@/infra/http/AxiosAdapter';
 import { Body, Button, Header } from '@/ui';
-
-import { useBlock } from '@/common/block';
-import { Swiper, SwiperSlide } from 'swiper/react';
 
 
 const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
@@ -323,7 +322,7 @@ export default function StreetData() {
               )}
             </div>
           </div>
-          <div className='flex h-screen flex-col gap-4'>
+          <div className='flex h-screen flex-col gap-4 justify-between'>
             <div
               id='publisher-mark'
               className='mt-4 grid gap-0.5 z-20 m-1'
@@ -336,7 +335,7 @@ export default function StreetData() {
                   .sort((a, b) => +a.order - +b.order)
                   .map((house) => <HouseComponent house={house} actions={actions} key={house.id} />)}
             </div>
-            <div id='publisher-legend'>{street.houses?.length ? <Subtitle /> : null}</div>
+            <div id='publisher-legend'><Subtitle /></div>
           </div>
         </Body>
       </div>
