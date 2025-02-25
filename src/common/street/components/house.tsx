@@ -1,8 +1,11 @@
-import clsx from 'clsx';
-import toast from 'react-hot-toast';
 import { Dialog, DialogBody, DialogHeader } from '@material-tailwind/react';
-import { House, IActions } from '../type';
+import clsx from 'clsx';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
+
+import { LetterIcon } from '@/assets/icons/LetterIcon';
+
+import { House, IActions } from '../type';
 
 type HouseProps = {
   house: House;
@@ -48,7 +51,7 @@ export function HouseComponent({ house, actions }: HouseProps) {
           {
             'bg-red-400': notHit
           },
-          'relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 py-3 px-2 border-gray-50 shadow-mg transition-all duration-300'
+          'relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 py-2 px-1 border-gray-100 shadow-mg transition-all duration-300 h-[64px]'
         )}
 
         onClick={() => {
@@ -59,20 +62,7 @@ export function HouseComponent({ house, actions }: HouseProps) {
           }
         }}
       >
-        <div className="text-gray-600 font-semibold">
-          <span
-            className={clsx(
-              { 'text-gray-50': notHit || house.status, },
-              'mini:text-lg text-base'
-            )}
-          >{house.number}</span>
-          <span
-            className={clsx(
-              { 'text-gray-50': notHit || house.status, },
-              'mini:text-base text-sm'
-            )}
-          >{house.legend ? `/${house.legend}` : ''}</span>
-        </div>
+        <HouseManager house={house} />
       </div>
 
       <Dialog
@@ -103,4 +93,46 @@ export function HouseComponent({ house, actions }: HouseProps) {
       </Dialog>
     </>
   );
+}
+
+function HouseManager({ house }: { house: House }) {
+  if (house.leaveLetter) {
+    return <HouseNumberAndLetter house={house} notHit={house.dontVisit} />;
+  }
+  return <HouseNumber house={house} notHit={house.dontVisit} />;
+}
+
+function HouseNumber({ house, notHit }: { house: House, notHit: boolean }) {
+  return (
+    <div className="text-gray-600 font-semibold">
+      <span
+        className={clsx({ 'text-gray-50': notHit || house.status, }, 'text-xl')}
+      >{house.number}</span>
+      <span
+        className={clsx(
+          { 'text-gray-50': notHit || house.status, },
+          'mini:text-base text-sm'
+        )}
+      >{house.legend ? `/${house.legend}` : ''}</span>
+    </div>
+  )
+}
+
+function HouseNumberAndLetter({ house, notHit }: { house: House, notHit: boolean }) {
+  return (
+    <div className="text-gray-600 font-semibold">
+      <div className='absolute top-0 right-0 w-6 h-6'>
+        <LetterIcon className={clsx("size-6", { "stroke-primary": !house.status, "stroke-gray-50": house.status })} />
+      </div>
+      <span
+        className={clsx({ 'text-gray-50': notHit || house.status, }, 'text-xl')}
+      >{house.number} </span>
+      <span
+        className={clsx(
+          { 'text-gray-50': notHit || house.status, },
+          'mini:text-base text-md'
+        )}
+      >{house.legend ? `/${house.legend}` : ''}</span>
+    </div>
+  )
 }

@@ -1,5 +1,7 @@
 import clsx from "clsx";
 
+import { LetterIcon } from "@/assets/icons/LetterIcon";
+
 export const Subtitle = () => {
   const Column = ({ children }) => (
     <div className="flex flex-col w-1/2 gap-3">{children}</div>
@@ -34,6 +36,7 @@ export const Subtitle = () => {
         <Data left="IG" right="Igreja" />
         <Data left="ES" right="Escola" />
         <Data left="HP" right="Hospital" />
+        <Data left={<LetterIcon className="w-6 stroke-primary -ml-[3px]" />} right={<span>Deixar Carta</span>} />
       </Column>
     </div>
   );

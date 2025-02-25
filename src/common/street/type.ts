@@ -18,6 +18,7 @@ export type House = {
   id: string;
   number: string;
   complement: string | null;
+  leaveLetter: boolean;
   order: string;
   legend: string;
   status: boolean;
