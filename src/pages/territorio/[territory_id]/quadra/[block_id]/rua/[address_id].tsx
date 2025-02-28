@@ -442,7 +442,7 @@ function ReportInsert({ addressId, blockId, territoryId, closeDrawer }: ReportIn
       addressId: Number(addressId),
       territoryId: Number(territoryId),
       legend: subtitle,
-      observations,
+      observations: observations || 'Adicionar',
       reportType: 'add',
     });
 
@@ -512,7 +512,7 @@ function ReportUpdate({ addressId, blockId, territoryId, houses, closeDrawer }: 
       addressId: Number(addressId),
       territoryId: Number(territoryId),
       legend: subtitle,
-      observations,
+      observations: observations || 'Atualizar',
       reportType: 'update',
     });
 
@@ -612,8 +612,8 @@ function ReportDelete({ addressId, blockId, territoryId, houses, closeDrawer }: 
       blockId: Number(blockId),
       addressId: Number(addressId),
       territoryId: Number(territoryId),
-      legend: house.legend,
-      observations,
+      legend: "Deletar",
+      observations: observations || 'Deletar',
       reportType: 'remove',
     });
 

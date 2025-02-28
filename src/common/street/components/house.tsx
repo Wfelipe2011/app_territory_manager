@@ -122,7 +122,7 @@ function HouseNumberAndLetter({ house, notHit }: { house: House, notHit: boolean
   return (
     <div className="text-gray-600 font-semibold">
       <div className='absolute top-0 right-0 w-6 h-6'>
-        <LetterIcon className={clsx("size-6", { "stroke-primary": !house.status, "stroke-gray-50": house.status })} />
+        <LetterIcon className={clsx("size-6", { "fill-primary": !house.status, "fill-gray-50": house.status })} />
       </div>
       <span
         className={clsx({ 'text-gray-50': notHit || house.status, }, 'text-xl')}
