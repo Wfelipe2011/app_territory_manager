@@ -36,7 +36,7 @@ export const Subtitle = () => {
         <Data left="IG" right="Igreja" />
         <Data left="ES" right="Escola" />
         <Data left="HP" right="Hospital" />
-        <Data left={<LetterIcon className="w-6 stroke-primary -ml-[3px]" />} right={<span>Deixar Carta</span>} />
+        <Data left={<LetterIcon className="w-6 fill-primary -ml-[3px]" />} right={<span>Deixar Carta</span>} />
       </Column>
     </div>
   );
