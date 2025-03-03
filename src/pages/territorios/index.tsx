@@ -1,10 +1,11 @@
 import { Option, Select } from '@material-tailwind/react';
 import clsx from 'clsx';
 import { driver } from 'driver.js';
+import { setCookie } from 'nookies';
 import { useEffect, useState } from 'react';
 import { Info } from 'react-feather';
 
-import { changeTheme, ThemeMode } from '@/lib/changeTheme';
+import { changeTheme, RoundInfo } from '@/lib/changeTheme';
 
 import TerritoryCards from '@/components/Templates/TerritoryCards';
 
@@ -16,9 +17,8 @@ import {
   HeaderHome,
   useTerritories,
 } from '@/common/territories';
-import { Body, Button } from '@/ui';
 import AxiosAdapter from '@/infra/http/AxiosAdapter';
-import { setCookie } from 'nookies';
+import { Body, Button } from '@/ui';
 
 const Icon = {
   'Residencial': <HouseIcon />,
@@ -104,8 +104,8 @@ export default function Territorios() {
   }, [types.selected]);
 
   useEffect(() => {
-    axios.get<ThemeMode>(`rounds/theme/${round.selected}`).then((response) => {
-      changeTheme(response.data);
+    axios.get<{ roundInfo: RoundInfo }>(`rounds/theme/${round.selected}`).then((response) => {
+      changeTheme(response.data.roundInfo);
     })
   }, [round.selected]);
 
