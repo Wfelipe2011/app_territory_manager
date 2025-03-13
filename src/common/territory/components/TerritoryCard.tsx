@@ -142,9 +142,11 @@ const TimeToExpireComponent = ({ signature }: { signature: IBlock['signature'] }
     if (!endDate) return;
     const now = new Date();
     const diff = date.getTime() - now.getTime();
+    const daysNumber = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hoursNumber = Math.floor((diff / (1000 * 60 * 60)) % 24);
     const minutesNumber = Math.floor((diff / 1000 / 60) % 60);
     const secondsNumber = Math.floor((diff / 1000) % 60);
+    const days = daysNumber > 0 ? `${daysNumber}D ` : '';
     const hours = String(hoursNumber).padStart(2, '0');
     const minutes = String(minutesNumber).padStart(2, '0');
     const seconds = String(secondsNumber).padStart(2, '0');
@@ -153,7 +155,7 @@ const TimeToExpireComponent = ({ signature }: { signature: IBlock['signature'] }
       setExpireIn('00:00:00');
       return;
     }
-    setExpireIn(`${hours}:${minutes}:${seconds}`);
+    setExpireIn(`${days}${hours}:${minutes}:${seconds}`);
   }, []);
 
   useEffect(() => {
