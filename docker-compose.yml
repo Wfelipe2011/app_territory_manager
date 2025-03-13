@@ -1,14 +1,20 @@
 version: '3.5'
 
 services:
-  frontend:
-    cpus: '1'
-    mem_limit: 1g
-    build:
-      context: .
-    container_name: frontend_container
+  app-territorio-digital:
+    image: wfelipe2011/app-territorio-digital:acp
+    restart: always
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 256M
     ports:
-      - '3000:3000'  # Suponha que seu frontend esteja em execução na porta 80
-    volumes:
-      - ./src:/app/src
+      - '13000-13100:5000' # Suponha que seu frontend esteja em execução na porta 80
+    networks:
+      - proxy
 
+networks:
+  proxy:
+    external: true

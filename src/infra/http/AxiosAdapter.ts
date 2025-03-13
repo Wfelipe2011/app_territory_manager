@@ -12,15 +12,15 @@ export const URL_API = `https://${process.env.NEXT_PUBLIC_API_URL}/v1`;
 
 type AxiosResponse<T> =
   | {
-      status: number;
-      data: T;
-      message?: undefined;
-    }
+    status: number;
+    data: T;
+    message?: undefined;
+  }
   | {
-      status: any;
-      message: any;
-      data?: undefined;
-    };
+    status: any;
+    message: any;
+    data?: any;
+  };
 
 export default class AxiosAdapter implements HttpClient {
   constructor() {
@@ -80,6 +80,7 @@ export default class AxiosAdapter implements HttpClient {
       return {
         status: error?.response?.status,
         message: error?.response?.data?.error,
+        data: error?.response?.data?.message,
       };
     }
   }

@@ -1,5 +1,4 @@
-# Criar Dockerfile para uma aplicação React com Vite com Next.js
-FROM node:18
+FROM node:18 as builder
 
 WORKDIR /app
 
@@ -9,6 +8,24 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+RUN npm run build
 
-CMD ["npm", "run", "dev"]
+FROM node:18-slim
+
+WORKDIR /app
+
+COPY --from=builder /app/package*.json ./
+
+RUN npm install
+
+RUN npm prune --production
+
+COPY --from=builder /app/.next ./.next
+
+COPY --from=builder /app/public ./public
+
+ENV PORT=5000
+
+EXPOSE 5000
+
+CMD ["npm", "run", "start"]

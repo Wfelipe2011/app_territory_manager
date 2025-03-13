@@ -64,7 +64,7 @@ export function BlockCard({ block, actions, territoryId, round, reload }: BlockC
         </h6>
 
         <div id="overseer-chart" className='flex h-[200px] w-full max-w-[170px] flex-col pt-3'>
-          <DoughnutChart values={[block.positiveCompleted, block.negativeCompleted]} />
+          <DoughnutChart values={[block.positiveCompleted, block.negativeCompleted || 1]} />
         </div>
         <div className='w-full'>
           {!block.signature?.key ? (

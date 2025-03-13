@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p $PORT",
     "lint": "next lint",
     "lint:fix": "eslint src --fix && yarn format",
     "lint:strict": "eslint --max-warnings=0 src",
@@ -20,6 +20,10 @@
   "dependencies": {
     "@heroicons/react": "^2.0.18",
     "@material-tailwind/react": "^2.1.4",
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-separator": "^1.1.0",
+    "@radix-ui/react-tabs": "^1.1.1",
     "axios": "^1.4.0",
     "chart.js": "^4.3.3",
     "clsx": "^1.2.1",
@@ -41,7 +45,8 @@
     "swiper": "^11.1.15",
     "tailwind-merge": "^1.13.2",
     "tailwind-variants": "^0.1.13",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "vaul": "^1.1.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.3.0",

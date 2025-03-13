@@ -1,6 +1,15 @@
 import { parseCookies, setCookie } from 'nookies';
 
-export type ThemeMode = 'default' | 'campaign' | 'letters';
+export type RoundInfo = {
+  id: number;
+  roundNumber: number;
+  name: string;
+  theme: string;
+  tenantId: number;
+  colorPrimary: string | null;
+  colorSecondary: string | null;
+  type: string;
+}
 
 export const theme = {
   default: {
@@ -20,15 +29,25 @@ export const theme = {
   },
 };
 
-export const changeTheme = (themeMode: ThemeMode = getTheme()) => {
+export const changeTheme = (roundInfo: RoundInfo = getTheme()) => {
   const root = document.documentElement;
-  root.style.setProperty('--color-primary', theme[themeMode].primary);
-  root.style.setProperty('--color-secondary', theme[themeMode].secondary);
-  root.style.setProperty('--color-negative', theme[themeMode].negative);
-  setCookie(null, 'mode', themeMode);
+  root.style.setProperty('--color-primary', roundInfo.colorPrimary || theme.default.primary);
+  root.style.setProperty('--color-secondary', roundInfo.colorSecondary || theme.default.secondary);
+  root.style.setProperty('--color-negative', theme.default.negative);
+  setCookie(null, 'roundInfo', JSON.stringify(roundInfo));
 };
 
-function getTheme(): ThemeMode {
-  const { mode } = parseCookies() as { mode: ThemeMode };
-  return mode ? mode : 'default';
+function getTheme(): RoundInfo {
+  const cookie = parseCookies() as { roundInfo: string };
+  const roundInfo = cookie.roundInfo ? JSON.parse(cookie.roundInfo) : null;
+  return roundInfo ? roundInfo : {
+    id: 0,
+    roundNumber: 1,
+    name: 'Residencial',
+    theme: 'default',
+    tenantId: 0,
+    colorPrimary: theme.default.primary,
+    colorSecondary: theme.default.secondary,
+    type: 'Residencial'
+  };
 }

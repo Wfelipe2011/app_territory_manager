@@ -15,23 +15,35 @@ import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
 import { authState } from '@/states/auth';
 import { Button } from '@/ui';
 
+let debounce: NodeJS.Timeout;
+
 export default function Home() {
   const { query } = useRouter();
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState<Mode>('loading');
   const _setAuthState = useSetRecoilState(authState);
   const [values, setValues] = useRecoilState(authState);
-  const signature = query.s as string;
   const path = query.p as string;
 
-  useEffect(() => {
+  function setModeDebounce(signature) {
+    setIsLoading('loading')
+    clearTimeout(debounce);
     if (signature) {
       TerritoryGateway.in()
         .getSignature(signature)
-        .then(({ data }) => data && changeTheme(data.mode));
+        .then(({ data }) => {
+          changeTheme(data.roundInfo);
+          debounce = setTimeout(() => setIsLoading('screen'), 100);
+        });
+    } else {
+      debounce = setTimeout(() => setIsLoading('screen'), 100);
     }
-    setIsLoading('screen');
-  }, [signature]);
+  }
+
+  useEffect(() => {
+    setModeDebounce(query.s);
+    return () => clearTimeout(debounce);
+  }, [query.s]);
 
   const saveSignature = async (signatureId: string) => {
     setIsLoading('loading');
@@ -83,7 +95,7 @@ export default function Home() {
             <p className='text-md text-center text-gray-800'>Clique no botão abaixo para acessar a área o território designado.</p>
           </div>
 
-          <Button.Root type='button' variant='primary' className='flex h-12 w-full !flex-row text-gray-50' onClick={() => void saveSignature(signature)}>
+          <Button.Root disabled={Boolean(!query.s)} type='button' variant='primary' className='flex h-12 w-full !flex-row text-gray-50' onClick={() => void saveSignature(query.s as string)}>
             Entrar
           </Button.Root>
         </div>
