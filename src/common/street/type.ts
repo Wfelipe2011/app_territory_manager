@@ -23,6 +23,7 @@ export type House = {
   legend: string;
   status: boolean;
   dontVisit: boolean;
+  reportType: string | null;
 };
 
 export type IMessage = {

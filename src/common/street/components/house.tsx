@@ -47,6 +47,7 @@ export function HouseComponent({ house, actions }: HouseProps) {
           {
             'bg-secondary/[0.2]': !notHit && !house.status,
             'bg-primary': !notHit && house.status,
+            'bg-blue-gray-100': house.reportType,
           },
           {
             'bg-red-400': notHit
@@ -55,6 +56,9 @@ export function HouseComponent({ house, actions }: HouseProps) {
         )}
 
         onClick={() => {
+          if (house.reportType) {
+            return
+          }
           if (!notHit) {
             handleOpen(true);
           } else {
