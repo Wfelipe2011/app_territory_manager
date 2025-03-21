@@ -20,12 +20,15 @@ export const Subtitle = () => {
           left={<div className="h-5 w-7 mini:h-6 mini:w-10 bg-primary block"></div>}
           right="Casa Feita"
         />
+        <Data
+          id="publisher-not-hit"
+          left={<div className="h-5 w-7 mini:h-6 mini:w-10 bg-blue-gray-100 block"></div>}
+          right="Em análise"
+        />
+        <Data left={<LetterIcon className="w-6 fill-primary -ml-[3px]" />} right={<span>Deixar Carta</span>} />
         <Data left="FD" right="Fundo" />
         <Data left="TR" right="Terreno" />
         <Data left="CM" right="Comércio" />
-        <div className="py-4">
-          <Data left="TJ" right="Testemunha de Jeová" />
-        </div>
       </Column>
       <Column>
         <Data
@@ -36,7 +39,9 @@ export const Subtitle = () => {
         <Data left="IG" right="Igreja" />
         <Data left="ES" right="Escola" />
         <Data left="HP" right="Hospital" />
-        <Data left={<LetterIcon className="w-6 fill-primary -ml-[3px]" />} right={<span>Deixar Carta</span>} />
+        <div className="py-4">
+          <Data left="TJ" right="Testemunha de Jeová" />
+        </div>
       </Column>
     </div>
   );

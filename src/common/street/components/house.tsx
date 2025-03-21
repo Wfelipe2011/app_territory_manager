@@ -56,9 +56,6 @@ export function HouseComponent({ house, actions }: HouseProps) {
         )}
 
         onClick={() => {
-          if (house.reportType) {
-            return
-          }
           if (!notHit) {
             handleOpen(true);
           } else {
