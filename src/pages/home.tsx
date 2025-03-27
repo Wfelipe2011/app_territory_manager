@@ -87,7 +87,7 @@ export default function Home() {
       <div className='flex h-screen flex-col items-center justify-center bg-secondary p-4 pb-12'>
         <div className='mini:p-6 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-gray-50 p-4 pb-8 shadow-xl'>
           <div className='bg-primary max-w-[250px] overflow-hidden rounded-full'>
-            <Image src={logo} alt='Logo Território Digital' className='w-[200px] scale-125' />
+            <Image src={logo} alt='Logo Território Digital' className='w-[200px] scale-125 p-3' />
           </div>
 
           <div className='my-4'>
