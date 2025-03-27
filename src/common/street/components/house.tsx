@@ -73,7 +73,7 @@ export function HouseComponent({ house, actions }: HouseProps) {
           <DialogHeader>Você tem certeza?</DialogHeader>
         </div>
         <DialogBody>
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-2">
             <button
               className="bg-red-500 text-white px-4 py-2 rounded w-full"
               onClick={() => handleOpen(false)}
@@ -81,7 +81,7 @@ export function HouseComponent({ house, actions }: HouseProps) {
               NÃO
             </button>
             <button
-              className="bg-green-500 text-white px-4 py-2 rounded mr-2 w-full"
+              className="bg-green-500 text-white px-4 py-2 rounded w-full"
               onClick={async () => {
                 handleHouseClick();
                 handleOpen(false);
