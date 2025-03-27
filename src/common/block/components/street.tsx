@@ -1,18 +1,27 @@
 import clsx from 'clsx';
 import { useCallback, useEffect, useState } from 'react';
 
+import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { Button } from '@/ui';
 
 import { CarIcon } from './';
 import { NavigateNext } from './navigate_next';
 import { IActions, IAddress, IBlock } from '../type';
-import { streetGateway } from '@/infra/Gateway/StreetGateway';
 
 interface AddressProps {
   block: Omit<IBlock, 'addresses'>;
   address: IAddress;
   actions: IActions;
 }
+
+interface TenancyInfo {
+  id: number;
+  name: string;
+  phone: string;
+  city: string;
+  state: string;
+}
+
 
 // regex para remover todas as letras do house e manter apenas os numeros
 
@@ -25,10 +34,10 @@ export function Street({ address, actions, block }: AddressProps) {
   const [url, setUrl] = useState<string>('');
 
   const addressTo = useCallback(async () => {
-    const response = await streetGateway.getTenancyInfo()
-    const city = response?.data?.id === 10 ? 'Tatui' : 'Sorocaba';
+    const response = await streetGateway.getTenancyInfo() as { data: TenancyInfo };
+    const { city, state } = response.data;
     const middleHouse = Math.round(houses.length / 2);
-    const loc = `${address.name} ${houses[middleHouse]} - ${city} - SP`;
+    const loc = `${address.name} ${houses[middleHouse]} - ${city} - ${state}`;
     return loc;
   }, [address]);
 
