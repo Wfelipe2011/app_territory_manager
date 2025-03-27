@@ -75,6 +75,12 @@ export function HouseComponent({ house, actions }: HouseProps) {
         <DialogBody>
           <div className="flex justify-center">
             <button
+              className="bg-red-500 text-white px-4 py-2 rounded w-full"
+              onClick={() => handleOpen(false)}
+            >
+              NÃO
+            </button>
+            <button
               className="bg-green-500 text-white px-4 py-2 rounded mr-2 w-full"
               onClick={async () => {
                 handleHouseClick();
@@ -82,12 +88,6 @@ export function HouseComponent({ house, actions }: HouseProps) {
               }}
             >
               SIM
-            </button>
-            <button
-              className="bg-red-500 text-white px-4 py-2 rounded w-full"
-              onClick={() => handleOpen(false)}
-            >
-              NÃO
             </button>
           </div>
         </DialogBody>
