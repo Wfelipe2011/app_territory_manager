@@ -60,7 +60,18 @@ export function BlockCard({ block, actions, territoryId, round, reload }: BlockC
     <div className={clsx('flex min-h-[260px] w-full rounded-b-[40px] rounded-l-[40px] gap-2 rounded-t-[40px] rounded-br-none rounded-tr-none border p-3 shadow-lg')}>
       <div className='flex h-full w-1/2 flex-col items-baseline justify-start'>
         <h6 className='ml-2 block text-xl font-medium'>
-          <span className='ml-2'>{block.name}</span>
+          <span className='ml-2 block'>
+            {block.name}
+          </span>
+          {block.updateAt ? (
+            <span className='ml-2 -mt-1 text-sm font-normal text-gray-500 block'>
+              <i>Trabalhado: {new Date(block.updateAt).toLocaleDateString('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit' })}</i>
+            </span>
+          ) : (
+            <span className='ml-2 -mt-1 text-xs font-normal text-gray-500 block'>
+              <i>(Não trabalhado)</i>
+            </span>
+          )}
         </h6>
 
         <div id="overseer-chart" className='flex h-[200px] w-full max-w-[170px] flex-col pt-3'>

@@ -31,6 +31,7 @@ export type IBlock = {
   negativeCompleted: number;
   positiveCompleted: number;
   connections: number;
+  updateAt: string | null; // "2025-04-13T02:59:59.000Z" | null;
 };
 
 export type ISignature = {
