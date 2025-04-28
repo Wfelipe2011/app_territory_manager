@@ -97,7 +97,7 @@ export function HouseComponent({ house, actions }: HouseProps) {
 }
 
 function HouseManager({ house }: { house: House }) {
-  if (house.leaveLetter) {
+  if (house.leaveLetter && !house.dontVisit) {
     return <HouseNumberAndLetter house={house} notHit={house.dontVisit} />;
   }
   return <HouseNumber house={house} notHit={house.dontVisit} />;
