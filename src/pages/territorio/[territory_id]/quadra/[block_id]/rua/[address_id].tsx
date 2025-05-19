@@ -33,6 +33,7 @@ import { reportsGateway } from '@/infra/Gateway/ReportsGateway';
 import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { URL_API } from '@/infra/http/AxiosAdapter';
 import { Body, Button, Header } from '@/ui';
+import { useKeyboardFix } from '@/utils/useKeyboardFix';
 
 
 const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
@@ -247,6 +248,7 @@ export default function StreetData() {
     }
   };
 
+
   return (
     <RootModeScreen mode={isLoading}>
       <HelpCircle
@@ -296,8 +298,8 @@ export default function StreetData() {
                       <PostAddIcon />
                     </span>
                   </DrawerTrigger>
-                  <DrawerContent className='w-full bg-white'>
-                    <div className='flex h-full w-full justify-center px-8'>
+                  <DrawerContent id='drawer_content' className='w-full bg-white'>
+                    <div className='flex h-full w-full justify-center px-9'>
                       <ReportTabs
                         closeDrawer={async () => {
                           await getStreet(address_id, block_id, territory_id, round);
@@ -352,9 +354,19 @@ function ReportTabs({ closeDrawer, houses }: ReportTabsProps) {
   const [tab, setTab] = useState<'insert' | 'update' | 'delete'>('insert');
   const { query } = useRouter();
   const { address_id, block_id, territory_id } = query as { territory_id: string; block_id: string; address_id: string };
+
+  useKeyboardFix(() => {
+    console.log('Keyboard fix');
+    const drawerContent = document.getElementById('drawer_content');
+    if (drawerContent) {
+      drawerContent.style.marginBottom = '1rem';
+      drawerContent.style.height = 'auto';
+    }
+  });
+
   return (
-    <Tabs defaultValue='insert' className='w-full' value={tab} onValueChange={(value) => setTab(value as any)}>
-      <TabsList className='grid w-full grid-cols-3 gap-5'>
+   <Tabs defaultValue='insert' className='w-full' value={tab} onValueChange={(value) => setTab(value as any)}>
+      <TabsList className='grid w-full grid-cols-3 gap-2'>
         <TabsTrigger
           value='insert'
           className={cn(
@@ -362,7 +374,7 @@ function ReportTabs({ closeDrawer, houses }: ReportTabsProps) {
             tab === 'insert' ? 'border border-green-400' : ''
           )}
         >
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-2 p-1'>
             Adicionar <PlusIcon size={18} className='text-green-400' />
           </div>
         </TabsTrigger>
@@ -373,7 +385,7 @@ function ReportTabs({ closeDrawer, houses }: ReportTabsProps) {
             tab === 'update' ? 'border border-blue-400' : ''
           )}
         >
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-2 p-1'>
             Atualizar <PenIcon size={18} className='text-blue-400' />
           </div>
         </TabsTrigger>
@@ -384,12 +396,12 @@ function ReportTabs({ closeDrawer, houses }: ReportTabsProps) {
             tab === 'delete' ? 'border border-red-400' : ''
           )}
         >
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-2 p-1'>
             Remover <TrashIcon size={18} className='text-red-400' />
           </div>
         </TabsTrigger>
       </TabsList>
-      <Separator orientation='horizontal' className='mb-8 mt-4 w-full border-b border-gray-600' />
+      <Separator orientation='horizontal' className='mb-4 mt-4 w-full border-b border-gray-600' />
       <ReportInsert addressId={address_id} blockId={block_id} territoryId={territory_id} closeDrawer={closeDrawer} />
       <ReportUpdate addressId={address_id} blockId={block_id} territoryId={territory_id} houses={houses} closeDrawer={closeDrawer} />
       <ReportDelete addressId={address_id} blockId={block_id} territoryId={territory_id} houses={houses} closeDrawer={closeDrawer} />
@@ -454,7 +466,7 @@ function ReportInsert({ addressId, blockId, territoryId, closeDrawer }: ReportIn
   };
   return (
     <TabsContent value='insert'>
-      <div className='mb-8 grid h-full w-full grid-cols-2 gap-8'>
+      <div className='mb-6 grid w-full grid-cols-2 gap-6'>
         <Input placeholder='Número' value={number} onChange={(e) => onChangeNumber(e.target.value)} />
         <Select value={subtitle} onValueChange={setSubtitle}>
           <SelectTrigger>
@@ -539,7 +551,7 @@ function ReportUpdate({ addressId, blockId, territoryId, houses, closeDrawer }: 
 
   return (
     <TabsContent value='update'>
-      <div className='mb-8 grid h-full w-full grid-cols-2 gap-8'>
+      <div className='mb-6 grid h-full w-full grid-cols-2 gap-4'>
         <Select value={house?.id} onValueChange={updateHouse}>
           <SelectTrigger>
             <SelectValue placeholder='Número' />
@@ -578,9 +590,25 @@ function ReportUpdate({ addressId, blockId, territoryId, houses, closeDrawer }: 
           </SelectContent>
         </Select>
 
+        {/* criar input para atualizar numero da casa */}
+        <Input
+          placeholder='Número da casa'
+          value={house?.number}
+          disabled={!house}
+          className='col-span-2'
+          onChange={(e) => {
+            if (house) {
+              const valueWithAllCharactersInUpperCase = e.target.value.toUpperCase();
+              const onlyNumbersAndLettersSolidus = valueWithAllCharactersInUpperCase.replace(/[^0-9A-Z/]/g, '');
+              setHouse({ ...house, number: onlyNumbersAndLettersSolidus });
+            }
+          }}
+        />
+
         <Textarea
           placeholder='Observação'
           className='col-span-2 h-24 resize-none'
+          disabled={!house}
           value={observations}
           onChange={(e) => setObservations(e.target.value)}
         />
@@ -631,7 +659,7 @@ function ReportDelete({ addressId, blockId, territoryId, houses, closeDrawer }: 
   };
   return (
     <TabsContent value='delete'>
-      <div className='mb-8 grid h-full w-full grid-cols-2 gap-8'>
+      <div className='mb-6 grid h-full w-full grid-cols-2 gap-6'>
         <Select value={house?.id} onValueChange={(value) => setHouse(houses.find((house) => house.id === value) ?? null)}>
           <SelectTrigger className='col-span-2'>
             <SelectValue placeholder='Número' />
@@ -644,6 +672,7 @@ function ReportDelete({ addressId, blockId, territoryId, houses, closeDrawer }: 
                 className='cursor-pointer rounded-md transition-all duration-300 ease-in-out hover:bg-blue-300'
               >
                 {house.number}
+                {house.legend ? `/${house.legend}` : ''}
               </SelectItem>
             ))}
           </SelectContent>
