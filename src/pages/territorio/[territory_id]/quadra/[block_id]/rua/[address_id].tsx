@@ -9,12 +9,12 @@ import { ArrowLeft, HelpCircle, Users } from 'react-feather';
 import { toast } from 'react-hot-toast';
 import { io, Socket } from 'socket.io-client';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { v4 as uuid } from 'uuid';
 import 'swiper/css';
 
 import 'driver.js/dist/driver.css';
 
 import { changeTheme } from '@/lib/changeTheme';
+import { getOrCreateSessionUserId } from '@/lib/helper';
 import { cn } from '@/lib/utils';
 
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
@@ -134,7 +134,7 @@ export default function StreetData() {
         setConnections(1);
         socket.emit('join', {
           roomName: room,
-          username: uuid(),
+          username: getOrCreateSessionUserId(env.storage.sessionUserId),
         });
         await getStreet(address_id, block_id, territory_id, round);
       });

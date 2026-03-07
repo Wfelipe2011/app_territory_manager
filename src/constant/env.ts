@@ -15,5 +15,6 @@ export const env = {
       signatureId: '@territoryManager/signatureId',
       mode: '@territoryManager/mode',
       roles: '@territoryManager/roles',
+      sessionUserId: '@territoryManager/sessionUserId',
   }
 }

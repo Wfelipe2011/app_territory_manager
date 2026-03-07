@@ -1,3 +1,5 @@
+import { v4 as uuid } from 'uuid';
+
 export function getFromLocalStorage(key: string): string | null {
   if (typeof window !== 'undefined') {
     return window.localStorage.getItem(key);
@@ -5,9 +7,18 @@ export function getFromLocalStorage(key: string): string | null {
   return null;
 }
 
-export function getFromSessionStorage(): string | null {
-  // if (typeof sessionStorage !== 'undefined') {
-  //   return sessionStorage.getItem(key);
-  // }
+export function getFromSessionStorage(key: string): string | null {
+  if (typeof window !== 'undefined') {
+    return window.sessionStorage.getItem(key);
+  }
   return null;
+}
+
+export function getOrCreateSessionUserId(key: string): string {
+  if (typeof window === 'undefined') return uuid();
+  const existing = window.sessionStorage.getItem(key);
+  if (existing) return existing;
+  const newId = uuid();
+  window.sessionStorage.setItem(key, newId);
+  return newId;
 }
