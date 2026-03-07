@@ -83,5 +83,8 @@
     "**/*.{json,css,scss,md,webmanifest}": [
       "prettier -w"
     ]
+  },
+  "engines": {
+    "node": "24.x"
   }
 }
