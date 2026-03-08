@@ -33,14 +33,14 @@ export const useTerritory = (territoryId: string, round: string): ITerritoryCust
       }
       const { status, data } = await TerritoryGateway.in().getById(id, round);
       if (status > 299) {
-        setValues({ ...values, notFoundStatusCode: status });
+        setValues((prev) => ({ ...prev, notFoundStatusCode: status }));
         setIsLoading('not-found');
         return;
       }
       setTerritory(data);
       setIsLoading('screen');
     },
-    [setValues, values]
+    [setValues]
   );
 
   useEffect(() => {

@@ -21,15 +21,14 @@ export default function Territory() {
   const { territory, getTerritories, actions, isLoading } = useTerritory(territoryId, round);
 
   useEffect(() => {
-    if (territory) {
-      const interval = setInterval(() => {
-        getTerritories(territoryId, round);
-      }, 1000 * 30);
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [getTerritories, query, round, territory, territoryId]);
+    if (!territory.territoryId) return;
+    const interval = setInterval(() => {
+      getTerritories(territoryId, round);
+    }, 1000 * 30);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [getTerritories, round, territory.territoryId, territoryId]);
 
   const reload = () => {
     getTerritories(territoryId, round);
