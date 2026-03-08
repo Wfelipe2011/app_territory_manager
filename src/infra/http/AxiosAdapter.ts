@@ -5,6 +5,7 @@ import axios from 'axios';
 import { parseCookies } from 'nookies';
 
 import { env } from '@/constant';
+import { getOrCreateSessionUserId } from '@/lib/helper';
 
 import type HttpClient from './HttpClient';
 // export const URL_API = 'http://localhost:3001/v1';
@@ -31,6 +32,7 @@ export default class AxiosAdapter implements HttpClient {
       if (tokenBearer) {
         config.headers['Authorization'] = `Bearer ${tokenBearer}`;
       }
+      config.headers['session-id'] = getOrCreateSessionUserId(env.storage.sessionUserId);
       return config;
     });
   }
