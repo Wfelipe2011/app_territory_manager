@@ -26,8 +26,29 @@ export type House = {
   reportType: string | null;
 };
 
-export type IMessage = {
-  type: string;
-  data: any;
+export type IStreetConnectedPayload = {
+  streetKey: string;
+  instanceId: string;
 };
-// build
+
+export type IStreetPresenceChangedPayload = {
+  streetKey: string;
+  userCount: number;
+};
+
+export type IStreetChangedPayload = {
+  streetKey: string;
+  reason: string;
+  territoryId?: number;
+  blockId?: number;
+  addressId?: number;
+  round?: number;
+};
+
+export type IStreetAuthExpiredPayload = {
+  reason: string;
+};
+
+export type IStreetErrorPayload = {
+  reason: string;
+};

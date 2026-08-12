@@ -89,14 +89,11 @@ export const useStreet = (addressId: string, blockId: string, territoryId: strin
     }
   };
 
-  const markRowSocket = () => getStreet(addressId, blockId, territoryId, round);
-
   return {
     street,
     getStreet,
     actions: {
       mark: markRow,
-      markRowSocket,
     },
     isLoading,
     setIsLoading,

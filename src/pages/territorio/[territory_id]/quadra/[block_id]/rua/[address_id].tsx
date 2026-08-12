@@ -4,17 +4,15 @@ import { PenIcon, PlusIcon, TrashIcon } from 'lucide-react';
 import { useRouter as useNavigate } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, HelpCircle, Users } from 'react-feather';
 import { toast } from 'react-hot-toast';
-import { io, Socket } from 'socket.io-client';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 
 import 'driver.js/dist/driver.css';
 
 import { changeTheme } from '@/lib/changeTheme';
-import { getOrCreateSessionUserId } from '@/lib/helper';
 import { cn } from '@/lib/utils';
 
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
@@ -27,7 +25,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { PostAddIcon } from '@/assets/icons/PostAddIcon';
 import { useBlock } from '@/common/block';
 import { RootModeScreen } from '@/common/loading';
-import { House, HouseComponent, IMessage, Subtitle, useStreet } from '@/common/street';
+import { House, HouseComponent, Subtitle, useStreet, useStreetSSE } from '@/common/street';
 import { env } from '@/constant';
 import { reportsGateway } from '@/infra/Gateway/ReportsGateway';
 import { streetGateway } from '@/infra/Gateway/StreetGateway';
@@ -36,9 +34,8 @@ import { Body, Button, Header } from '@/ui';
 import { useKeyboardFix } from '@/utils/useKeyboardFix';
 
 
-const urlSocket = URL_API.replace('https', 'wss').replace('/v1', '');
-const { token, signatureId } = env.storage;
-const { [token]: tokenCookies, [signatureId]: signature } = parseCookies();
+const { signatureId } = env.storage;
+const { [signatureId]: signature } = parseCookies();
 
 const stepsNovidades = [
   {
@@ -116,53 +113,39 @@ export default function StreetData() {
       return 3;
     };
     setColumnsByWidth(columnsByWidth());
+  }, []);
 
-    if (address_id && block_id && territory_id && round) {
-      const room = `${territory_id}-${block_id}-${address_id}-${round}`;
-      const socket = io(urlSocket, {
-        transports: ['websocket'],
-        auth: {
-          token: `Bearer ${tokenCookies}`,
-        },
-        query: {
-          key: signature,
-        },
-      }) as Socket;
+  const sseUrl = useMemo(() => {
+    if (!address_id || !block_id || !territory_id || !round || !signature) return null;
+    return `${URL_API}/realtime/street/${territory_id}/${block_id}/${address_id}?round=${round}&s=${encodeURIComponent(signature)}`;
+  }, [address_id, block_id, territory_id, round]);
 
-      socket.on('connect', async () => {
-        console.log(`User connected with ID: ${socket.id} room: ${room}`);
-        setConnections(1);
-        socket.emit('join', {
-          roomName: room,
-          username: getOrCreateSessionUserId(env.storage.sessionUserId),
-        });
-        await getStreet(address_id, block_id, territory_id, round);
-      });
+  const streetKeyRef = useRef<string | null>(null);
 
-      socket.on('join', (message: IMessage) => {
-        console.log(`User joined with ID: ${socket.id} room: ${room}`, message);
-      });
-
-      socket.on(String(room), async (message) => {
-        console.log(`Received update for territory ${room}:`, message);
-        if (message.type === 'update_house') getStreet(address_id, block_id, territory_id, round);
-        if (message.type === 'user_joined') setConnections(message.data.userCount);
-        if (message.type === 'user_left') setConnections(message.data.userCount);
-      });
-
-      socket.on('connect_error', (error) => {
-        console.log(`Connection error for user:`, error.message);
-      });
-
-      socket.on('disconnect', () => {
-        console.log(`User disconnected with ID: ${socket.id}`);
-      });
-
-      return () => {
-        socket.disconnect();
-      };
-    }
-  }, [address_id, block_id, getStreet, query, round, territory_id]);
+  useStreetSSE(sseUrl, {
+    onConnected: ({ streetKey }) => {
+      streetKeyRef.current = streetKey;
+      setConnections(1);
+      void getStreet(address_id, block_id, territory_id, round);
+    },
+    onPresenceChanged: ({ streetKey, userCount }) => {
+      if (streetKey === streetKeyRef.current) {
+        setConnections(userCount);
+      }
+    },
+    onStreetChanged: ({ streetKey }) => {
+      if (streetKey === streetKeyRef.current) {
+        void getStreet(address_id, block_id, territory_id, round);
+      }
+    },
+    onAuthExpired: ({ reason }) => {
+      console.warn('SSE auth expired:', reason);
+      window.location.reload();
+    },
+    onError: (payload) => {
+      console.warn('SSE error:', payload?.reason ?? 'transport error');
+    },
+  });
 
   const driverAction = () => {
     const driverObj = driver({
