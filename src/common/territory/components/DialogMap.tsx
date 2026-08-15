@@ -1,8 +1,8 @@
 import { Dialog, DialogBody, DialogHeader } from '@material-tailwind/react';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Map, X } from 'react-feather';
 
-export function DialogMap({ title, children }) {
+export function DialogMap({ title, children }: { title: ReactNode; children: ReactNode }) {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(!open);

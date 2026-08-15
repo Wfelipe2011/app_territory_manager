@@ -6,10 +6,9 @@ import { Button } from '@/ui';
 
 import { CarIcon } from './';
 import { NavigateNext } from './navigate_next';
-import { IActions, IAddress, IBlock } from '../type';
+import { IActions, IAddress } from '../type';
 
 interface AddressProps {
-  block: Omit<IBlock, 'addresses'>;
   address: IAddress;
   actions: IActions;
 }
@@ -27,7 +26,7 @@ interface TenancyInfo {
 
 const regex = /\D/g;
 
-export function Street({ address, actions, block }: AddressProps) {
+export function Street({ address, actions }: AddressProps) {
   const houses = address.houses.filter((house) => !regex.test(house));
   const FIRST_HOUSE = houses[0];
   const LAST_HOUSE = houses[houses.length - 1];

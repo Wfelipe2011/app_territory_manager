@@ -23,9 +23,10 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<Mode>('loading');
   const _setAuthState = useSetRecoilState(authState);
   const [values, setValues] = useRecoilState(authState);
-  const path = query.p as string;
+  const path = query['p'] as string;
+  const signature = query['s'] as string;
 
-  function setModeDebounce(signature) {
+  function setModeDebounce(signature: string) {
     setIsLoading('loading')
     clearTimeout(debounce);
     if (signature) {
@@ -41,9 +42,9 @@ export default function Home() {
   }
 
   useEffect(() => {
-    setModeDebounce(query.s);
+    setModeDebounce(signature);
     return () => clearTimeout(debounce);
-  }, [query.s]);
+  }, [signature]);
 
   const saveSignature = async (signatureId: string) => {
     setIsLoading('loading');
@@ -59,13 +60,13 @@ export default function Home() {
 
     _setAuthState({
       token,
-      overseer,
       territoryId,
-      blockId,
       expirationTime: exp,
       signatureId,
-      mode,
       roles,
+      ...(overseer ? { overseer } : {}),
+      ...(blockId ? { blockId } : {}),
+      ...(mode ? { mode } : {}),
     });
     const configCookie = {
       maxAge: 30 * 24 * 60 * 60,
@@ -95,7 +96,7 @@ export default function Home() {
             <p className='text-md text-center text-gray-800'>Clique no botão abaixo para acessar a área o território designado.</p>
           </div>
 
-          <Button.Root disabled={Boolean(!query.s)} type='button' variant='primary' className='flex h-12 w-full !flex-row text-gray-50' onClick={() => void saveSignature(query.s as string)}>
+          <Button.Root disabled={!signature} type='button' variant='primary' className='flex h-12 w-full !flex-row text-gray-50' onClick={() => void saveSignature(signature)}>
             Entrar
           </Button.Root>
         </div>

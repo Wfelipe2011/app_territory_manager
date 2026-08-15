@@ -387,7 +387,7 @@ function ReportTabs({ closeDrawer, houses }: ReportTabsProps) {
 
 const subtitles = ['Residência', 'Comércio', 'Terreno', 'Fundos', 'Testemunha de Jeová', 'Igreja', 'Escola', 'Hospital', 'Não Bater'];
 const mapperSubtitle = (value: string) => {
-  const options = {
+  const options: Record<string, string> = {
     CM: 'Comércio',
     TR: 'Terreno',
     FD: 'Fundos',
@@ -398,7 +398,7 @@ const mapperSubtitle = (value: string) => {
   };
   return options[value] ?? value;
 };
-const mapperErrosFields = {
+const mapperErrosFields: Record<string, string> = {
   number: 'Número',
   legend: 'Legenda',
   observations: 'Observações',
@@ -528,7 +528,7 @@ function ReportUpdate({ addressId, blockId, territoryId, houses, closeDrawer }: 
   return (
     <TabsContent value='update'>
       <div className='mb-6 grid h-full w-full grid-cols-2 gap-4'>
-        <Select value={house?.id} onValueChange={updateHouse}>
+        <Select value={house?.id ?? ''} onValueChange={updateHouse}>
           <SelectTrigger>
             <SelectValue placeholder='Número' />
           </SelectTrigger>
@@ -636,7 +636,7 @@ function ReportDelete({ addressId, blockId, territoryId, houses, closeDrawer }: 
   return (
     <TabsContent value='delete'>
       <div className='mb-6 grid h-full w-full grid-cols-2 gap-6'>
-        <Select value={house?.id} onValueChange={(value) => setHouse(houses.find((house) => house.id === value) ?? null)}>
+        <Select value={house?.id ?? ''} onValueChange={(value) => setHouse(houses.find((house) => house.id === value) ?? null)}>
           <SelectTrigger className='col-span-2'>
             <SelectValue placeholder='Número' />
           </SelectTrigger>
@@ -677,7 +677,7 @@ function errorHandler(data: any, message: any) {
   }
   const errorsMessages: string[] = [];
   for (const field of data) {
-    const fieldError = field.replace(rgxToGetBetweenQuotes, (match, p1) => {
+    const fieldError = field.replace(rgxToGetBetweenQuotes, (_match: string, p1: string) => {
       return `"${mapperErrosFields[p1]}"`;
     });
     errorsMessages.push(fieldError);

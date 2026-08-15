@@ -1,12 +1,13 @@
 import clsx from "clsx";
+import { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { LetterIcon } from "@/assets/icons/LetterIcon";
 
 export const Subtitle = () => {
-  const Column = ({ children }) => (
+  const Column = ({ children }: { children: ReactNode }) => (
     <div className="flex flex-col w-1/2 gap-3">{children}</div>
   );
-  const Data = ({ left, right, ...rest }) => (
+  const Data = ({ left, right, ...rest }: { left: ReactNode; right: ReactNode } & ComponentPropsWithoutRef<'div'>) => (
     <div {...rest} className="flex justify-around items-center h-6 w-full text-sm">
       <div className="w-2/6 flex items-center font-bold">{left}</div>
       <div className={clsx("flex justify-start w-4/6 wrap")}>{right}</div>

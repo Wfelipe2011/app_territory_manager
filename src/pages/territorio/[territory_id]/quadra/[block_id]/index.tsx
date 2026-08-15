@@ -69,17 +69,13 @@ export default function Block() {
         <Body>
           <div className='h-6 w-full'></div>
           <div className='flex flex-col gap-2 pb-20'>
-            {block?.addresses?.map((address) => {
-              const { addresses, ...blockWithoutAddress } = block;
-              return (
-                <Street
-                  block={blockWithoutAddress}
-                  key={address.id}
-                  address={address}
-                  actions={actions}
-                />
-              );
-            })}
+            {block?.addresses?.map((address) => (
+              <Street
+                key={address.id}
+                address={address}
+                actions={actions}
+              />
+            ))}
           </div>
         </Body>
       </div>

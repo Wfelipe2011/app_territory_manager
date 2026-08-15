@@ -7,7 +7,7 @@ import { authState } from '@/states/auth';
 
 export default function NotFound() {
   const [message, setMessage] = React.useState<any>()
-  const [values, setValues] = useRecoilState(authState);
+  const [values] = useRecoilState(authState);
   const router = useRouter();
   const { codeError } = router.query; // Pegando a query da rota
 

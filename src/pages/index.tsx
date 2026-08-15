@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Mode, RootModeScreen } from '@/common/loading';
 
 export default function HomePage() {
-  const [isLoading, setIsLoading] = useState<Mode>('loading');
+  const [isLoading] = useState<Mode>('loading');
 
   useEffect(() => {
     window.location.href = `https://admin.territory-manager.com.br/`;

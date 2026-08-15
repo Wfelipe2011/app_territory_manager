@@ -32,7 +32,7 @@ const ButtonRoot = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         type={type}
-        className={button({ variant, size, className })}
+        className={button({ ...(variant && { variant }), ...(size && { size }), className })}
         {...props}
       >
         {props.children}

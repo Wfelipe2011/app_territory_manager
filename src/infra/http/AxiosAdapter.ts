@@ -10,9 +10,9 @@ import { env } from '@/constant';
 
 import type HttpClient from './HttpClient';
 // export const URL_API = 'http://localhost:3001/v1';
-export const URL_API = process.env.NEXT_PUBLIC_API_URL?.startsWith('http')
-  ? `${process.env.NEXT_PUBLIC_API_URL}/v1`
-  : `https://${process.env.NEXT_PUBLIC_API_URL}/v1`;
+export const URL_API = process.env['NEXT_PUBLIC_API_URL']?.startsWith('http')
+  ? `${process.env['NEXT_PUBLIC_API_URL']}/v1`
+  : `https://${process.env['NEXT_PUBLIC_API_URL']}/v1`;
 
 type AxiosResponse<T> =
   | {

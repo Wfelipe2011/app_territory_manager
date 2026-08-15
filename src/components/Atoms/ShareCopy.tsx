@@ -64,7 +64,7 @@ export const ShareCopy = ({ className, data, onShareClick, ...rest }: ShareCopyP
   )
 }
 
-const CopyComponent = ({ copySuccess, onClick }: { copySuccess: boolean, onClick }) => {
+const CopyComponent = ({ copySuccess, onClick }: { copySuccess: boolean, onClick: () => void }) => {
   return (
     copySuccess ? (
       <Check className='text-primary' />

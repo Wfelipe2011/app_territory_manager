@@ -95,7 +95,7 @@ export function BlockCard({ block, actions, territoryId, round, reload }: BlockC
           <ShareCopy
             data={{
               message: geParamsNavigateShare(territoryId, block.id, block?.signature?.key || ''),
-              signatureKey: block?.signature?.key,
+              ...(block?.signature?.key ? { signatureKey: block.signature.key } : {}),
             }}
             key={block.id}
             onShareClick={() => actions.share(block.id)}

@@ -24,7 +24,7 @@ export const useTerritory = (territoryId: string, round: string): ITerritoryCust
     history: [],
   });
   const [isLoading, setIsLoading] = useState<Mode>('loading');
-  const [values, setValues] = useRecoilState(authState);
+  const [, setValues] = useRecoilState(authState);
 
   const getTerritories = useCallback(
     async (id: string, round: string): Promise<void> => {
