@@ -1,23 +1,37 @@
 /* eslint-disable @next/next/no-img-element */
 import clsx from 'clsx';
 import { driver } from 'driver.js';
+import jwt_decode from 'jwt-decode';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { ArrowLeft, HelpCircle, Share2 } from 'react-feather';
+import { parseCookies } from 'nookies';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ArrowLeft, HelpCircle, Share2, Users, X } from 'react-feather';
 import toast from 'react-hot-toast';
 
 import 'driver.js/dist/driver.css';
 
 import { changeTheme } from '@/lib/changeTheme';
-import { getActiveGroupId, getTenantSignatureKey } from '@/lib/helper';
+import type { PublisherProfile } from '@/lib/helper';
+import {
+  getActiveGroupId,
+  getOrCreatePublisherProfile,
+  getTenantSignatureKey,
+  savePublisherProfile,
+} from '@/lib/helper';
 
 import { IconContainer } from '@/components/Atoms/IconContainer';
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import { Input } from '@/components/ui/input';
 
 import { Street, useBlock } from '@/common/block';
 import { RootModeScreen } from '@/common/loading';
 import { DialogMap } from '@/common/territory/components/DialogMap';
+import type { WaitingRoomPublisher } from '@/common/waitingRoom/type';
+import { useWaitingRoomSSE } from '@/common/waitingRoom/useWaitingRoomSSE';
+import { env } from '@/constant';
 import { waitingRoomGateway } from '@/infra/Gateway/WaitingRoomGateway';
-import { Body, Header } from '@/ui';
+import { URL_API } from '@/infra/http/AxiosAdapter';
+import { Body, Button, Header } from '@/ui';
 
 export default function Block() {
   const router = useRouter();
@@ -25,6 +39,94 @@ export default function Block() {
   const { block_id, round, territory_id } = query as { territory_id: string; block_id: string; round: string };
 
   const { block, actions, isLoading } = useBlock(block_id, territory_id, round);
+
+  const blockKey = useMemo(() => parseCookies()[env.storage.signatureId] || '', []);
+  const groupId = useMemo(() => {
+    const token = parseCookies()[env.storage.token];
+    if (!token) return '';
+    try {
+      const decoded = jwt_decode<{ groupId?: string }>(token);
+      return decoded.groupId || '';
+    } catch {
+      return '';
+    }
+  }, []);
+
+  const [profile, setProfile] = useState<PublisherProfile | null>(null);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneLast4, setPhoneLast4] = useState('');
+  const [joined, setJoined] = useState(false);
+  const [peers, setPeers] = useState<WaitingRoomPublisher[]>([]);
+  const [peersOpen, setPeersOpen] = useState(false);
+
+  const enabled = !!groupId && !!blockKey;
+
+  useEffect(() => {
+    setProfile(getOrCreatePublisherProfile());
+  }, []);
+
+  const joinRoom = useCallback(async () => {
+    if (!groupId || !blockKey || !profile) return;
+    const { status } = await waitingRoomGateway.joinGroup(groupId, blockKey, {
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      phoneLast4: profile.phoneLast4,
+    });
+    if (status <= 299) setJoined(true);
+  }, [blockKey, groupId, profile]);
+
+  useEffect(() => {
+    if (!enabled || !profile?.firstName || joined) return;
+    void joinRoom();
+  }, [enabled, joinRoom, joined, profile?.firstName]);
+
+  const getPeers = useCallback(async () => {
+    if (!groupId || !blockKey) return;
+    const { status, data } = await waitingRoomGateway.getRoom(groupId, blockKey);
+    if (status > 299) {
+      setPeers([]);
+      return;
+    }
+    if (data?.role === 'publisher') setPeers(data.peers ?? []);
+  }, [blockKey, groupId]);
+
+  useEffect(() => {
+    if (!enabled || !profile?.firstName) return;
+    void getPeers();
+  }, [enabled, getPeers, profile?.firstName]);
+
+  const sseUrl = useMemo(() => {
+    if (!groupId || !blockKey || !profile?.firstName) return null;
+    return `${URL_API}/realtime/waiting-room/${groupId}?s=${encodeURIComponent(blockKey)}`;
+  }, [blockKey, groupId, profile?.firstName]);
+
+  useWaitingRoomSSE(sseUrl, {
+    onConnected: () => void getPeers(),
+    onPresenceChanged: () => void getPeers(),
+    onAssignmentsChanged: () => void getPeers(),
+  });
+
+  useEffect(() => {
+    if (!enabled || !profile?.firstName) return;
+    const heartbeat = setInterval(() => {
+      void waitingRoomGateway.heartbeat(groupId, blockKey);
+    }, 30_000);
+    return () => clearInterval(heartbeat);
+  }, [blockKey, enabled, groupId, profile?.firstName]);
+
+  const submitProfile = () => {
+    if (!profile) return;
+    const updated: PublisherProfile = {
+      ...profile,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      phoneLast4,
+    };
+    savePublisherProfile(updated);
+    setProfile(updated);
+    toast.success('Perfil salvo');
+  };
 
   const shareFromWaitingRoom = async () => {
     const tenantKey = getTenantSignatureKey();
@@ -89,6 +191,9 @@ export default function Block() {
     changeTheme();
   }, []);
 
+  const needProfile = enabled && !!profile && !profile.firstName;
+  const showPeers = enabled && !!profile?.firstName;
+
   return (
     <RootModeScreen mode={isLoading}>
       <HelpCircle
@@ -122,19 +227,79 @@ export default function Block() {
                 <h4 className='text-xl font-semibold text-gray-700'>{block?.territoryName}</h4>
                 <h5 className='text-xl font-semibold text-gray-700'>{block?.blockName}</h5>
               </div>
-              <IconContainer
-                icon={<Share2 size={22} className='cursor-pointer text-gray-700' onClick={() => void shareFromWaitingRoom()} />}
-              />
+              <div className='flex items-center gap-1'>
+                {showPeers && (
+                  <Drawer open={peersOpen} onOpenChange={setPeersOpen}>
+                    <DrawerTrigger asChild>
+                      <IconContainer
+                        icon={<Users size={22} className='cursor-pointer text-gray-700' />}
+                      />
+                    </DrawerTrigger>
+                    <DrawerContent id='peers_drawer_content' className='w-full bg-white'>
+                      <div className='flex w-full items-center justify-between px-6 pt-4'>
+                        <h3 className='text-lg font-semibold text-gray-800'>Publicadores nesta quadra</h3>
+                        <X className='cursor-pointer text-gray-600' onClick={() => setPeersOpen(false)} />
+                      </div>
+                      <div className='flex max-h-[50vh] flex-col gap-2 overflow-y-auto px-6 py-4'>
+                        {peers.length === 0 && (
+                          <p className='text-sm text-gray-600'>Nenhum outro publicador presente no momento.</p>
+                        )}
+                        {peers.map((peer) => (
+                          <div
+                            key={peer.identityKey}
+                            className='flex items-center justify-between rounded-xl border border-gray-200 bg-white p-3 shadow-sm'
+                          >
+                            <span className='font-medium text-gray-800'>
+                              {peer.firstName} {peer.lastName}
+                            </span>
+                            <span className='text-sm text-gray-500'>**** {peer.phoneLast4}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
+                )}
+                <IconContainer
+                  icon={<Share2 size={22} className='cursor-pointer text-gray-700' onClick={() => void shareFromWaitingRoom()} />}
+                />
+              </div>
             </div>
           </div>
         </Header>
         <Body>
           <div className='h-6 w-full'></div>
-          <div className='flex flex-col gap-2 pb-20'>
-            {block?.addresses?.map((address) => (
-              <Street key={address.id} address={address} actions={actions} />
-            ))}
-          </div>
+          {needProfile && (
+            <div className='flex flex-col gap-4 rounded-xl bg-gray-50 p-4 shadow-xl'>
+              <div>
+                <h3 className='text-lg font-semibold text-gray-800'>Seu perfil</h3>
+                <p className='text-sm text-gray-600'>Informe seus dados para entrar na sala de espera.</p>
+              </div>
+              <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder='Nome' />
+              <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder='Sobrenome' />
+              <Input
+                value={phoneLast4}
+                onChange={(e) => setPhoneLast4(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                placeholder='Últimos 4 dígitos do celular'
+                inputMode='numeric'
+                maxLength={4}
+              />
+              <Button.Root
+                type='button'
+                className='w-full text-white'
+                disabled={!firstName.trim() || phoneLast4.length !== 4}
+                onClick={submitProfile}
+              >
+                Entrar
+              </Button.Root>
+            </div>
+          )}
+          {!needProfile && (
+            <div className='flex flex-col gap-2 pb-20'>
+              {block?.addresses?.map((address) => (
+                <Street key={address.id} address={address} actions={actions} />
+              ))}
+            </div>
+          )}
         </Body>
       </div>
     </RootModeScreen>

@@ -59,6 +59,7 @@ export type PublisherRoomResponse = {
   group: WaitingRoomGroupInfo;
   profile: PublisherProfile;
   assignments: PublisherRoomAssignment[];
+  peers: WaitingRoomPublisher[];
 };
 
 export type WaitingRoomResponse = OverseerRoomResponse | PublisherRoomResponse;
