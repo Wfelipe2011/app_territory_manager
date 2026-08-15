@@ -1,4 +1,4 @@
-import { useRouter as useNavigation } from 'next/navigation';
+import { useRouter as useNavigation } from 'next/router';
 import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -36,7 +36,7 @@ import { Body, Button, Header } from '@/ui';
 export default function WaitingRoomGroupPage() {
   const navigation = useNavigation();
   const { query } = useRouter();
-  const { group_id } = query as { group_id: string };
+  const { groupId } = query as { groupId: string };
   const [mode, setMode] = useState<Mode>('loading');
   const [room, setRoom] = useState<WaitingRoomResponse | null>(null);
   const [profile, setProfile] = useState<PublisherProfile | null>(null);
@@ -58,35 +58,35 @@ export default function WaitingRoomGroupPage() {
   }, [navigation, tenantKey]);
 
   const getRoom = useCallback(async () => {
-    if (!group_id || !tenantKey) return;
-    const { status, data } = await waitingRoomGateway.getRoom(group_id, tenantKey);
+    if (!groupId || !tenantKey) return;
+    const { status, data } = await waitingRoomGateway.getRoom(groupId, tenantKey);
     if (status > 299) {
       setMode('not-found');
       return;
     }
     setRoom(data);
     setMode('screen');
-  }, [group_id, tenantKey]);
+  }, [groupId, tenantKey]);
 
   useEffect(() => {
-    if (!group_id || !tenantKey) return;
+    if (!groupId || !tenantKey) return;
     void getRoom();
     const poll = setInterval(() => void getRoom(), 30_000);
     return () => clearInterval(poll);
-  }, [getRoom, group_id, tenantKey]);
+  }, [getRoom, groupId, tenantKey]);
 
   useEffect(() => {
-    if (!group_id || !tenantKey) return;
+    if (!groupId || !tenantKey) return;
     const heartbeat = setInterval(() => {
-      void waitingRoomGateway.heartbeat(group_id, tenantKey);
+      void waitingRoomGateway.heartbeat(groupId, tenantKey);
     }, 30_000);
     return () => clearInterval(heartbeat);
-  }, [group_id, tenantKey]);
+  }, [groupId, tenantKey]);
 
   const sseUrl = useMemo(() => {
-    if (!group_id || !tenantKey) return null;
-    return `${URL_API}/realtime/waiting-room/${group_id}?s=${encodeURIComponent(tenantKey)}`;
-  }, [group_id, tenantKey]);
+    if (!groupId || !tenantKey) return null;
+    return `${URL_API}/realtime/waiting-room/${groupId}?s=${encodeURIComponent(tenantKey)}`;
+  }, [groupId, tenantKey]);
 
   useWaitingRoomSSE(sseUrl, {
     onConnected: () => void getRoom(),
@@ -99,14 +99,19 @@ export default function WaitingRoomGroupPage() {
     navigation.push('/sala');
   };
 
+  const goToTerritory = () => {
+    if (room?.role !== 'overseer') return;
+    navigation.push(`/territorio/${room.territoryId}?round=${room.round}`);
+  };
+
   const assign = async () => {
-    if (!group_id || !tenantKey) return;
+    if (!groupId || !tenantKey) return;
     if (room?.role !== 'overseer') return;
     if (!selectedPublisherId || !selectedBlockId) {
       toast.error('Selecione um publicador e uma quadra');
       return;
     }
-    const { status } = await waitingRoomGateway.createAssignment(group_id, tenantKey, {
+    const { status } = await waitingRoomGateway.createAssignment(groupId, tenantKey, {
       publisherId: selectedPublisherId,
       blockId: selectedBlockId,
       territoryId: room.territoryId,
@@ -123,8 +128,8 @@ export default function WaitingRoomGroupPage() {
   };
 
   const removeAssignment = async (assignment: WaitingRoomAssignment) => {
-    if (!group_id || !tenantKey) return;
-    const { status } = await waitingRoomGateway.removeAssignment(group_id, tenantKey, {
+    if (!groupId || !tenantKey) return;
+    const { status } = await waitingRoomGateway.removeAssignment(groupId, tenantKey, {
       publisherId: assignment.publisherId,
       blockId: assignment.blockId,
     });
@@ -137,14 +142,14 @@ export default function WaitingRoomGroupPage() {
   };
 
   const enterBlock = async (assignment: PublisherRoomAssignment) => {
-    if (!group_id || !tenantKey) return;
-    const { status, data } = await waitingRoomGateway.createBlockSignature(group_id, assignment.blockId, tenantKey);
+    if (!groupId || !tenantKey) return;
+    const { status, data } = await waitingRoomGateway.createBlockSignature(groupId, assignment.blockId, tenantKey);
     if (status > 299) {
       toast.error('Não foi possível gerar o link da quadra');
       return;
     }
     const signatureKey = data.key as string;
-    setActiveGroupId(group_id);
+    setActiveGroupId(groupId);
     const handshake = await getSignatureHandshake(signatureKey);
     if (handshake.status > 299 || !handshake.data) {
       toast.error('Link da quadra inválido. Tente novamente.');
@@ -199,6 +204,7 @@ export default function WaitingRoomGroupPage() {
               setSelectedBlockId={setSelectedBlockId}
               onAssign={() => void assign()}
               onRemove={(assignment) => void removeAssignment(assignment)}
+              onGoToTerritory={goToTerritory}
             />
           )}
           {room?.role === 'publisher' && <PublisherView room={room} onEnterBlock={(assignment) => void enterBlock(assignment)} />}
@@ -216,6 +222,7 @@ function OverseerView({
   setSelectedBlockId,
   onAssign,
   onRemove,
+  onGoToTerritory,
 }: {
   room: OverseerRoomResponse;
   selectedPublisherId: string;
@@ -224,11 +231,15 @@ function OverseerView({
   setSelectedBlockId: (value: string) => void;
   onAssign: () => void;
   onRemove: (assignment: WaitingRoomAssignment) => void;
+  onGoToTerritory: () => void;
 }) {
   const assignedByBlock = (blockId: string) => room.assignments.filter((assignment) => assignment.blockId === blockId);
 
   return (
     <div className='flex flex-col gap-6'>
+      <Button.Root type='button' variant='ghost' className='w-full text-gray-800' onClick={onGoToTerritory}>
+        Ver quadras do território
+      </Button.Root>
       <section className='flex flex-col gap-2'>
         <h3 className='flex items-center gap-2 text-lg font-semibold text-gray-800'>
           Publicadores na sala

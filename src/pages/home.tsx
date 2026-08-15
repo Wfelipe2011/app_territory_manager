@@ -56,7 +56,8 @@ export default function Home() {
 
     const { token, mode, decoded } = handshake.data;
     const isSala = path.startsWith('sala');
-    if (isSala) {
+    const isOverseer = Array.isArray(decoded.roles) && decoded.roles.includes('overseer');
+    if (isSala || isOverseer) {
       setTenantSignatureKey(signatureId);
     }
     saveSignatureCookies(signatureId, handshake.data, { preserveTerritoryContext: isSala });
@@ -72,7 +73,7 @@ export default function Home() {
       ...(mode ? { mode } : {}),
     });
 
-    navigation.push(path);
+    navigation.push(isOverseer ? '/sala' : path);
   };
 
   return (

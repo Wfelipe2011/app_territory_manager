@@ -1,5 +1,6 @@
-import { useRouter as useNavigation } from 'next/navigation';
+import { useRouter as useNavigation } from 'next/router';
 import { useRouter } from 'next/router';
+import jwt_decode from 'jwt-decode';
 import { parseCookies } from 'nookies';
 import { useCallback, useEffect, useState } from 'react';
 import { Users } from 'react-feather';
@@ -79,7 +80,19 @@ export default function Sala() {
       return;
     }
     if (!getTenantSignatureKey()) setTenantSignatureKey(key);
-    setIsOverseer(!!cookies[env.storage.territoryId]);
+    const token = cookies[env.storage.token];
+    let isOverseerCookie = false;
+    if (token) {
+      try {
+        const decoded = jwt_decode<{ roles?: string[] }>(token);
+        isOverseerCookie = !!decoded?.roles?.includes('overseer');
+      } catch {
+        isOverseerCookie = !!cookies[env.storage.territoryId];
+      }
+    } else {
+      isOverseerCookie = !!cookies[env.storage.territoryId];
+    }
+    setIsOverseer(isOverseerCookie);
     if (profile?.firstName) {
       void loadGroups(key);
     } else {
@@ -176,13 +189,24 @@ export default function Sala() {
             </div>
           ) : (
             <div className='flex flex-col gap-3'>
-              <h3 className='text-lg font-semibold text-gray-800'>{isOverseer ? 'Grupos ativos' : 'Escolha um grupo'}</h3>
-              {groups.length === 0 && <p className='text-sm text-gray-600'>Nenhum grupo ativo no momento.</p>}
+              <h3 className='text-lg font-semibold text-gray-800'>Escolha um grupo</h3>
+              {groups.length === 0 && (
+                <p className='text-sm text-gray-600'>
+                  {isOverseer
+                    ? 'Nenhum grupo criado ainda. Crie grupos no painel do admin.'
+                    : 'Nenhum grupo ativo no momento.'}
+                </p>
+              )}
               {groups.map((group) => (
                 <div key={group.id} className='flex items-center justify-between gap-2 rounded-xl border bg-white p-4 shadow-sm'>
                   <div className='flex flex-col'>
                     <span className='font-medium text-gray-800'>{group.name}</span>
-                    {!isOverseer && (
+                    {isOverseer ? (
+                      <span className={`text-sm ${group.active ? 'text-green-600' : 'text-gray-500'}`}>
+                        {group.active ? 'Ativo' : 'Inativo'} · {group.publishers} publicador
+                        {group.publishers === 1 ? '' : 'es'}
+                      </span>
+                    ) : (
                       <span className='flex items-center gap-1 text-sm text-gray-500'>
                         <Users size={14} />
                         {group.publishers} publicador{group.publishers === 1 ? '' : 'es'}
@@ -195,7 +219,7 @@ export default function Sala() {
                     disabled={joiningGroupId === group.id}
                     onClick={() => void joinGroup(group.id)}
                   >
-                    Entrar no grupo
+                    {isOverseer && !group.active ? 'Ativar grupo' : 'Entrar no grupo'}
                   </Button.Root>
                 </div>
               ))}

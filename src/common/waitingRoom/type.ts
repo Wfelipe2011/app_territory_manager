@@ -4,6 +4,7 @@ export type WaitingRoomGroup = {
   id: string;
   name: string;
   publishers: number;
+  active?: boolean;
 };
 
 export type WaitingRoomGroupInfo = {

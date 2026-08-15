@@ -10,7 +10,7 @@ class BlockGateway {
 
   getBlock(blockId: string, territoryId: string, round: string): Promise<ResponseHttp> {
     const query = new URLSearchParams({ round });
-    return this.httpClient.get(`territories/${territoryId}/blocks/${blockId}?${query.toString()}}`);
+    return this.httpClient.get(`territories/${territoryId}/blocks/${blockId}?${query.toString()}`);
   }
 }
 
