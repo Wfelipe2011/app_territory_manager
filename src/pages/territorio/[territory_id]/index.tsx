@@ -48,7 +48,7 @@ export default function Territory() {
         { element: '#overseer-chart', popover: { title: 'Gráfico', description: 'Acompanhe no gráfico os detalhes deste território, incluindo a porcentagem de conclusão.' } },
         { element: '#overseer-sugestion', popover: { title: 'Sugestão', description: 'Aqui você encontra uma sugestão de quantos pares podem ser colocados nesta quadra.' } },
         { element: '#overseer-share', popover: { title: 'Compartilhar', description: 'Aqui você encontra o link para compartilhar este território com os publicadores.' } },
-        { element: '#overseer-connections', popover: { title: 'Conexões', description: 'Acompanhe em tempo real quantos publicadores estão trabalhando nesta quadra.' } },
+        { element: '#overseer-connections', popover: { title: 'Atribuir publicadores', description: 'Aqui você atribui os publicadores da sala de espera para trabalharem nesta quadra.' } },
         { element: '#overseer-time', popover: { title: 'Expiração', description: 'Acompanhe em tempo real o tempo de expiração do link de compartilhamento.' } },
       ],
       nextBtnText: 'Próximo',
@@ -65,7 +65,7 @@ export default function Territory() {
 
   return (
     <RootModeScreen mode={isLoading}>
-      <HelpCircle onClick={driverAction} size={50} fill="current" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4 fill-primary' />
+      <HelpCircle onClick={driverAction} size={50} fill="current" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 left-0 m-4 fill-primary' />
       <div className={clsx('relative')}>
         <div className='absolute top-0 left-0 m-6 z-20'>
           <IconContainer icon={<ArrowLeft size={22} className='cursor-pointer text-primary' onClick={() => router.push('/sala')} />} />

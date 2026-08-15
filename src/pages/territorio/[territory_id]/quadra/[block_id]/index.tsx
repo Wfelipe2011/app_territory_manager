@@ -98,9 +98,6 @@ export default function Block() {
         className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4 fill-primary'
       />
       <div className={clsx('relative')}>
-        <div className='absolute top-0 left-0 m-6 z-20'>
-          <IconContainer icon={<ArrowLeft size={22} className='cursor-pointer text-primary' onClick={() => router.push('/sala')} />} />
-        </div>
         {block.imageUrl && (
           <DialogMap
             title={block.territoryName}
@@ -109,11 +106,18 @@ export default function Block() {
           </DialogMap>
         )}
         <Header>
-          <div className='flex w-full items-start justify-between'>
+          <div className='flex w-full items-center gap-2'>
+            <IconContainer
+              icon={<ArrowLeft size={22} className='cursor-pointer text-primary' onClick={() => router.push('/sala')} />}
+            />
             <div>
               <h1 className='flex items-center text-xl font-semibold'>Olá Publicador(a),</h1>
               <p className='text-gray-700'>Preencha as casas da quadra onde voce falou!</p>
-              <hr className='my-2 w-1/2 h-0.5 bg-gray-800' />
+            </div>
+          </div>
+          <hr className='my-2 w-1/2 h-0.5 bg-gray-800' />
+          <div className='flex w-full items-center justify-between'>
+            <div>
               <h4 className='text-xl font-semibold text-gray-700'>{block?.territoryName}</h4>
               <h5 className='text-xl font-semibold text-gray-700'>{block?.blockName}</h5>
             </div>

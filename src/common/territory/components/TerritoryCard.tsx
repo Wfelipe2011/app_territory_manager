@@ -2,7 +2,7 @@
 import { Button, Dialog, DialogBody, DialogHeader } from '@material-tailwind/react';
 import clsx from 'clsx';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { Clock, Eye, User, UserPlus, Users } from 'react-feather';
+import { Clock, Eye, UserPlus } from 'react-feather';
 
 import { IconContainer } from '@/components/Atoms/IconContainer';
 import { ShareCopy } from '@/components/Atoms/ShareCopy';
@@ -165,8 +165,6 @@ export function BlockCard({ block, actions, territoryId, round, reload, room }: 
         <div className='flex w-full '>
           {block?.signature?.key ? (
             <div className='flex w-full items-center justify-end gap-2 p-2 font-semibold'>
-              {block.connections >= 1 && (<span className='text-lg'>{block.connections}</span>)}
-              {block.connections >= 1 ? <Users id="overseer-connections" className='stroke-primary fill-primary' /> : <User id="overseer-connections" className='stroke-primary fill-primary' />}
               <BlockAssignDrawer
                 blockId={block.id}
                 blockName={block.name}
@@ -176,12 +174,18 @@ export function BlockCard({ block, actions, territoryId, round, reload, room }: 
                 onRemove={async (publisherId, blockId) => (room ? await room.onRemove(publisherId, blockId) : false)}
                 open={assignOpen}
                 onOpenChange={setAssignOpen}
-                trigger={<UserPlus size={22} className='cursor-pointer text-primary' onClick={() => void openAssign()} />}
+                trigger={
+                  <UserPlus
+                    id="overseer-connections"
+                    size={22}
+                    className={`cursor-pointer ${assignedToBlock.length > 0 ? 'fill-primary text-primary' : 'text-gray-500'}`}
+                    onClick={() => void openAssign()}
+                  />
+                }
               />
             </div>
           ) : (
             <div className='flex w-full items-center justify-end gap-2 p-2 font-semibold'>
-              <User id="overseer-connections" className='stroke-gray-500 fill-gray-500' />
               <BlockAssignDrawer
                 blockId={block.id}
                 blockName={block.name}
@@ -191,7 +195,14 @@ export function BlockCard({ block, actions, territoryId, round, reload, room }: 
                 onRemove={async (publisherId, blockId) => (room ? await room.onRemove(publisherId, blockId) : false)}
                 open={assignOpen}
                 onOpenChange={setAssignOpen}
-                trigger={<UserPlus size={22} className='cursor-pointer text-gray-500' onClick={() => void openAssign()} />}
+                trigger={
+                  <UserPlus
+                    id="overseer-connections"
+                    size={22}
+                    className={`cursor-pointer ${assignedToBlock.length > 0 ? 'fill-primary text-primary' : 'text-gray-500'}`}
+                    onClick={() => void openAssign()}
+                  />
+                }
               />
             </div>
           )}

@@ -134,7 +134,7 @@ export default function WaitingRoomGroupPage() {
                 onSave={setProfile}
                 trigger={
                   <div className='flex cursor-pointer items-center gap-2 rounded-full bg-gray-50 px-2 py-1'>
-                    <span className='flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-gray-700'>
+                    <span className='flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-gray-700'>
                       {getPublisherInitials(profile)}
                     </span>
                     <span className='hidden flex-col mini:flex'>
