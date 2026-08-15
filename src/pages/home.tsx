@@ -32,7 +32,7 @@ export default function Home() {
       TerritoryGateway.in()
         .getSignature(signature)
         .then(({ data }) => {
-          changeTheme(data.roundInfo);
+          changeTheme(data.roundInfo ?? undefined);
           debounce = setTimeout(() => setIsLoading('screen'), 100);
         });
     } else {
