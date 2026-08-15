@@ -1,16 +1,15 @@
 import Image from 'next/image';
 import { useRouter as useNavigation } from 'next/navigation';
 import { useRouter } from 'next/router';
-import { setCookie } from 'nookies';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { changeTheme } from '@/lib/changeTheme';
-import { openToken } from '@/lib/openToken';
+import { setTenantSignatureKey } from '@/lib/helper';
+import { getSignatureHandshake, saveSignatureCookies } from '@/lib/signatureHandshake';
 
 import logo from '@/assets/logo.png';
 import { Mode, RootModeScreen } from '@/common/loading';
-import { env } from '@/constant';
 import { TerritoryGateway } from '@/infra/Gateway/TerritoryGateway';
 import { authState } from '@/states/auth';
 import { Button } from '@/ui';
@@ -27,7 +26,7 @@ export default function Home() {
   const signature = query['s'] as string;
 
   function setModeDebounce(signature: string) {
-    setIsLoading('loading')
+    setIsLoading('loading');
     clearTimeout(debounce);
     if (signature) {
       TerritoryGateway.in()
@@ -48,37 +47,30 @@ export default function Home() {
 
   const saveSignature = async (signatureId: string) => {
     setIsLoading('loading');
-    const { data, status } = await TerritoryGateway.in().getSignature(signatureId);
-    if (status > 299) {
-      setValues({ ...values, notFoundStatusCode: status });
+    const handshake = await getSignatureHandshake(signatureId);
+    if (handshake.status > 299 || !handshake.data) {
+      setValues({ ...values, notFoundStatusCode: handshake.status });
       setIsLoading('not-found');
       return;
     }
 
-    const { token, mode } = data;
-    const { overseer, territoryId, blockId, exp, roles } = openToken(token);
+    const { token, mode, decoded } = handshake.data;
+    const isSala = path.startsWith('sala');
+    if (isSala) {
+      setTenantSignatureKey(signatureId);
+    }
+    saveSignatureCookies(signatureId, handshake.data, { preserveTerritoryContext: isSala });
 
     _setAuthState({
       token,
-      territoryId,
-      expirationTime: exp,
+      territoryId: decoded.territoryId ?? 0,
+      expirationTime: decoded.exp ?? 0,
       signatureId,
-      roles,
-      ...(overseer ? { overseer } : {}),
-      ...(blockId ? { blockId } : {}),
+      roles: decoded.roles as any,
+      ...(decoded.overseer ? { overseer: decoded.overseer } : {}),
+      ...(decoded.blockId ? { blockId: decoded.blockId } : {}),
       ...(mode ? { mode } : {}),
     });
-    const configCookie = {
-      maxAge: 30 * 24 * 60 * 60,
-    };
-    setCookie(null, env.storage.token, token, configCookie);
-    setCookie(null, env.storage.territoryId, territoryId?.toString(), configCookie);
-    setCookie(null, env.storage.overseer, overseer || '', configCookie);
-    setCookie(null, env.storage.blockId, blockId?.toString() || '', configCookie);
-    setCookie(null, env.storage.expirationTime, exp?.toString(), configCookie);
-    setCookie(null, env.storage.signatureId, signatureId, configCookie);
-    setCookie(null, env.storage.mode, mode, configCookie);
-    setCookie(null, env.storage.roles, roles.join(','), configCookie);
 
     navigation.push(path);
   };
@@ -96,7 +88,13 @@ export default function Home() {
             <p className='text-md text-center text-gray-800'>Clique no botão abaixo para acessar a área o território designado.</p>
           </div>
 
-          <Button.Root disabled={!signature} type='button' variant='primary' className='flex h-12 w-full !flex-row text-gray-50' onClick={() => void saveSignature(signature)}>
+          <Button.Root
+            disabled={!signature}
+            type='button'
+            variant='primary'
+            className='flex h-12 w-full !flex-row text-gray-50'
+            onClick={() => void saveSignature(signature)}
+          >
             Entrar
           </Button.Root>
         </div>
