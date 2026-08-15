@@ -17,16 +17,6 @@ export const theme = {
     secondary: '#CBE6BA',
     negative: '#EE3D3D80',
   },
-  campaign: {
-    primary: '#5B98AB',
-    secondary: '#EAF2F4',
-    negative: '#e53e3e',
-  },
-  letters: {
-    primary: '#E29D4F',
-    secondary: '#F7E9D9',
-    negative: '#e53e3e',
-  },
 };
 
 export const changeTheme = (roundInfo: RoundInfo = getTheme()) => {

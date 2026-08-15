@@ -184,13 +184,6 @@ export default function StreetData() {
     }
   }, []);
 
-  const report = () => {
-    const mensagem = encodeURIComponent(`REPORTAR MUDANÇA\nOlá, gostaria de reportar uma mudança no território.\nTerritório: ${street.territoryName}\nQuadra: ${street.blockName}\nRua:  ${street.streetName}\nAlteração:`);
-    const numeroTelefone = '55' + phone;
-    const link = `https://api.whatsapp.com/send?phone=${numeroTelefone}&text=${mensagem}`;
-    window.open(link);
-  };
-
   useEffect(() => {
     streetGateway.getTenancyInfo().then((response) => {
       if (response.status === 200) {

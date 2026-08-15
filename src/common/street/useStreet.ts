@@ -96,6 +96,5 @@ export const useStreet = (addressId: string, blockId: string, territoryId: strin
       mark: markRow,
     },
     isLoading,
-    setIsLoading,
   };
 };

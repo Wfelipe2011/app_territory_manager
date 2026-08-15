@@ -16,7 +16,6 @@ export interface ITerritoryActionsProps {
 
 export interface ITerritoryActions {
   share: (blockId: string) => Promise<void>;
-  copyShare: (blockId: string) => Promise<void>;
   blockNavigation: (territoryId: string, blockId: string, round: string) => void;
 }
 
@@ -72,22 +71,6 @@ export const useTerritoryActions = (props: ITerritoryActionsProps): ITerritoryAc
     void getTerritories(territoryId, round);
   };
 
-  const copyShare = async (blockId: string) => {
-    const block = territory.blocks.find((block) => block.id === blockId);
-    if (!block) {
-      toast.error('Quadra não encontrado');
-      return;
-    }
-
-    if (!block.signature?.key) {
-      toast.error('Quadra não compartilhada');
-      return;
-    }
-
-    const params = geParamsNavigateShare(block, block.signature.key);
-    await navigatorShare(params);
-  };
-
   const blockNavigation = (territoryId: string, blockId: string, round: string) => {
     const query = new URLSearchParams({ round });
     navigation.push(`/territorio/${territoryId}/quadra/${blockId}?${query.toString()}`);
@@ -95,7 +78,6 @@ export const useTerritoryActions = (props: ITerritoryActionsProps): ITerritoryAc
 
   return {
     share,
-    copyShare,
     blockNavigation,
   };
 };

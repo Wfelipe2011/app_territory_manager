@@ -2,16 +2,17 @@
 import clsx from 'clsx';
 import { driver } from 'driver.js';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { HelpCircle } from 'react-feather';
 
 import "driver.js/dist/driver.css";
+
+import { changeTheme } from '@/lib/changeTheme';
 
 import { Street, useBlock } from '@/common/block';
 import { RootModeScreen } from '@/common/loading';
 import { DialogMap } from '@/common/territory/components/DialogMap';
 import { Body, Header } from '@/ui';
-import { useEffect } from 'react';
-import { changeTheme } from '@/lib/changeTheme';
 
 export default function Block() {
   const { query } = useRouter()

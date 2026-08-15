@@ -4,7 +4,7 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  plugins: ['@typescript-eslint', 'simple-import-sort', 'unused-imports'],
+  plugins: ['@typescript-eslint', 'simple-import-sort'],
   extends: [
     'eslint:recommended',
     'next',
@@ -25,19 +25,6 @@ module.exports = {
       'warn',
       { props: 'never', children: 'never' },
     ],
-
-    //#region  //*=========== Unused Import ===========
-    'unused-imports/no-unused-imports': 'off',
-    'unused-imports/no-unused-vars': [
-      'off',
-      {
-        vars: 'all',
-        varsIgnorePattern: '^_',
-        args: 'after-used',
-        argsIgnorePattern: '^_',
-      },
-    ],
-    //#endregion  //*======== Unused Import ===========
 
     //#region  //*=========== Import Sort ===========
     'simple-import-sort/exports': 'warn',

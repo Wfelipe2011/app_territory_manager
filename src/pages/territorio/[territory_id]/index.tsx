@@ -9,11 +9,12 @@ import { HelpCircle } from 'react-feather';
 
 import "driver.js/dist/driver.css";
 
+import { changeTheme } from '@/lib/changeTheme';
+
 import { RootModeScreen } from '@/common/loading';
 import { BlockCard, useTerritory } from '@/common/territory';
 import { DialogMap } from '@/common/territory/components/DialogMap';
 import { Body, Header } from '@/ui';
-import { changeTheme } from '@/lib/changeTheme';
 
 export default function Territory() {
   const { query } = useRouter()
@@ -80,8 +81,8 @@ export default function Territory() {
         <div className='mt-2 p-4 text-center text-2xl font-bold text-gray-600' >{territory.territoryName}</div>
         <Body>
           <div className='flex h-full w-full flex-col  gap-4'>
-            {territory.blocks?.map((block, index) => (
-              <BlockCard key={block.id} block={block} index={index} actions={actions} territoryId={territory.territoryId} round={round} reload={reload} />
+            {territory.blocks?.map((block) => (
+              <BlockCard key={block.id} block={block} actions={actions} territoryId={territory.territoryId} round={round} reload={reload} />
             ))}
           </div>
         </Body>

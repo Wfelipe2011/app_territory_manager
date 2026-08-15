@@ -4,8 +4,9 @@
 import axios from 'axios';
 import { parseCookies } from 'nookies';
 
-import { env } from '@/constant';
 import { getOrCreateSessionUserId } from '@/lib/helper';
+
+import { env } from '@/constant';
 
 import type HttpClient from './HttpClient';
 // export const URL_API = 'http://localhost:3001/v1';
@@ -59,11 +60,6 @@ export default class AxiosAdapter implements HttpClient {
     return await this.axiosConfig(url, httpConfig);
   }
 
-  async postFile(url: string, data: any) {
-    const httpConfig = { method: 'post', data };
-    return await this.axiosConfigFileUpload(url, httpConfig);
-  }
-
   async delete(url: string) {
     const httpConfig = { method: 'delete' };
     return await this.axiosConfig(url, httpConfig);
@@ -89,24 +85,4 @@ export default class AxiosAdapter implements HttpClient {
     }
   }
 
-  private async axiosConfigFileUpload(url: string, httpConfig: any) {
-    try {
-      const config = {
-        ...httpConfig,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      const response = await axios(`${URL_API}/${url}`, config);
-      return {
-        status: response?.status,
-        data: response?.data,
-      };
-    } catch (error: any) {
-      return {
-        status: error?.response?.status,
-        message: error?.response?.data?.error,
-      };
-    }
-  }
 }

@@ -21,9 +21,6 @@ export default withMT({
       },
       screens: {
         mini: '350px',
-        tablet: '640px',
-        laptop: '1024px',
-        desktop: '1280px',
         ...defaultTheme.screens,
       },
       ...defaultTheme.extend,

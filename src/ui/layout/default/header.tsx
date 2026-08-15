@@ -7,7 +7,6 @@ export interface HeaderProps {
 
 const sizes = {
   default: "h-48",
-  medium: "h-32",
   small: "h-24",
 };
 

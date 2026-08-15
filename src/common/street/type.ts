@@ -1,8 +1,3 @@
-export type IUseStreet = {
-  street: Street;
-  actions: IActions;
-};
-
 export type IActions = {
   mark: (id: string) => Promise<void>;
 };

@@ -7,24 +7,20 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 interface DoughnutChartProps {
   values: number[];
-  labels?: string[];
-  backgroundColor?: string[];
-  borderColor?: string[];
 }
 
-const getCSSVariable = (variableName) => {
+const getCSSVariable = (variableName: string) => {
   return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
 };
 
 
-const DoughnutChartComponent = ({ labels, values, backgroundColor, borderColor }: DoughnutChartProps) => {
+const DoughnutChartComponent = ({ values }: DoughnutChartProps) => {
   const [colors, setColors] = useState({
-    backgroundColor: backgroundColor ?? ['#9EE073', '#DDF5CE'], // Valores padrão
-    borderColor: borderColor ?? ['#9EE073', '#DDF5CE'], // Valores padrão
+    backgroundColor: ['#9EE073', '#DDF5CE'], // Valores padrão
+    borderColor: ['#9EE073', '#DDF5CE'], // Valores padrão
   });
 
   useEffect(() => {
-    if (backgroundColor && borderColor) return;
     if (typeof window !== 'undefined') {
       setColors({
         backgroundColor: [
@@ -51,7 +47,7 @@ const DoughnutChartComponent = ({ labels, values, backgroundColor, borderColor }
         },
       }}
       data={{
-        labels: labels ?? [],
+        labels: [],
         datasets: [
           {
             label: '#',

@@ -1,8 +1,3 @@
-export type IUseBlock = {
-  block: IBlock;
-  actions: IActions;
-};
-
 export type IActions = {
   goToStreet: (streetId: number) => void;
 };

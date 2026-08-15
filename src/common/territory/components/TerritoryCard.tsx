@@ -2,7 +2,7 @@
 import { Button } from '@material-tailwind/react';
 import clsx from 'clsx';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { Clock, Eye, StopCircle, Trash, Trash2, User, Users } from 'react-feather';
+import { Clock, Eye, User, Users } from 'react-feather';
 
 import { IconContainer } from '@/components/Atoms/IconContainer';
 import { ShareCopy } from '@/components/Atoms/ShareCopy';
@@ -15,7 +15,6 @@ import { IBlock } from '../type';
 
 interface BlockCardProps {
   block: IBlock;
-  index: number;
   actions: ITerritoryActions;
   territoryId: string;
   round: string;

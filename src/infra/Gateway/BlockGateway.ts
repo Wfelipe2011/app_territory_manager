@@ -12,10 +12,6 @@ class BlockGateway {
     const query = new URLSearchParams({ round });
     return this.httpClient.get(`territories/${territoryId}/blocks/${blockId}?${query.toString()}}`);
   }
-
-  revokeBlock(data: { blockId: string; territoryId: number }): Promise<ResponseHttp> {
-    return this.httpClient.delete(`territories/${data.territoryId}/blocks/${data.blockId}/signature`);
-  }
 }
 
 export const blockGateway = new BlockGateway(new AxiosAdapter());

@@ -1,13 +1,3 @@
-export type IUseTerritory = {
-  territory: ITerritory;
-  actions: IActions;
-};
-
-export type IActions = {
-  share: (blockId: string) => Promise<void>;
-  blockNavigation: (territoryId: string, blockId: string, round: string) => void;
-};
-
 export type ITerritory = {
   territoryId: string;
   territoryName: string;

@@ -1,14 +1,9 @@
 import { AlertTriangle, HelpCircle, Link2Off, Lock, ServerCrash, ShieldClose, TimerOff } from 'lucide-react';
-import { Metadata } from 'next';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useRecoilState } from 'recoil';
 
 import { authState } from '@/states/auth';
-import { useRouter } from 'next/router';
-
-export const metadata: Metadata = {
-  title: 'Not Found',
-};
 
 export default function NotFound() {
   const [message, setMessage] = React.useState<any>()
