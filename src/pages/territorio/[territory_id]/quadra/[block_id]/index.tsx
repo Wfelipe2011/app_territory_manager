@@ -106,24 +106,26 @@ export default function Block() {
           </DialogMap>
         )}
         <Header>
-          <div className='flex w-full items-center gap-2'>
-            <IconContainer
-              icon={<ArrowLeft size={22} className='cursor-pointer text-primary' onClick={() => router.push('/sala')} />}
-            />
-            <div>
-              <h1 className='flex items-center text-xl font-semibold'>Olá Publicador(a),</h1>
-              <p className='text-gray-700'>Preencha as casas da quadra onde voce falou!</p>
+          <div className='flex w-full flex-col gap-2'>
+            <div className='flex w-full items-center gap-2'>
+              <IconContainer
+                icon={<ArrowLeft size={22} className='cursor-pointer text-primary' onClick={() => router.push('/sala')} />}
+              />
+              <div>
+                <h1 className='flex items-center text-xl font-semibold'>Olá Publicador(a),</h1>
+                <p className='text-gray-700'>Preencha as casas da quadra onde voce falou!</p>
+              </div>
             </div>
-          </div>
-          <hr className='my-2 w-1/2 h-0.5 bg-gray-800' />
-          <div className='flex w-full items-center justify-between'>
-            <div>
-              <h4 className='text-xl font-semibold text-gray-700'>{block?.territoryName}</h4>
-              <h5 className='text-xl font-semibold text-gray-700'>{block?.blockName}</h5>
+            <hr className='my-2 w-1/2 h-0.5 bg-gray-800' />
+            <div className='flex w-full items-center justify-between'>
+              <div>
+                <h4 className='text-xl font-semibold text-gray-700'>{block?.territoryName}</h4>
+                <h5 className='text-xl font-semibold text-gray-700'>{block?.blockName}</h5>
+              </div>
+              <IconContainer
+                icon={<Share2 size={22} className='cursor-pointer text-gray-700' onClick={() => void shareFromWaitingRoom()} />}
+              />
             </div>
-            <IconContainer
-              icon={<Share2 size={22} className='cursor-pointer text-gray-700' onClick={() => void shareFromWaitingRoom()} />}
-            />
           </div>
         </Header>
         <Body>
