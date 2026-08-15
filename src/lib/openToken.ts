@@ -5,6 +5,7 @@ export const openToken = (token: string) => {
     overseer?: string;
     territoryId: number;
     blockId?: number;
+    round?: number;
     exp: number;
     roles: string[];
   }>(token);
@@ -12,6 +13,7 @@ export const openToken = (token: string) => {
     overseer: tokenDecoded?.overseer,
     territoryId: tokenDecoded?.territoryId,
     blockId: tokenDecoded?.blockId,
+    round: tokenDecoded?.round,
     exp: tokenDecoded?.exp,
     roles: tokenDecoded?.roles as any,
   };
