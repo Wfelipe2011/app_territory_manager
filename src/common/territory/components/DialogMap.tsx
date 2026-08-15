@@ -2,15 +2,13 @@ import { Dialog, DialogBody, DialogHeader } from '@material-tailwind/react';
 import { ReactNode, useState } from 'react';
 import { Map, X } from 'react-feather';
 
-export function DialogMap({ title, children, action }: { title: ReactNode; children: ReactNode; action?: ReactNode }) {
+export function DialogMap({ title, children }: { title: ReactNode; children: ReactNode }) {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(!open);
 
   return (
-    <div className='absolute top-0 right-0 m-6 z-20 flex items-center gap-3'>
-
-      {action}
+    <div className='absolute top-0 right-0 m-6 z-20'>
 
       <Map onClick={handleOpen} id='overseer-image' fill="none" className='text-primary cursor-pointer' />
 

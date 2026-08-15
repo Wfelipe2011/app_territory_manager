@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Button } from '@material-tailwind/react';
+import { Button, Dialog, DialogBody, DialogHeader } from '@material-tailwind/react';
 import clsx from 'clsx';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { Clock, Eye, User, UserPlus, Users } from 'react-feather';
@@ -61,9 +61,19 @@ export function BlockCard({ block, actions, territoryId, round, reload, room }: 
     };
   }
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [assignOpen, setAssignOpen] = useState(false);
+
   const revokeAccess = async () => {
     await streetGateway.revokeAccess(+territoryId, +block.id);
     reload();
+  };
+
+  const openAssign = async () => {
+    if (!block.signature?.key) {
+      await actions.share(block.id);
+    }
+    if (room?.active) setAssignOpen(true);
   };
 
   const assignedToBlock = room?.assignments.filter((assignment) => assignment.blockId === block.id) ?? [];
@@ -130,7 +140,7 @@ export function BlockCard({ block, actions, territoryId, round, reload, room }: 
             {assignedNames.length > 0 ? (
               <div className='flex flex-wrap gap-1'>
                 {assignedNames.map((name) => (
-                  <span key={name} className='rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary'>
+                  <span key={name} className='rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-white'>
                     {name}
                   </span>
                 ))}
@@ -142,7 +152,7 @@ export function BlockCard({ block, actions, territoryId, round, reload, room }: 
           {block?.signature?.key && (
             <IconContainer
               className='w-full mt-1'
-              onClick={revokeAccess}
+              onClick={() => setConfirmOpen(true)}
               icon={
                 <Button variant='outlined' className="flex justify-center p-1.5 w-full text-center text-primary border-primary" >
                   Revogar acesso
@@ -157,25 +167,63 @@ export function BlockCard({ block, actions, territoryId, round, reload, room }: 
             <div className='flex w-full items-center justify-end gap-2 p-2 font-semibold'>
               {block.connections >= 1 && (<span className='text-lg'>{block.connections}</span>)}
               {block.connections >= 1 ? <Users id="overseer-connections" className='stroke-primary fill-primary' /> : <User id="overseer-connections" className='stroke-primary fill-primary' />}
-              {room?.active && (
-                <BlockAssignDrawer
-                  blockId={block.id}
-                  blockName={block.name}
-                  publishers={room.publishers}
-                  assignments={room.assignments}
-                  onAssign={room.onAssign}
-                  onRemove={room.onRemove}
-                  trigger={<UserPlus size={22} className='cursor-pointer text-primary' />}
-                />
-              )}
+              <BlockAssignDrawer
+                blockId={block.id}
+                blockName={block.name}
+                publishers={room?.publishers ?? []}
+                assignments={room?.assignments ?? []}
+                onAssign={async (publisherId, blockId) => (room ? await room.onAssign(publisherId, blockId) : false)}
+                onRemove={async (publisherId, blockId) => (room ? await room.onRemove(publisherId, blockId) : false)}
+                open={assignOpen}
+                onOpenChange={setAssignOpen}
+                trigger={<UserPlus size={22} className='cursor-pointer text-primary' onClick={() => void openAssign()} />}
+              />
             </div>
           ) : (
             <div className='flex w-full items-center justify-end gap-2 p-2 font-semibold'>
               <User id="overseer-connections" className='stroke-gray-500 fill-gray-500' />
+              <BlockAssignDrawer
+                blockId={block.id}
+                blockName={block.name}
+                publishers={room?.publishers ?? []}
+                assignments={room?.assignments ?? []}
+                onAssign={async (publisherId, blockId) => (room ? await room.onAssign(publisherId, blockId) : false)}
+                onRemove={async (publisherId, blockId) => (room ? await room.onRemove(publisherId, blockId) : false)}
+                open={assignOpen}
+                onOpenChange={setAssignOpen}
+                trigger={<UserPlus size={22} className='cursor-pointer text-gray-500' onClick={() => void openAssign()} />}
+              />
             </div>
           )}
         </div>
       </div>
+
+      <Dialog
+        className="!max-w-[250px] !min-w-[250px] !p-2"
+        open={confirmOpen} handler={setConfirmOpen}>
+        <div className='flex justify-between'>
+          <DialogHeader>Você tem certeza?</DialogHeader>
+        </div>
+        <DialogBody>
+          <div className="flex justify-center gap-2">
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded w-full"
+              onClick={() => setConfirmOpen(false)}
+            >
+              NÃO
+            </button>
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded w-full"
+              onClick={async () => {
+                await revokeAccess();
+                setConfirmOpen(false);
+              }}
+            >
+              SIM
+            </button>
+          </div>
+        </DialogBody>
+      </Dialog>
     </div >
   );
 }

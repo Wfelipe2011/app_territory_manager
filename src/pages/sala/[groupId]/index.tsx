@@ -161,7 +161,7 @@ export default function WaitingRoomGroupPage() {
 function OverseerView({ room, onGoToTerritory }: { room: OverseerRoomResponse; onGoToTerritory: () => void }) {
   return (
     <div className='flex flex-col gap-6'>
-      <Button.Root type='button' variant='ghost' className='w-full text-gray-800' onClick={onGoToTerritory}>
+      <Button.Root type='button' className='w-full text-white' onClick={onGoToTerritory}>
         Ver quadras do território
       </Button.Root>
       <section className='flex flex-col gap-2'>

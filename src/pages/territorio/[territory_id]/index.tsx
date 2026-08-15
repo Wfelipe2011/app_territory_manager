@@ -11,6 +11,8 @@ import "driver.js/dist/driver.css";
 
 import { changeTheme } from '@/lib/changeTheme';
 
+import { IconContainer } from '@/components/Atoms/IconContainer';
+
 import { RootModeScreen } from '@/common/loading';
 import { BlockCard, useTerritory } from '@/common/territory';
 import { DialogMap } from '@/common/territory/components/DialogMap';
@@ -65,12 +67,12 @@ export default function Territory() {
     <RootModeScreen mode={isLoading}>
       <HelpCircle onClick={driverAction} size={50} fill="current" className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4 fill-primary' />
       <div className={clsx('relative')}>
+        <div className='absolute top-0 left-0 m-6 z-20'>
+          <IconContainer icon={<ArrowLeft size={22} className='cursor-pointer text-primary' onClick={() => router.push('/sala')} />} />
+        </div>
         {territory.imageUrl && (
           <DialogMap
             title={territory.territoryName}
-            action={
-              <ArrowLeft size={22} className='cursor-pointer text-primary' onClick={() => router.push('/sala')} />
-            }
           >
             <img
               className="h-full w-full object-cover object-center"
@@ -86,15 +88,17 @@ export default function Territory() {
           </div>
         </Header>
 
-        <div className='mt-2 p-4 text-center text-2xl font-bold text-gray-600' >{territory.territoryName}</div>
-        {active && (
-          <div className='flex items-center justify-center gap-1 text-sm text-gray-600'>
-            <Users size={14} className='text-primary' />
-            <span>
-              {publishers.length} publicador{publishers.length === 1 ? '' : 'es'} na sala
-            </span>
-          </div>
-        )}
+        <div className='mt-2 flex w-full items-center justify-between px-4'>
+          <div className='text-2xl font-bold text-gray-600'>{territory.territoryName}</div>
+          {active && (
+            <div className='flex items-center gap-1 text-sm text-gray-600'>
+              <Users size={14} className='text-primary' />
+              <span>
+                {publishers.length} publicador{publishers.length === 1 ? '' : 'es'} na sala
+              </span>
+            </div>
+          )}
+        </div>
         <Body>
           <div className='flex h-full w-full flex-col  gap-4'>
             {territory.blocks?.map((block) => (

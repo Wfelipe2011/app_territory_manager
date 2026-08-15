@@ -98,12 +98,12 @@ export default function Block() {
         className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4 fill-primary'
       />
       <div className={clsx('relative')}>
+        <div className='absolute top-0 left-0 m-6 z-20'>
+          <IconContainer icon={<ArrowLeft size={22} className='cursor-pointer text-primary' onClick={() => router.push('/sala')} />} />
+        </div>
         {block.imageUrl && (
           <DialogMap
             title={block.territoryName}
-            action={
-              <IconContainer icon={<ArrowLeft size={22} className='cursor-pointer text-primary' onClick={() => router.push('/sala')} />} />
-            }
           >
             <img className='h-full w-full object-cover object-center' src={block.imageUrl} alt='Imagem do Território' />
           </DialogMap>

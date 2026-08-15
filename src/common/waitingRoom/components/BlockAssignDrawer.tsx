@@ -16,11 +16,16 @@ type BlockAssignDrawerProps = {
   onAssign: (publisherId: string, blockId: string) => Promise<boolean>;
   onRemove: (publisherId: string, blockId: string) => Promise<boolean>;
   trigger: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-export function BlockAssignDrawer({ blockId, blockName, publishers, assignments, onAssign, onRemove, trigger }: BlockAssignDrawerProps) {
+export function BlockAssignDrawer({ blockId, blockName, publishers, assignments, onAssign, onRemove, trigger, open: controlledOpen, onOpenChange }: BlockAssignDrawerProps) {
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState('');
+
+  const isOpen = controlledOpen ?? open;
+  const setOpenState = onOpenChange ?? setOpen;
 
   useKeyboardFix(() => {
     const drawerContent = document.getElementById('block_assign_drawer_content');
@@ -54,12 +59,12 @@ export function BlockAssignDrawer({ blockId, blockName, publishers, assignments,
   };
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={isOpen} onOpenChange={setOpenState}>
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
       <DrawerContent id='block_assign_drawer_content' className='w-full bg-white'>
         <div className='flex w-full items-center justify-between px-6 pt-4'>
           <h3 className='text-lg font-semibold text-gray-800'>Atribuir publicadores</h3>
-          <X className='cursor-pointer text-gray-600' onClick={() => setOpen(false)} />
+          <X className='cursor-pointer text-gray-600' onClick={() => setOpenState(false)} />
         </div>
         <div className='flex flex-col gap-4 px-6 py-6'>
           <div className='flex flex-col gap-1'>
