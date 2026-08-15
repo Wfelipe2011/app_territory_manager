@@ -1,10 +1,10 @@
-FROM node:24 as builder
+FROM node:24 AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm ci
 
 COPY . .
 
@@ -16,9 +16,7 @@ WORKDIR /app
 
 COPY --from=builder /app/package*.json ./
 
-RUN npm install
-
-RUN npm prune --production
+RUN npm ci --omit=dev
 
 COPY --from=builder /app/.next ./.next
 
