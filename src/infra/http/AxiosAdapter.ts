@@ -16,15 +16,15 @@ export const URL_API = process.env['NEXT_PUBLIC_API_URL']?.startsWith('http')
 
 type AxiosResponse<T> =
   | {
-    status: number;
-    data: T;
-    message?: undefined;
-  }
+      status: number;
+      data: T;
+      message?: undefined;
+    }
   | {
-    status: any;
-    message: any;
-    data?: any;
-  };
+      status: any;
+      message: any;
+      data?: any;
+    };
 
 export default class AxiosAdapter implements HttpClient {
   constructor() {
@@ -60,8 +60,8 @@ export default class AxiosAdapter implements HttpClient {
     return await this.axiosConfig(url, httpConfig);
   }
 
-  async delete(url: string) {
-    const httpConfig = { method: 'delete' };
+  async delete(url: string, data?: any) {
+    const httpConfig = { method: 'delete', data };
     return await this.axiosConfig(url, httpConfig);
   }
 
@@ -84,5 +84,4 @@ export default class AxiosAdapter implements HttpClient {
       };
     }
   }
-
 }
