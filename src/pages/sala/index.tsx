@@ -1,6 +1,6 @@
+import jwt_decode from 'jwt-decode';
 import { useRouter as useNavigation } from 'next/router';
 import { useRouter } from 'next/router';
-import jwt_decode from 'jwt-decode';
 import { parseCookies } from 'nookies';
 import { useCallback, useEffect, useState } from 'react';
 import { Users } from 'react-feather';
@@ -11,6 +11,7 @@ import {
   getPublisherInitials,
   getTenantSignatureKey,
   savePublisherProfile,
+  setActiveGroupId,
   setTenantSignatureKey,
 } from '@/lib/helper';
 import { PublisherProfile } from '@/lib/helper';
@@ -132,6 +133,7 @@ export default function Sala() {
       toast.error('Não foi possível entrar no grupo');
       return;
     }
+    setActiveGroupId(data.groupId);
     navigation.push(`/sala/${data.groupId}`);
   };
 

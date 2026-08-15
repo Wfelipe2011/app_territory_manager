@@ -2,16 +2,26 @@
 import { Button } from '@material-tailwind/react';
 import clsx from 'clsx';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { Clock, Eye, User, Users } from 'react-feather';
+import { Clock, Eye, User, UserPlus, Users } from 'react-feather';
 
 import { IconContainer } from '@/components/Atoms/IconContainer';
 import { ShareCopy } from '@/components/Atoms/ShareCopy';
 
 import { ITerritoryActions } from '@/common/territory/useTerritoryActions';
+import { BlockAssignDrawer } from '@/common/waitingRoom/components';
+import { WaitingRoomAssignment, WaitingRoomPublisher } from '@/common/waitingRoom/type';
 import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { DoughnutChart } from '@/ui/doughnutChart';
 
 import { IBlock } from '../type';
+
+interface RoomProps {
+  active: boolean;
+  publishers: WaitingRoomPublisher[];
+  assignments: WaitingRoomAssignment[];
+  onAssign: (publisherId: string, blockId: string) => Promise<boolean>;
+  onRemove: (publisherId: string, blockId: string) => Promise<boolean>;
+}
 
 interface BlockCardProps {
   block: IBlock;
@@ -19,9 +29,10 @@ interface BlockCardProps {
   territoryId: string;
   round: string;
   reload: () => void;
+  room?: RoomProps;
 }
 
-export function BlockCard({ block, actions, territoryId, round, reload }: BlockCardProps) {
+export function BlockCard({ block, actions, territoryId, round, reload, room }: BlockCardProps) {
 
   function sugestion(): string {
     let sugestion = '';
@@ -54,6 +65,9 @@ export function BlockCard({ block, actions, territoryId, round, reload }: BlockC
     await streetGateway.revokeAccess(+territoryId, +block.id);
     reload();
   };
+
+  const assignedToBlock = room?.assignments.filter((assignment) => assignment.blockId === block.id) ?? [];
+  const assignedNames = assignedToBlock.map((assignment) => assignment.firstName);
 
   return (
     <div className={clsx('flex min-h-[260px] w-full rounded-b-[40px] rounded-l-[40px] gap-2 rounded-t-[40px] rounded-br-none rounded-tr-none border p-3 shadow-lg')}>
@@ -112,7 +126,19 @@ export function BlockCard({ block, actions, territoryId, round, reload }: BlockC
             <div className='bg-primary h-6 w-14'></div>
             <span>Concluído: {block.positiveCompleted}</span>
           </div>
-          <div id="overseer-sugestion" className='text-sm'>Sugestão: {sugestion()}</div>
+          <div id="overseer-sugestion" className='text-sm'>
+            {assignedNames.length > 0 ? (
+              <div className='flex flex-wrap gap-1'>
+                {assignedNames.map((name) => (
+                  <span key={name} className='rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary'>
+                    {name}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              `Sugestão: ${sugestion()}`
+            )}
+          </div>
           {block?.signature?.key && (
             <IconContainer
               className='w-full mt-1'
@@ -131,7 +157,17 @@ export function BlockCard({ block, actions, territoryId, round, reload }: BlockC
             <div className='flex w-full items-center justify-end gap-2 p-2 font-semibold'>
               {block.connections >= 1 && (<span className='text-lg'>{block.connections}</span>)}
               {block.connections >= 1 ? <Users id="overseer-connections" className='stroke-primary fill-primary' /> : <User id="overseer-connections" className='stroke-primary fill-primary' />}
-              {/* <div className='h-2 w-2 animate-pulse rounded-full bg-green-700'></div> */}
+              {room?.active && (
+                <BlockAssignDrawer
+                  blockId={block.id}
+                  blockName={block.name}
+                  publishers={room.publishers}
+                  assignments={room.assignments}
+                  onAssign={room.onAssign}
+                  onRemove={room.onRemove}
+                  trigger={<UserPlus size={22} className='cursor-pointer text-primary' />}
+                />
+              )}
             </div>
           ) : (
             <div className='flex w-full items-center justify-end gap-2 p-2 font-semibold'>

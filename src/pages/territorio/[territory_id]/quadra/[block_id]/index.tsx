@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { driver } from 'driver.js';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { HelpCircle, Share2 } from 'react-feather';
+import { ArrowLeft, HelpCircle, Share2 } from 'react-feather';
 import toast from 'react-hot-toast';
 
 import 'driver.js/dist/driver.css';
@@ -20,6 +20,7 @@ import { waitingRoomGateway } from '@/infra/Gateway/WaitingRoomGateway';
 import { Body, Header } from '@/ui';
 
 export default function Block() {
+  const router = useRouter();
   const { query } = useRouter();
   const { block_id, round, territory_id } = query as { territory_id: string; block_id: string; round: string };
 
@@ -98,7 +99,12 @@ export default function Block() {
       />
       <div className={clsx('relative')}>
         {block.imageUrl && (
-          <DialogMap title={block.territoryName}>
+          <DialogMap
+            title={block.territoryName}
+            action={
+              <IconContainer icon={<ArrowLeft size={22} className='cursor-pointer text-primary' onClick={() => router.push('/sala')} />} />
+            }
+          >
             <img className='h-full w-full object-cover object-center' src={block.imageUrl} alt='Imagem do Território' />
           </DialogMap>
         )}
