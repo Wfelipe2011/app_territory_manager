@@ -52,7 +52,7 @@ export function HouseComponent({ house, actions }: HouseProps) {
           {
             'bg-red-400': notHit
           },
-          'relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 py-2 px-1 border-gray-100 shadow-mg transition-all duration-300 h-[64px]'
+          'relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 py-2 px-1 border-gray-100 shadow-md transition-all duration-300 h-[64px]'
         )}
 
         onClick={() => {
@@ -67,7 +67,7 @@ export function HouseComponent({ house, actions }: HouseProps) {
       </div>
 
       <Dialog
-        className="!max-w-[250px] !min-w-[250px] !p-2"
+        className="!p-6"
         open={open} handler={handleOpen}>
         <div className='flex justify-between'>
           <DialogHeader>Você tem certeza?</DialogHeader>
@@ -131,7 +131,7 @@ function HouseNumberAndLetter({ house, notHit }: { house: House, notHit: boolean
       <span
         className={clsx(
           { 'text-gray-50': notHit || house.status, },
-          'mini:text-base text-md'
+          'mini:text-base text-base'
         )}
       >{house.legend ? `/${house.legend}` : ''}</span>
     </div>

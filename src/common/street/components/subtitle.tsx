@@ -15,7 +15,7 @@ export const Subtitle = () => {
   );
 
   return (
-    <div className="w-full h-full flex justify-between bg-white  border border-gray-300 rounded-3xl p-4 gap-2">
+    <div className="w-full h-full flex justify-between bg-white  border border-gray-300 rounded-xl p-4 gap-2">
       <Column>
         <Data
           left={<div className="h-5 w-7 mini:h-6 mini:w-10 bg-primary block"></div>}
