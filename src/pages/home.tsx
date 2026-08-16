@@ -78,22 +78,22 @@ export default function Home() {
 
   return (
     <RootModeScreen mode={isLoading}>
-      <div className='flex h-screen flex-col items-center justify-center bg-secondary p-4 pb-12'>
+      <div className='flex h-screen-dvh flex-col items-center justify-center bg-secondary p-4 pb-12 safe-bottom'>
         <div className='mini:p-6 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-gray-50 p-4 pb-8 shadow-xl'>
           <div className='bg-primary max-w-[250px] overflow-hidden rounded-full'>
             <Image src={logo} alt='Logo Território Digital' className='w-[200px] scale-125 p-3' />
           </div>
 
           <div className='my-4'>
-            <p className='text-center text-lg text-gray-800'>Bem-vindo ao Território Digital</p>
-            <p className='text-md text-center text-gray-800'>Clique no botão abaixo para acessar a área o território designado.</p>
+            <h1 className='text-center text-gray-800'>Bem-vindo ao Território Digital</h1>
+            <p className='text-center text-base text-gray-600'>Clique no botão abaixo para acessar a área o território designado.</p>
           </div>
 
           <Button.Root
             disabled={!signature}
             type='button'
             variant='primary'
-            className='flex h-12 w-full !flex-row text-gray-50'
+            className='w-full'
             onClick={() => void saveSignature(signature)}
           >
             Entrar

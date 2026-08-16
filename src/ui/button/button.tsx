@@ -4,14 +4,18 @@ import { tv, VariantProps } from 'tailwind-variants';
 import { ButtonIcon } from './button-icon';
 
 const button = tv({
-  base: 'flex items-center disabled:opacity-70 disabled:cursor-not-allowed rounded-md shadow-sm font-medium focus:outline-none hover:opacity-80 gap-2 shadow-xl rounded-xl',
+  base: 'inline-flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-semibold focus:outline-none active:scale-[0.98] transition gap-2',
   variants: {
     variant: {
-      primary: 'bg-primary text-gray-700',
-      ghost: 'bg-transparent text-gray-700',
+      primary: 'bg-primary text-primary-text shadow-sm',
+      secondary: 'bg-white text-gray-800 border border-gray-300 shadow-sm',
+      ghost: 'bg-transparent text-gray-800',
+      danger: 'bg-red-600 text-white shadow-sm',
     },
     size: {
-      md: 'py-2 px-6 text-md',
+      md: 'min-h-[48px] py-3 px-5 text-base',
+      sm: 'min-h-[44px] py-2 px-4 text-sm',
+      icon: 'min-h-[48px] min-w-[48px] p-0',
     },
   },
   defaultVariants: {

@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useRecoilState } from 'recoil';
 
 import { authState } from '@/states/auth';
+import { Button } from '@/ui';
 
 export default function NotFound() {
   const [message, setMessage] = React.useState<any>()
@@ -73,16 +74,24 @@ export default function NotFound() {
     }
   }
     , [codeError, router, values])
-  return message ? (<main>
+  return message ? (<main className='safe-top safe-bottom'>
     <section className='bg-gray-50'>
-      <div className='layout flex min-h-screen flex-col items-center justify-center text-center text-black'>
+      <div className='layout flex min-h-screen-dvh flex-col items-center justify-center gap-4 p-4 text-center text-primary-text'>
         {message.icon}
-        <h1 className='mt-8 text-2xl md:text-4xl'>
+        <h1 className='mt-4 text-2xl font-semibold md:text-3xl'>
           {message.title}
         </h1>
-        <p className='mt-4 text-lg'>
+        <p className='max-w-md text-base text-muted'>
           {message.message}
         </p>
+        <Button.Root
+          type='button'
+          variant='secondary'
+          className='mt-4'
+          onClick={() => router.push('/sala')}
+        >
+          Voltar para a sala de espera
+        </Button.Root>
       </div>
     </section>
   </main>) : null

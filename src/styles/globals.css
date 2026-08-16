@@ -19,25 +19,33 @@
   }
 
   /* #region  /**=========== Typography =========== */
+  /* Design system tokens (mobile-first).
+     h1 = 22/600 (header principal)
+     h2 = 18/600 (subtítulo / seção)
+     h3 = 18/600 (seção interna)
+     h4 = 16/600 (subtítulo de card)
+     body = 16/400
+     small = 14/400
+  */
   h1 {
-    @apply font-primary text-2xl font-bold md:text-4xl;
+    @apply font-primary text-[22px] font-semibold leading-tight text-gray-800;
   }
 
   h2 {
-    @apply font-primary text-xl font-bold md:text-3xl;
+    @apply font-primary text-lg font-semibold leading-tight text-gray-800;
   }
 
   h3 {
-    @apply font-primary text-lg font-bold md:text-2xl;
+    @apply font-primary text-lg font-semibold leading-tight text-gray-800;
   }
 
   h4 {
-    @apply font-primary text-base font-bold md:text-lg;
+    @apply font-primary text-base font-semibold leading-tight text-gray-800;
   }
 
   body,
   .p {
-    @apply font-primary text-sm md:text-base;
+    @apply font-primary text-base;
   }
   /* #endregion  /**======== Typography =========== */
 
@@ -46,10 +54,34 @@
     max-width: 68.75rem;
     @apply mx-auto w-11/12;
   }
+
+  /* #region  /**=========== Safe area (iOS notch / home indicator) =========== */
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .safe-left {
+    padding-left: env(safe-area-inset-left, 0px);
+  }
+  .safe-right {
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+  /* Use 100dvh em vez de 100vh para iOS moderno */
+  .min-h-screen-dvh {
+    min-height: 100dvh;
+  }
+  .h-screen-dvh {
+    height: 100dvh;
+  }
+  /* #endregion  /**======== Safe area =========== */
 }
 
 :root {
   --color-primary: #9ee073;
   --color-secondary: #ddf5ce;
   --color-negative: #ee3d3d80;
+  --color-primary-text: #1f2937; /* gray-900 — alto contraste sobre #9EE073 (8.5:1 WCAG AAA) */
+  --color-muted: #6b7280; /* gray-500 */
 }
