@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import type {
   IWaitingRoomAssignmentsChangedPayload,
   IWaitingRoomAuthExpiredPayload,
+  IWaitingRoomBlockUpdatedPayload,
   IWaitingRoomConnectedPayload,
   IWaitingRoomErrorPayload,
   IWaitingRoomPresenceChangedPayload,
@@ -12,6 +13,7 @@ export type WaitingRoomSSEHandlers = {
   onConnected?: (payload: IWaitingRoomConnectedPayload) => void;
   onPresenceChanged?: (payload: IWaitingRoomPresenceChangedPayload) => void;
   onAssignmentsChanged?: (payload: IWaitingRoomAssignmentsChangedPayload) => void;
+  onBlockUpdated?: (payload: IWaitingRoomBlockUpdatedPayload) => void;
   onAuthExpired?: (payload: IWaitingRoomAuthExpiredPayload) => void;
   onError?: (payload: IWaitingRoomErrorPayload | undefined) => void;
 };
@@ -49,6 +51,11 @@ export const useWaitingRoomSSE = (url: string | null, handlers: WaitingRoomSSEHa
     es.addEventListener('assignments_changed', (event) => {
       const payload = parseData(event as MessageEvent) as IWaitingRoomAssignmentsChangedPayload | undefined;
       if (payload) handlersRef.current.onAssignmentsChanged?.(payload);
+    });
+
+    es.addEventListener('block_updated', (event) => {
+      const payload = parseData(event as MessageEvent) as IWaitingRoomBlockUpdatedPayload | undefined;
+      if (payload) handlersRef.current.onBlockUpdated?.(payload);
     });
 
     es.addEventListener('auth_expired', (event) => {

@@ -5,11 +5,14 @@ import toast from 'react-hot-toast';
 import type { PublisherProfile } from '@/lib/helper';
 import { savePublisherProfile } from '@/lib/helper';
 
+import { IconContainer } from '@/components/Atoms/IconContainer';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 
 import { Button } from '@/ui';
 import { useKeyboardFix } from '@/utils/useKeyboardFix';
+
+import { PublisherAvatar } from './PublisherAvatar';
 
 type PublisherProfileDrawerProps = {
   profile: PublisherProfile;
@@ -20,7 +23,6 @@ type PublisherProfileDrawerProps = {
 export function PublisherProfileDrawer({ profile, trigger, onSave }: PublisherProfileDrawerProps) {
   const [open, setOpen] = useState(false);
   const [firstName, setFirstName] = useState(profile.firstName);
-  const [lastName, setLastName] = useState(profile.lastName);
   const [phoneLast4, setPhoneLast4] = useState(profile.phoneLast4);
 
   useKeyboardFix(() => {
@@ -34,9 +36,8 @@ export function PublisherProfileDrawer({ profile, trigger, onSave }: PublisherPr
   useEffect(() => {
     if (!open) return;
     setFirstName(profile.firstName);
-    setLastName(profile.lastName);
     setPhoneLast4(profile.phoneLast4);
-  }, [open, profile.firstName, profile.lastName, profile.phoneLast4]);
+  }, [open, profile.firstName, profile.phoneLast4]);
 
   const onChangePhone = (value: string) => {
     setPhoneLast4(value.replace(/\D/g, '').slice(0, 4));
@@ -54,7 +55,6 @@ export function PublisherProfileDrawer({ profile, trigger, onSave }: PublisherPr
     const updated: PublisherProfile = {
       ...profile,
       firstName: firstName.trim(),
-      lastName: lastName.trim(),
       phoneLast4,
     };
     savePublisherProfile(updated);
@@ -67,22 +67,39 @@ export function PublisherProfileDrawer({ profile, trigger, onSave }: PublisherPr
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
       <DrawerContent id='profile_drawer_content' className='w-full bg-white'>
-        <div className='flex w-full items-center justify-between px-6 pt-4'>
-          <h3 className='text-lg font-semibold text-gray-800'>Meu perfil</h3>
-          <X className='cursor-pointer text-gray-600' onClick={() => setOpen(false)} />
+        <div className='flex w-full items-center justify-between p-6 pb-0'>
+          <h2 className='text-xl font-semibold text-primary-text'>Meu perfil</h2>
+          <IconContainer icon={<X size={20} aria-hidden='true' />} aria-label='Fechar' onClick={() => setOpen(false)} />
         </div>
-        <div className='flex flex-col gap-4 px-6 py-6'>
-          <div className='flex flex-col gap-1'>
-            <label className='text-sm text-gray-700'>Nome</label>
-            <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder='Nome' />
+        <div className='flex flex-col gap-4 p-6'>
+          <div className='flex items-center gap-3'>
+            <PublisherAvatar profile={profile} size='lg' />
+            <div className='flex min-w-0 flex-col'>
+              <span className='truncate text-lg font-semibold text-primary-text'>
+                {profile.firstName.trim() || 'Publicador'}
+              </span>
+              <span className='text-sm text-muted'>
+                {profile.phoneLast4 ? `**** ${profile.phoneLast4}` : 'Identificação na sala de espera'}
+              </span>
+            </div>
           </div>
           <div className='flex flex-col gap-1'>
-            <label className='text-sm text-gray-700'>Sobrenome</label>
-            <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder='Sobrenome' />
-          </div>
-          <div className='flex flex-col gap-1'>
-            <label className='text-sm text-gray-700'>Últimos 4 dígitos do celular</label>
+            <label htmlFor='drawer-first-name' className='text-sm text-primary-text'>
+              Nome
+            </label>
             <Input
+              id='drawer-first-name'
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder='Apenas o primeiro nome'
+            />
+          </div>
+          <div className='flex flex-col gap-1'>
+            <label htmlFor='drawer-phone-last4' className='text-sm text-primary-text'>
+              Últimos 4 dígitos do celular
+            </label>
+            <Input
+              id='drawer-phone-last4'
               value={phoneLast4}
               onChange={(e) => onChangePhone(e.target.value)}
               placeholder='0000'
@@ -90,7 +107,7 @@ export function PublisherProfileDrawer({ profile, trigger, onSave }: PublisherPr
               maxLength={4}
             />
           </div>
-          <Button.Root type='button' className='w-full text-white' onClick={onSubmit}>
+          <Button.Root type='button' className='w-full' onClick={onSubmit}>
             Salvar
           </Button.Root>
         </div>

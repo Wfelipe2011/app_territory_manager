@@ -5,7 +5,6 @@ import { env } from '@/constant';
 export type PublisherProfile = {
   identityKey: string;
   firstName: string;
-  lastName: string;
   phoneLast4: string;
 };
 
@@ -20,7 +19,7 @@ export function getOrCreateSessionUserId(key: string): string {
 
 export function getOrCreatePublisherProfile(): PublisherProfile {
   if (typeof window === 'undefined') {
-    return { identityKey: uuid(), firstName: '', lastName: '', phoneLast4: '' };
+    return { identityKey: uuid(), firstName: '', phoneLast4: '' };
   }
   const existing = window.localStorage.getItem(env.storage.publisherProfile);
   if (existing) {
@@ -29,14 +28,13 @@ export function getOrCreatePublisherProfile(): PublisherProfile {
       return {
         identityKey: parsed.identityKey || uuid(),
         firstName: parsed.firstName || '',
-        lastName: parsed.lastName || '',
         phoneLast4: parsed.phoneLast4 || '',
       };
     } catch {
       // perfil corrompido: cria um novo
     }
   }
-  const profile: PublisherProfile = { identityKey: uuid(), firstName: '', lastName: '', phoneLast4: '' };
+  const profile: PublisherProfile = { identityKey: uuid(), firstName: '', phoneLast4: '' };
   window.localStorage.setItem(env.storage.publisherProfile, JSON.stringify(profile));
   return profile;
 }
@@ -68,7 +66,5 @@ export function setActiveGroupId(groupId: string): void {
 
 export function getPublisherInitials(profile: PublisherProfile): string {
   const first = profile.firstName.trim().charAt(0);
-  const last = profile.lastName.trim().charAt(0);
-  const initials = `${first}${last}`.toUpperCase();
-  return initials || '?';
+  return first.toUpperCase() || '';
 }

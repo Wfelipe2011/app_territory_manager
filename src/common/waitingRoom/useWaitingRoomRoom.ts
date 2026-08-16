@@ -13,7 +13,14 @@ import { useWaitingRoomSSE } from './useWaitingRoomSSE';
 type AssignFn = (publisherId: string, blockId: string) => Promise<boolean>;
 type RemoveFn = (publisherId: string, blockId: string) => Promise<boolean>;
 
-export function useWaitingRoomRoom() {
+type WaitingRoomHandlers = {
+  onConnected?: () => void;
+  onPresenceChanged?: () => void;
+  onAssignmentsChanged?: () => void;
+  onBlockUpdated?: () => void;
+};
+
+export function useWaitingRoomRoom(handlers?: WaitingRoomHandlers) {
   const [room, setRoom] = useState<WaitingRoomResponse | null>(null);
 
   const groupId = getActiveGroupId();
@@ -42,9 +49,19 @@ export function useWaitingRoomRoom() {
   }, [groupId, tenantKey]);
 
   useWaitingRoomSSE(sseUrl, {
-    onConnected: () => void getRoom(),
-    onPresenceChanged: () => void getRoom(),
-    onAssignmentsChanged: () => void getRoom(),
+    onConnected: () => {
+      void getRoom();
+      handlers?.onConnected?.();
+    },
+    onPresenceChanged: () => {
+      void getRoom();
+      handlers?.onPresenceChanged?.();
+    },
+    onAssignmentsChanged: () => {
+      void getRoom();
+      handlers?.onAssignmentsChanged?.();
+    },
+    onBlockUpdated: () => handlers?.onBlockUpdated?.(),
   });
 
   const assign: AssignFn = useCallback(

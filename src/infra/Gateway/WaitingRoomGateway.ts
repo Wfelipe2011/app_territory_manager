@@ -3,7 +3,6 @@ import HttpClient, { ResponseHttp } from '../http/HttpClient';
 
 type JoinGroupInput = {
   firstName?: string;
-  lastName?: string;
   phoneLast4?: string;
   territoryId?: number;
   round?: number;

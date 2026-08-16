@@ -2,12 +2,11 @@ import { useRouter as useNavigation } from 'next/router';
 import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, Users } from 'react-feather';
+import { ArrowRight, Users } from 'react-feather';
 import toast from 'react-hot-toast';
 
 import {
   getOrCreatePublisherProfile,
-  getPublisherInitials,
   getTenantSignatureKey,
   setActiveGroupId,
   setTenantSignatureKey,
@@ -16,7 +15,7 @@ import { PublisherProfile } from '@/lib/helper';
 import { getSignatureHandshake, saveSignatureCookies } from '@/lib/signatureHandshake';
 
 import { Mode, RootModeScreen } from '@/common/loading';
-import { PublisherProfileDrawer } from '@/common/waitingRoom/components';
+import { PublisherAvatar, PublisherCard, PublisherProfileDrawer } from '@/common/waitingRoom/components';
 import {
   OverseerRoomResponse,
   PublisherRoomAssignment,
@@ -117,38 +116,31 @@ export default function WaitingRoomGroupPage() {
   return (
     <RootModeScreen mode={mode}>
       <div className='relative'>
-        <Header size='small'>
-          <Button.Root className='absolute left-2 !w-fit !p-2 !shadow-none' variant='ghost' onClick={back}>
-            <ArrowLeft />
-          </Button.Root>
-          <div className='flex w-full items-center justify-between pl-10'>
-            <div className='flex flex-col'>
-              <h1 className='text-xl font-semibold text-gray-800'>{room?.group?.name ?? 'Sala de Espera'}</h1>
-              <p className='text-sm text-gray-600'>
-                {room?.role === 'overseer' ? 'Você está dirigindo esta sala' : 'Aguarde as atribuições do dirigente'}
-              </p>
-            </div>
-            {profile && (
+        <Header
+          title={room?.group?.name ?? 'Sala de Espera'}
+          subtitle={
+            <span className='flex items-center gap-2'>
+              {room?.group?.active && (
+                <span className='flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700'>
+                  <span className='h-1.5 w-1.5 rounded-full bg-green-600' />
+                  Grupo ativo
+                </span>
+              )}
+              {room?.role === 'overseer' ? 'Você está dirigindo esta sala' : 'Aguarde as atribuições do dirigente'}
+            </span>
+          }
+          onBack={back}
+          backLabel='Voltar para a sala'
+          action={
+            profile && (
               <PublisherProfileDrawer
                 profile={profile}
                 onSave={setProfile}
-                trigger={
-                  <div className='flex cursor-pointer items-center gap-2 rounded-full bg-gray-50 px-2 py-1'>
-                    <span className='flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-gray-700'>
-                      {getPublisherInitials(profile)}
-                    </span>
-                    <span className='hidden flex-col mini:flex'>
-                      <span className='text-sm font-medium text-gray-800'>
-                        {profile.firstName} {profile.lastName}
-                      </span>
-                      <span className='text-xs text-gray-500'>**** {profile.phoneLast4}</span>
-                    </span>
-                  </div>
-                }
+                trigger={<PublisherAvatar profile={profile} />}
               />
-            )}
-          </div>
-        </Header>
+            )
+          }
+        />
         <Body className='p-4'>
           {room?.role === 'overseer' && <OverseerView room={room} onGoToTerritory={goToTerritory} />}
           {room?.role === 'publisher' && <PublisherView room={room} onEnterBlock={(assignment) => void enterBlock(assignment)} />}
@@ -161,29 +153,38 @@ export default function WaitingRoomGroupPage() {
 function OverseerView({ room, onGoToTerritory }: { room: OverseerRoomResponse; onGoToTerritory: () => void }) {
   return (
     <div className='flex flex-col gap-6'>
-      <Button.Root type='button' className='w-full text-white' onClick={onGoToTerritory}>
-        Ver quadras do território
-      </Button.Root>
-      <section className='flex flex-col gap-2'>
-        <h3 className='flex items-center gap-2 text-lg font-semibold text-gray-800'>
+      <PublisherCard
+        primary={room.territoryName}
+        secondary={
+          <span className='flex items-center gap-1'>
+            <Users size={14} aria-hidden='true' />
+            {room.publishers.length} publicador{room.publishers.length === 1 ? '' : 'es'} na sala
+          </span>
+        }
+        trailing={
+          <Button.Root type='button' size='sm' className='!w-fit' onClick={onGoToTerritory}>
+            Ver quadras do território
+          </Button.Root>
+        }
+      />
+      <section className='flex flex-col gap-3'>
+        <h2 className='flex items-center gap-2 text-xl font-semibold text-primary-text'>
           Publicadores na sala
-          <span className='flex items-center gap-1 text-sm font-normal text-gray-500'>
-            <Users size={14} />
+          <span className='flex items-center gap-1 text-sm font-normal text-muted'>
+            <Users size={14} aria-hidden='true' />
             {room.publishers.length}
           </span>
-        </h3>
-        {room.publishers.length === 0 && <p className='text-sm text-gray-600'>Nenhum publicador presente no momento.</p>}
+        </h2>
+        {room.publishers.length === 0 && (
+          <p className='text-sm text-muted'>Nenhum publicador presente no momento.</p>
+        )}
         <div className='flex flex-col gap-2'>
           {room.publishers.map((publisher) => (
-            <div
+            <PublisherCard
               key={publisher.identityKey}
-              className='flex items-center justify-between rounded-xl border border-gray-200 bg-white p-3 text-left shadow-sm'
-            >
-              <span className='font-medium text-gray-800'>
-                {publisher.firstName} {publisher.lastName}
-              </span>
-              <span className='text-sm text-gray-500'>**** {publisher.phoneLast4}</span>
-            </div>
+              primary={publisher.firstName}
+              secondary={`**** ${publisher.phoneLast4}`}
+            />
           ))}
         </div>
       </section>
@@ -200,23 +201,19 @@ function PublisherView({
 }) {
   return (
     <div className='flex flex-col gap-3'>
-      <h3 className='text-lg font-semibold text-gray-800'>Minhas quadras</h3>
+      <h2 className='text-xl font-semibold text-primary-text'>Minhas quadras</h2>
       {room.assignments.length === 0 && (
-        <p className='text-sm text-gray-600'>Você ainda não recebeu nenhuma quadra. Aguarde o dirigente atribuir.</p>
+        <p className='text-sm text-muted'>Você ainda não recebeu nenhuma quadra. Aguarde o dirigente atribuir.</p>
       )}
       {room.assignments.map((assignment) => (
-        <button
+        <PublisherCard
           key={assignment.id}
-          type='button'
+          primary={assignment.blockName}
+          secondary={`Rodada ${assignment.round}`}
           onClick={() => onEnterBlock(assignment)}
-          className='flex items-center justify-between rounded-xl border bg-white p-4 text-left shadow-sm'
-        >
-          <div className='flex flex-col'>
-            <span className='font-medium text-gray-800'>{assignment.blockName}</span>
-            <span className='text-sm text-gray-500'>Rodada {assignment.round}</span>
-          </div>
-          <ArrowRight className='text-primary' />
-        </button>
+          trailing={<ArrowRight className='text-primary' aria-hidden='true' />}
+          ariaLabel={`Abrir quadra ${assignment.blockName}`}
+        />
       ))}
     </div>
   );

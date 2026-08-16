@@ -10,12 +10,12 @@ export type WaitingRoomGroup = {
 export type WaitingRoomGroupInfo = {
   id: string;
   name: string;
+  active?: boolean;
 };
 
 export type WaitingRoomPublisher = {
   identityKey: string;
   firstName: string;
-  lastName: string;
   phoneLast4: string;
   joinedAt: string;
 };
@@ -29,7 +29,6 @@ export type WaitingRoomAssignment = {
   id: string;
   publisherId: string;
   firstName: string;
-  lastName: string;
   blockId: string;
   blockName: string;
   territoryId: number;
@@ -48,6 +47,7 @@ export type OverseerRoomResponse = {
   role: 'overseer';
   group: WaitingRoomGroupInfo;
   territoryId: number;
+  territoryName: string;
   round: number;
   publishers: WaitingRoomPublisher[];
   assignments: WaitingRoomAssignment[];
@@ -80,6 +80,11 @@ export type IWaitingRoomPresenceChangedPayload = {
 
 export type IWaitingRoomAssignmentsChangedPayload = {
   groupId: string;
+  reason?: string;
+};
+
+export type IWaitingRoomBlockUpdatedPayload = {
+  blockId: number;
   reason?: string;
 };
 

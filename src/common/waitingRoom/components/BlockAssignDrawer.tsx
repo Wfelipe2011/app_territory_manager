@@ -2,9 +2,11 @@ import { useMemo, useState } from 'react';
 import { Check, X } from 'react-feather';
 import toast from 'react-hot-toast';
 
+import { IconContainer } from '@/components/Atoms/IconContainer';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 
+import { PublisherCard } from '@/common/waitingRoom/components/PublisherCard';
 import { WaitingRoomAssignment, WaitingRoomPublisher } from '@/common/waitingRoom/type';
 import { useKeyboardFix } from '@/utils/useKeyboardFix';
 
@@ -43,7 +45,7 @@ export function BlockAssignDrawer({ blockId, blockName, publishers, assignments,
   const filteredPublishers = useMemo(() => {
     const term = filter.trim().toLowerCase();
     if (!term) return publishers;
-    return publishers.filter((publisher) => `${publisher.firstName} ${publisher.lastName}`.toLowerCase().includes(term));
+    return publishers.filter((publisher) => publisher.firstName.toLowerCase().includes(term));
   }, [filter, publishers]);
 
   const toggle = async (publisherId: string) => {
@@ -62,34 +64,45 @@ export function BlockAssignDrawer({ blockId, blockName, publishers, assignments,
     <Drawer open={isOpen} onOpenChange={setOpenState}>
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
       <DrawerContent id='block_assign_drawer_content' className='w-full bg-white'>
-        <div className='flex w-full items-center justify-between px-6 pt-4'>
-          <h3 className='text-lg font-semibold text-gray-800'>Atribuir publicadores</h3>
-          <X className='cursor-pointer text-gray-600' onClick={() => setOpenState(false)} />
+        <div className='flex w-full items-center justify-between p-6'>
+          <h2 className='text-xl font-semibold text-primary-text'>Atribuir publicadores</h2>
+          <IconContainer
+            icon={<X size={20} aria-hidden='true' />}
+            aria-label='Fechar'
+            onClick={() => setOpenState(false)}
+          />
         </div>
-        <div className='flex flex-col gap-4 px-6 py-6'>
+        <div className='flex flex-col gap-4 p-6'>
           <div className='flex flex-col gap-1'>
-            <label className='text-sm text-gray-700'>{blockName}</label>
-            <Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder='Buscar publicador...' />
+            <label htmlFor='block-assign-filter' className='text-sm text-primary-text'>
+              {blockName}
+            </label>
+            <Input
+              id='block-assign-filter'
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              placeholder='Buscar publicador...'
+            />
           </div>
           <div className='flex max-h-[50vh] flex-col gap-2 overflow-y-auto'>
-            {filteredPublishers.length === 0 && <p className='text-sm text-gray-600'>Nenhum publicador presente no momento.</p>}
+            {filteredPublishers.length === 0 && (
+              <p className='text-sm text-muted'>Nenhum publicador presente no momento.</p>
+            )}
             {filteredPublishers.map((publisher) => {
               const assigned = assignedIds.has(publisher.identityKey);
               return (
-                <button
+                <PublisherCard
                   key={publisher.identityKey}
-                  type='button'
+                  primary={publisher.firstName}
+                  secondary={
+                    <span className='flex items-center gap-2'>
+                      <span>**** {publisher.phoneLast4}</span>
+                      {assigned && <Check size={18} className='text-green-600' aria-hidden='true' />}
+                    </span>
+                  }
                   onClick={() => void toggle(publisher.identityKey)}
-                  className='flex items-center justify-between rounded-xl border bg-white p-3 text-left shadow-sm'
-                >
-                  <span className='font-medium text-gray-800'>
-                    {publisher.firstName} {publisher.lastName}
-                  </span>
-                  <span className='flex items-center gap-2'>
-                    <span className='text-sm text-gray-500'>**** {publisher.phoneLast4}</span>
-                    {assigned && <Check size={18} className='text-green-600' />}
-                  </span>
-                </button>
+                  ariaLabel={`${assigned ? 'Remover' : 'Atribuir'} ${publisher.firstName}`}
+                />
               );
             })}
           </div>
