@@ -80,7 +80,7 @@ export function BlockCard({ block, actions, territoryId, round, reload, room }: 
   const assignedNames = assignedToBlock.map((assignment) => assignment.firstName);
 
   return (
-    <div className={clsx('flex min-h-[260px] w-full rounded-b-[40px] rounded-l-[40px] gap-2 rounded-t-[40px] rounded-br-none rounded-tr-none border p-3 shadow-lg')}>
+    <div className={clsx('flex min-h-[260px] w-full rounded-xl gap-2 border p-4 shadow-lg')}>
       <div className='flex h-full w-1/2 flex-col items-baseline justify-start'>
         <h6 className='ml-2 block text-xl font-medium'>
           <span className='ml-2 block'>
@@ -210,7 +210,7 @@ export function BlockCard({ block, actions, territoryId, round, reload, room }: 
       </div>
 
       <Dialog
-        className="!max-w-[250px] !min-w-[250px] !p-2"
+        className="!p-6"
         open={confirmOpen} handler={setConfirmOpen}>
         <div className='flex justify-between'>
           <DialogHeader>Você tem certeza?</DialogHeader>

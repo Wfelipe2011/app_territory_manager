@@ -37,6 +37,10 @@ export const useTerritory = (territoryId: string, round: string): ITerritoryCust
         setIsLoading('not-found');
         return;
       }
+      if (!data) {
+        setIsLoading('not-found');
+        return;
+      }
       setTerritory(data);
       setIsLoading('screen');
     },

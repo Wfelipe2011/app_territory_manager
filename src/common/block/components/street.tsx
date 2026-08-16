@@ -84,7 +84,7 @@ export function Street({ address, actions }: AddressProps) {
   return (
     <div
       className={clsx(
-        'flex h-20 mini:h-24 w-full items-center justify-center gap-3 rounded-b-[40px] rounded-l-[40px] rounded-t-[40px] rounded-br-none rounded-tr-none bg-white p-2 pl-4 shadow-sm drop-shadow-xl '
+        'flex h-20 mini:h-24 w-full items-center justify-center gap-3 rounded-xl bg-white p-4 shadow-sm drop-shadow-xl '
       )}
     >
       {url ? (<a className='flex cursor-pointer flex-col items-center rounded-full bg-secondary p-2' href={url} target='_blank'>

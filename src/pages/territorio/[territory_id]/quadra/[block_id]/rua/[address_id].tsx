@@ -5,7 +5,7 @@ import { useRouter as useNavigate } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, HelpCircle, Users } from 'react-feather';
+import { HelpCircle, Users } from 'react-feather';
 import { toast } from 'react-hot-toast';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -30,7 +30,7 @@ import { env } from '@/constant';
 import { reportsGateway } from '@/infra/Gateway/ReportsGateway';
 import { streetGateway } from '@/infra/Gateway/StreetGateway';
 import { URL_API } from '@/infra/http/AxiosAdapter';
-import { Body, Button, Header } from '@/ui';
+import { Body, Button, Header, SubHeader } from '@/ui';
 import { useKeyboardFix } from '@/utils/useKeyboardFix';
 
 
@@ -228,10 +228,13 @@ export default function StreetData() {
   return (
     <RootModeScreen mode={isLoading}>
       <HelpCircle
-        id="help-button"
+        id='help-button'
         onClick={driverAction}
         size={50}
-        className='fixed bottom-0 right-0 p-1 mini:p-0 m-2 mini:m-4 cursor-pointer text-gray-50 fill-primary z-20'
+        fill='current'
+        role='img'
+        aria-label='Ajuda'
+        className='fixed bottom-0 right-0 z-20 m-4 mb-safe-bottom cursor-pointer fill-primary text-gray-50'
       />
       <div id="new-feature-bar-left" className="fixed top-3/4 left-0 -mt-6 rounded-md h-[150px] w-2 bg-gray-500/30 hover:bg-gray-500/50 transition-opacity z-10 pointer-events-none"></div>
       <div id="new-feature-bar-right" className="fixed top-3/4 right-0 -mt-6 rounded-md h-[150px] w-2 bg-gray-500/30 hover:bg-gray-500/50 transition-opacity z-10 pointer-events-none"></div>
@@ -252,20 +255,15 @@ export default function StreetData() {
         </Swiper>
       </div>
       <div className={clsx('relative')}>
-        <Header size='small'>
-          <Button.Root id='publisher-return' className='absolute left-2 !w-fit !p-2 !shadow-none' variant='ghost' onClick={back}>
-            <ArrowLeft />
-          </Button.Root>
-          <div className='flex w-full flex-col items-center p-4'>
-            <h2 className='text-xl '>{street.territoryName}</h2>
-            <h1 className='mini:max-w-[250px] max-w-[220px] truncate text-xl font-semibold text-gray-700'>{street.streetName}</h1>
-          </div>
-        </Header>
-        <Body className='p-3'>
-          <div className='flex items-end justify-between gap-2'>
-            <div className='flex h-full items-center'>
-              <h6 className='pt-4 text-lg font-semibold'>CASAS</h6>
-            </div>
+        <Header
+          title={street.streetName}
+          subtitle='Marque as casas desta rua.'
+          onBack={back}
+          backLabel='Voltar para a quadra'
+        />
+        <SubHeader
+          title='Casas'
+          action={
             <div className='flex items-center gap-3'>
               {phone && (
                 <Drawer open={openDrawer} onOpenChange={setOpenDrawer}>
@@ -274,8 +272,8 @@ export default function StreetData() {
                       <PostAddIcon />
                     </span>
                   </DrawerTrigger>
-                  <DrawerContent id='drawer_content' className='w-full bg-white'>
-                    <div className='flex h-full w-full justify-center px-9'>
+                  <DrawerContent id='drawer_content' className='w-full bg-white pb-safe-bottom'>
+                    <div className='flex h-full w-full justify-center p-6'>
                       <ReportTabs
                         closeDrawer={async () => {
                           await getStreet(address_id, block_id, territory_id, round);
@@ -299,8 +297,10 @@ export default function StreetData() {
                 </div>
               )}
             </div>
-          </div>
-          <div className='flex h-screen flex-col gap-4 justify-between'>
+          }
+        />
+        <Body className='p-3'>
+          <div className='flex h-screen-dvh flex-col gap-4 justify-between'>
             <div
               id='publisher-mark'
               className='mt-4 grid gap-0.5 z-20 m-1'
@@ -443,7 +443,7 @@ function ReportInsert({ addressId, blockId, territoryId, closeDrawer }: ReportIn
   return (
     <TabsContent value='insert'>
       <div className='mb-6 grid w-full grid-cols-2 gap-6'>
-        <Input placeholder='Número' value={number} onChange={(e) => onChangeNumber(e.target.value)} />
+        <Input id='report-insert-number' placeholder='Número' value={number} onChange={(e) => onChangeNumber(e.target.value)} />
         <Select value={subtitle} onValueChange={setSubtitle}>
           <SelectTrigger>
             <SelectValue placeholder='Residência' />
@@ -465,13 +465,14 @@ function ReportInsert({ addressId, blockId, territoryId, closeDrawer }: ReportIn
         </Select>
 
         <Textarea
+          id='report-insert-observations'
           placeholder='Observação'
           className='col-span-2 h-24 resize-none'
           value={observations}
           onChange={(e) => setObservations(e.target.value)}
         />
 
-        <Button.Root className='col-span-2 w-full rounded-md text-white' type='button' onClick={onSubmit}>
+        <Button.Root className='col-span-2 w-full' type='button' onClick={onSubmit}>
           Enviar
         </Button.Root>
       </div>
@@ -568,6 +569,7 @@ function ReportUpdate({ addressId, blockId, territoryId, houses, closeDrawer }: 
 
         {/* criar input para atualizar numero da casa */}
         <Input
+          id='report-update-number'
           placeholder='Número da casa'
           value={house?.number}
           disabled={!house}
@@ -582,6 +584,7 @@ function ReportUpdate({ addressId, blockId, territoryId, houses, closeDrawer }: 
         />
 
         <Textarea
+          id='report-update-observations'
           placeholder='Observação'
           className='col-span-2 h-24 resize-none'
           disabled={!house}
@@ -589,7 +592,7 @@ function ReportUpdate({ addressId, blockId, territoryId, houses, closeDrawer }: 
           onChange={(e) => setObservations(e.target.value)}
         />
 
-        <Button.Root className='col-span-2 w-full rounded-md text-white' type='button' onClick={onSubmit}>
+        <Button.Root className='col-span-2 w-full' type='button' onClick={onSubmit}>
           Enviar
         </Button.Root>
       </div>
@@ -655,13 +658,14 @@ function ReportDelete({ addressId, blockId, territoryId, houses, closeDrawer }: 
         </Select>
 
         <Textarea
+          id='report-delete-observations'
           placeholder='Observação'
           className='col-span-2 h-24 resize-none'
           value={observations}
           onChange={(e) => setObservations(e.target.value)}
         />
 
-        <Button.Root className='col-span-2 w-full rounded-md text-white' type='button' onClick={onSubmit}>
+        <Button.Root className='col-span-2 w-full' type='button' onClick={onSubmit}>
           Enviar
         </Button.Root>
       </div>

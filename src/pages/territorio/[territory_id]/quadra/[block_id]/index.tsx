@@ -5,7 +5,7 @@ import jwt_decode from 'jwt-decode';
 import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, HelpCircle, Share2, Users, X } from 'react-feather';
+import { HelpCircle, Share2, Users, X } from 'react-feather';
 import toast from 'react-hot-toast';
 
 import 'driver.js/dist/driver.css';
@@ -26,12 +26,13 @@ import { Input } from '@/components/ui/input';
 import { Street, useBlock } from '@/common/block';
 import { RootModeScreen } from '@/common/loading';
 import { DialogMap } from '@/common/territory/components/DialogMap';
+import { PublisherCard } from '@/common/waitingRoom/components';
 import type { WaitingRoomPublisher } from '@/common/waitingRoom/type';
 import { useWaitingRoomSSE } from '@/common/waitingRoom/useWaitingRoomSSE';
 import { env } from '@/constant';
 import { waitingRoomGateway } from '@/infra/Gateway/WaitingRoomGateway';
 import { URL_API } from '@/infra/http/AxiosAdapter';
-import { Body, Button, Header } from '@/ui';
+import { Body, Button, Header, SubHeader } from '@/ui';
 
 export default function Block() {
   const router = useRouter();
@@ -54,7 +55,6 @@ export default function Block() {
 
   const [profile, setProfile] = useState<PublisherProfile | null>(null);
   const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [phoneLast4, setPhoneLast4] = useState('');
   const [joined, setJoined] = useState(false);
   const [peers, setPeers] = useState<WaitingRoomPublisher[]>([]);
@@ -66,21 +66,6 @@ export default function Block() {
     setProfile(getOrCreatePublisherProfile());
   }, []);
 
-  const joinRoom = useCallback(async () => {
-    if (!groupId || !blockKey || !profile) return;
-    const { status } = await waitingRoomGateway.joinGroup(groupId, blockKey, {
-      firstName: profile.firstName,
-      lastName: profile.lastName,
-      phoneLast4: profile.phoneLast4,
-    });
-    if (status <= 299) setJoined(true);
-  }, [blockKey, groupId, profile]);
-
-  useEffect(() => {
-    if (!enabled || !profile?.firstName || joined) return;
-    void joinRoom();
-  }, [enabled, joinRoom, joined, profile?.firstName]);
-
   const getPeers = useCallback(async () => {
     if (!groupId || !blockKey) return;
     const { status, data } = await waitingRoomGateway.getRoom(groupId, blockKey);
@@ -90,6 +75,23 @@ export default function Block() {
     }
     if (data?.role === 'publisher') setPeers(data.peers ?? []);
   }, [blockKey, groupId]);
+
+  const joinRoom = useCallback(async () => {
+    if (!groupId || !blockKey || !profile) return;
+    const { status } = await waitingRoomGateway.joinGroup(groupId, blockKey, {
+      firstName: profile.firstName,
+      phoneLast4: profile.phoneLast4,
+    });
+    if (status <= 299) {
+      setJoined(true);
+      void getPeers();
+    }
+  }, [blockKey, getPeers, groupId, profile]);
+
+  useEffect(() => {
+    if (!enabled || !profile?.firstName || joined) return;
+    void joinRoom();
+  }, [enabled, joinRoom, joined, profile?.firstName]);
 
   useEffect(() => {
     if (!enabled || !profile?.firstName) return;
@@ -120,7 +122,6 @@ export default function Block() {
     const updated: PublisherProfile = {
       ...profile,
       firstName: firstName.trim(),
-      lastName: lastName.trim(),
       phoneLast4,
     };
     savePublisherProfile(updated);
@@ -200,92 +201,96 @@ export default function Block() {
         onClick={driverAction}
         size={50}
         fill='current'
-        className='text-gray-50 z-10 cursor-pointer fixed bottom-0 right-0 m-4 fill-primary'
+        role='img'
+        aria-label='Ajuda'
+        className='fixed bottom-0 right-0 z-10 m-4 mb-safe-bottom cursor-pointer fill-primary text-gray-50'
       />
       <div className={clsx('relative')}>
-        {block.imageUrl && (
-          <DialogMap
-            title={block.territoryName}
-          >
-            <img className='h-full w-full object-cover object-center' src={block.imageUrl} alt='Imagem do Território' />
-          </DialogMap>
-        )}
-        <Header>
-          <div className='flex w-full flex-col gap-2'>
-            <div className='flex w-full items-center gap-2'>
-              <IconContainer
-                icon={<ArrowLeft size={22} className='cursor-pointer text-primary' onClick={() => router.push('/sala')} />}
-              />
-              <div>
-                <h1 className='flex items-center text-xl font-semibold'>Olá Publicador(a),</h1>
-                <p className='text-gray-700'>Preencha as casas da quadra onde voce falou!</p>
-              </div>
-            </div>
-            <hr className='my-2 w-1/2 h-0.5 bg-gray-800' />
-            <div className='flex w-full items-center justify-between'>
-              <div>
-                <h4 className='text-xl font-semibold text-gray-700'>{block?.territoryName}</h4>
-                <h5 className='text-xl font-semibold text-gray-700'>{block?.blockName}</h5>
-              </div>
-              <div className='flex items-center gap-1'>
-                {showPeers && (
-                  <Drawer open={peersOpen} onOpenChange={setPeersOpen}>
-                    <DrawerTrigger asChild>
+        <Header
+          title={block?.blockName}
+          subtitle='Marque as casas desta quadra.'
+          onBack={() => router.push('/sala')}
+          backLabel='Voltar para a sala'
+          action={
+            block.imageUrl && (
+              <DialogMap
+                inline
+                title={block.territoryName}
+              >
+                <img className='h-full w-full object-cover object-center' src={block.imageUrl} alt='Imagem do Território' />
+              </DialogMap>
+            )
+          }
+        />
+        <SubHeader
+          title={`${block?.territoryName} - ${block?.blockName}`}
+          action={
+            <div className='flex items-center gap-1'>
+              {showPeers && (
+                <Drawer open={peersOpen} onOpenChange={setPeersOpen}>
+                  <DrawerTrigger asChild>
+                    <IconContainer
+                      icon={<Users size={22} className='cursor-pointer text-gray-700' />}
+                      ariaLabel='Ver publicadores nesta quadra'
+                    />
+                  </DrawerTrigger>
+                  <DrawerContent id='peers_drawer_content' className='w-full bg-white'>
+                    <div className='flex w-full items-center justify-between p-6 pb-safe-bottom'>
+                      <h2 className='text-xl font-semibold text-primary-text'>Publicadores nesta quadra</h2>
                       <IconContainer
-                        icon={<Users size={22} className='cursor-pointer text-gray-700' />}
+                        icon={<X size={22} className='cursor-pointer text-gray-600' />}
+                        ariaLabel='Fechar'
+                        onClick={() => setPeersOpen(false)}
                       />
-                    </DrawerTrigger>
-                    <DrawerContent id='peers_drawer_content' className='w-full bg-white'>
-                      <div className='flex w-full items-center justify-between px-6 pt-4'>
-                        <h3 className='text-lg font-semibold text-gray-800'>Publicadores nesta quadra</h3>
-                        <X className='cursor-pointer text-gray-600' onClick={() => setPeersOpen(false)} />
-                      </div>
-                      <div className='flex max-h-[50vh] flex-col gap-2 overflow-y-auto px-6 py-4'>
-                        {peers.length === 0 && (
-                          <p className='text-sm text-gray-600'>Nenhum outro publicador presente no momento.</p>
-                        )}
-                        {peers.map((peer) => (
-                          <div
-                            key={peer.identityKey}
-                            className='flex items-center justify-between rounded-xl border border-gray-200 bg-white p-3 shadow-sm'
-                          >
-                            <span className='font-medium text-gray-800'>
-                              {peer.firstName} {peer.lastName}
-                            </span>
-                            <span className='text-sm text-gray-500'>**** {peer.phoneLast4}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </DrawerContent>
-                  </Drawer>
-                )}
-                <IconContainer
-                  icon={<Share2 size={22} className='cursor-pointer text-gray-700' onClick={() => void shareFromWaitingRoom()} />}
+                    </div>
+                    <div className='flex max-h-[50vh] flex-col gap-2 overflow-y-auto p-6 pb-safe-bottom'>
+                      {peers.length === 0 && (
+                        <p className='text-sm text-muted'>Nenhum outro publicador presente no momento.</p>
+                      )}
+                      {peers.map((peer) => (
+                        <PublisherCard
+                          key={peer.identityKey}
+                          primary={peer.firstName}
+                          secondary={`**** ${peer.phoneLast4}`}
+                        />
+                      ))}
+                    </div>
+                  </DrawerContent>
+                </Drawer>
+              )}
+              <IconContainer
+                icon={<Share2 size={22} className='cursor-pointer text-gray-700' onClick={() => void shareFromWaitingRoom()} />}
+                ariaLabel='Compartilhar'
+              />
+            </div>
+          }
+        />
+        <Body>
+          <div className='flex h-full w-full flex-col p-4'>
+            {needProfile && (
+            <div className='flex flex-col gap-4 rounded-xl bg-gray-50 p-4 shadow-md'>
+              <div>
+                <h2 className='text-xl font-semibold text-primary-text'>Seu perfil</h2>
+                <p className='text-sm text-muted'>Informe seus dados para entrar na sala de espera.</p>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <label htmlFor='block-first-name' className='text-sm text-muted'>Nome</label>
+                <Input id='block-first-name' value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder='Apenas o primeiro nome' />
+              </div>
+              <div className='flex flex-col gap-1'>
+                <label htmlFor='block-phone-last4' className='text-sm text-muted'>Últimos 4 dígitos do celular</label>
+                <Input
+                  id='block-phone-last4'
+                  value={phoneLast4}
+                  onChange={(e) => setPhoneLast4(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                  placeholder='0000'
+                  inputMode='numeric'
+                  maxLength={4}
                 />
               </div>
-            </div>
-          </div>
-        </Header>
-        <Body>
-          <div className='h-6 w-full'></div>
-          {needProfile && (
-            <div className='flex flex-col gap-4 rounded-xl bg-gray-50 p-4 shadow-xl'>
-              <div>
-                <h3 className='text-lg font-semibold text-gray-800'>Seu perfil</h3>
-                <p className='text-sm text-gray-600'>Informe seus dados para entrar na sala de espera.</p>
-              </div>
-              <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder='Nome' />
-              <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder='Sobrenome' />
-              <Input
-                value={phoneLast4}
-                onChange={(e) => setPhoneLast4(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                placeholder='Últimos 4 dígitos do celular'
-                inputMode='numeric'
-                maxLength={4}
-              />
               <Button.Root
                 type='button'
-                className='w-full text-white'
+                className='w-full'
                 disabled={!firstName.trim() || phoneLast4.length !== 4}
                 onClick={submitProfile}
               >
@@ -300,6 +305,7 @@ export default function Block() {
               ))}
             </div>
           )}
+          </div>
         </Body>
       </div>
     </RootModeScreen>
